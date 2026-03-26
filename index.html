@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MOGADOCLab — Structure Editor & Viewer</title>
+<title>MOGADOCLab Quantum Structure Studio — Professional Molecular Viewer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
@@ -160,10 +160,10 @@ header {
 .sidebar.expanded { width:min(760px, 78vw); }
 .sidebar.super-expanded { width:min(980px, 92vw); }
 .sidebar.collapsed { width:0; overflow:hidden; }
-.sidebar-scroll { flex:1; overflow-y:auto; overflow-x:auto; }
-.sidebar.expanded .sidebar-scroll { overflow-x:auto; }
+.sidebar-scroll { flex:1; overflow-y:auto; overflow-x:hidden; min-width:0; }
+.sidebar.expanded .sidebar-scroll { overflow-x:hidden; }
 
-.section { padding:14px; border-bottom:1px solid var(--border); min-width:0; }
+.section { padding:14px; border-bottom:1px solid var(--border); min-width:0; overflow:hidden; }
 .section-head {
   display:flex; align-items:center; justify-content:space-between;
   margin-bottom:10px; cursor:pointer; user-select:none;
@@ -226,6 +226,15 @@ header {
   padding:8px 12px; font-family:'JetBrains Mono',monospace; font-size:12px;
   color:var(--text); letter-spacing:0.5px; word-break:break-all; min-height:34px;
 }
+.import-box {
+  min-height:58px;
+  white-space:pre-wrap;
+  line-height:1.6;
+  color:var(--text-dim);
+  font-size:10.5px;
+  letter-spacing:0.02em;
+}
+.import-box strong { color:var(--accent); }
 
 .view-modes { display:flex; flex-direction:column; gap:3px; }
 .mode-btn {
@@ -391,7 +400,7 @@ textarea.raw-editor {
 #notification.error   { border-color:var(--red); }
 #notification.info    { border-color:var(--accent); }
 
-.pubchem-bar { display:flex; gap:5px; }
+.pubchem-bar { display:flex; gap:5px; flex-wrap:wrap; }
 .search-input {
   flex:1; background:var(--bg); border:1px solid var(--border); color:var(--text);
   padding:7px 10px; font-family:'DM Sans',sans-serif; font-size:12px;
@@ -536,6 +545,7 @@ textarea.raw-editor {
 .db-result-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;}
 .db-link{font-size:9px;color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dotted transparent;}
 .db-link:hover{border-bottom-color:currentColor;}
+.db-search-bar.enhanced > .btn, .db-search-bar.enhanced > select { flex-shrink:0; min-width:0; }
 @media (max-width: 1100px){.db-grid{grid-template-columns:1fr;}}
 
 
@@ -545,24 +555,42 @@ textarea.raw-editor {
 .db-search-kicker{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-family:'JetBrains Mono',monospace;}
 .db-search-subtext{font-size:9.5px;line-height:1.45;color:var(--text-dim);}
 .db-search-expand{min-width:98px; white-space:nowrap;}
-.db-search-bar.enhanced{display:grid;grid-template-columns:180px minmax(320px,1fr) auto auto;gap:8px;align-items:stretch;min-width:760px;}
-.db-search-main{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.db-search-bar.enhanced{display:grid;grid-template-columns:minmax(140px,180px) minmax(0,1fr) auto auto;gap:8px;align-items:stretch;min-width:0;width:100%;}
+.db-search-main{display:flex;flex-direction:column;gap:6px;min-width:0;width:100%;}
 .db-search-main .search-input{width:100%;min-width:0;font-size:12px;padding:10px 12px;}
-.db-search-examples{font-size:9px;line-height:1.45;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.db-search-examples{font-size:9px;line-height:1.45;color:var(--text-dim);white-space:normal;overflow-wrap:anywhere;}
 .db-chip-row{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px;}
 .db-chip{border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);padding:6px 9px;border-radius:999px;font-size:9px;cursor:pointer;transition:all .15s;}
 .db-chip:hover{border-color:var(--accent);color:var(--text);}
 .db-chip.active{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,0.10);}
 .search-section.search-expanded .db-grid{grid-template-columns:1fr;}
 .search-section.search-expanded .db-results{max-height:420px;min-height:180px;}
-.search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:220px minmax(520px,1fr) auto auto;min-width:1080px;}
-.sidebar.super-expanded .search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:240px minmax(700px,1fr) auto auto;min-width:1320px;}
+.search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:minmax(180px,220px) minmax(0,1fr) auto auto;min-width:0;}
+.sidebar.super-expanded .search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:minmax(200px,240px) minmax(0,1fr) auto auto;min-width:0;}
 .search-section.search-expanded .db-search-main .search-input{font-size:13px;padding:12px 13px;}
-.search-section .section-body{overflow-x:auto;}
+.search-section .section-body{overflow-x:hidden;}
 .search-section .db-results{max-height:250px;overflow:auto;min-width:0;}
-@media (max-width: 1220px){.db-search-bar.enhanced{grid-template-columns:160px minmax(0,1fr) auto auto;}}
-@media (max-width: 1100px){.db-search-bar.enhanced,.search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:1fr;}.db-grid{grid-template-columns:1fr;}}
+@media (max-width: 1220px){.db-search-bar.enhanced{grid-template-columns:minmax(130px,160px) minmax(0,1fr) auto auto;}}
+@media (max-width: 1100px){.db-search-bar.enhanced,.search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:1fr;}.db-grid{grid-template-columns:1fr;}.db-search-bar.enhanced .btn,.db-search-bar.enhanced select{width:100%;}}
 @media (max-width: 700px){.db-search-toolbar{flex-direction:column;align-items:flex-start;}.db-actions{flex-direction:column;}.db-actions .btn{width:100%;}}
+
+@media (max-width: 1180px){
+  .dm-left{width:220px;min-width:220px;max-width:280px;}
+  .dm-left.expanded{width:300px;min-width:300px;max-width:320px;}
+  .dm-right{width:200px;min-width:200px;max-width:240px;}
+  .dm-header{gap:10px;}
+}
+@media (max-width: 980px){
+  .dm-dialog{width:min(98vw,1340px);height:min(96vh,860px);}
+  .dm-header{flex-wrap:wrap;height:auto;padding:10px 14px;}
+  .dm-header-pills{order:3;width:100%;}
+  .dm-body{flex-direction:column;}
+  .dm-left,.dm-left.expanded,.dm-left.compact,.dm-left.collapsed,.dm-right{width:100%;max-width:none;min-width:0;border-right:none;border-left:none;opacity:1;}
+  .dm-left{max-height:46vh;border-bottom:1px solid var(--border);}
+  .dm-left.collapsed{max-height:0;border-right:none;border-bottom:none;}
+  .dm-right{max-height:32vh;border-top:1px solid var(--border);}
+  .dm-template-grid{max-height:min(28vh,320px);}
+}
 
 </style>
 </head>
@@ -571,10 +599,10 @@ textarea.raw-editor {
 <header>
   <div class="logo">
     <div class="logo-icon">⬡</div>
-    MOGADOCLab <sub>3D</sub>
+    MOGADOCLab <sub>Q-View Pro</sub>
   </div>
   <div class="mol-title-wrap">
-    <div class="mol-badge" id="moleculeName">No molecule loaded</div>
+    <div class="mol-badge" id="moleculeName">No structure loaded</div>
     <div class="mol-formula-badge" id="headerFormula"></div>
   </div>
   <div class="header-right">
@@ -602,13 +630,18 @@ textarea.raw-editor {
         </div>
         <div class="section-body">
           <div class="file-drop" id="fileDrop">
-            <input type="file" id="fileInput" accept=".xyz,.mol,.mol2,.json,.sdf,.pdb" onchange="handleFileLoad(event)">
+            <input type="file" id="fileInput" accept=".xyz,.mol,.mol2,.json,.sdf,.pdb,.out,.log,.gjf,.com,.inp,.in,.cube,.cub,.cif,.xsf,.vasp,.poscar,.contcar,.coord,.nw,.nwout" onchange="handleFileLoad(event)">
             <div class="file-drop-icon">⬆</div>
             <div class="file-drop-text">Drop file or click to browse</div>
             <div class="format-tags">
               <span class="format-tag">.xyz</span><span class="format-tag">.mol</span>
               <span class="format-tag">.mol2</span><span class="format-tag">.json</span>
               <span class="format-tag">.sdf</span><span class="format-tag">.pdb</span>
+              <span class="format-tag">Gaussian</span><span class="format-tag">ORCA</span>
+              <span class="format-tag">VASP</span><span class="format-tag">QE</span>
+              <span class="format-tag">CP2K</span><span class="format-tag">NWChem</span>
+              <span class="format-tag">.cube</span><span class="format-tag">.cif</span>
+              <span class="format-tag">.xsf</span>
             </div>
           </div>
         </div>
@@ -616,14 +649,14 @@ textarea.raw-editor {
 
       <div class="section search-section" id="searchSection">
         <div class="section-head" onclick="toggleSection(this)">
-          <div class="section-title">Scientific Database Search</div>
+          <div class="section-title">Scientific Search & Import</div>
           <div class="section-toggle">▼</div>
         </div>
         <div class="section-body">
           <div class="db-search-toolbar">
             <div class="db-search-heading">
               <div class="db-search-kicker">Search &amp; import</div>
-              <div class="db-search-subtext" id="dbSearchHint">PubChem-style search with direct 3D loading when supported.</div>
+              <div class="db-search-subtext" id="dbSearchHint">Professional search and import across molecular, structural, and quantum-materials resources.</div>
             </div>
             <button class="btn btn-sm db-search-expand" id="dbExpandBtn" onclick="toggleDatabasePanel(event)">⤢ Expand</button>
           </div>
@@ -730,6 +763,8 @@ textarea.raw-editor {
           </div>
           <div class="stat-label" style="margin-bottom:4px;">Formula</div>
           <div class="formula-box" id="statFormula">—</div>
+          <div class="stat-label" style="margin:10px 0 4px;">Import provenance</div>
+          <div class="formula-box import-box" id="importDetails">Awaiting structure import</div>
         </div>
       </div>
 
@@ -947,8 +982,8 @@ textarea.raw-editor {
         <div class="empty-hex-ring"></div>
         <div class="empty-hex-inner">⬡</div>
       </div>
-      <div class="empty-title">No Molecule Loaded</div>
-      <div class="empty-sub">Drop a file · use Quick Load · or search a scientific database</div>
+      <div class="empty-title">No Structure Loaded</div>
+      <div class="empty-sub">Drop a structure file, paste raw output, use Quick Load, or query a scientific database</div>
     </div>
 
     <div class="hud" id="hud">
@@ -1021,7 +1056,17 @@ textarea.raw-editor {
       <select class="format-sel" id="editorFormat">
         <option value="xyz">.xyz</option>
         <option value="json">.json</option>
-        <option value="mol">.mol</option>
+        <option value="mol">.mol/.sdf</option>
+        <option value="pdb">.pdb</option>
+        <option value="gaussian">Gaussian / GaussView</option>
+        <option value="orca">ORCA</option>
+        <option value="vasp">VASP POSCAR/CONTCAR</option>
+        <option value="qe">Quantum ESPRESSO</option>
+        <option value="cp2k">CP2K</option>
+        <option value="nwchem">NWChem</option>
+        <option value="cube">Gaussian cube</option>
+        <option value="cif">CIF</option>
+        <option value="xsf">XSF</option>
       </select>
       <button class="btn btn-sm" onclick="toggleEditor()">✕</button>
     </div>
@@ -1034,14 +1079,19 @@ textarea.raw-editor {
       <button class="btn btn-sm" onclick="editorCopy()" title="Copy editor text">📋 Copy</button>
       <button class="btn btn-sm active-soft" onclick="editorDownload()" title="Download current editor text">⬇ Save Text</button>
     </div>
-    <textarea class="raw-editor" id="rawEditor" spellcheck="false" placeholder="Paste molecular data here…
+    <textarea class="raw-editor" id="rawEditor" spellcheck="false" placeholder="Paste structure data or raw quantum-chemistry output here…
 
-XYZ format:
-  Line 1: atom count
-  Line 2: comment / name
-  Line 3+: SYMBOL  X  Y  Z
+Supported inputs:
+• XYZ / MOL / MOL2 / SDF / PDB / JSON
+• Gaussian output or input (.log .out .gjf .com)
+• ORCA output / input
+• VASP POSCAR / CONTCAR
+• Quantum ESPRESSO ATOMIC_POSITIONS blocks
+• CP2K &COORD and output tables
+• NWChem coordinate tables
+• Cube / CIF / XSF
 
-Example (water):
+Example (XYZ):
 3
 Water
 O  0.000  0.000  0.117
@@ -1331,6 +1381,20 @@ let rotEasing=true;                        // smooth start/stop
 let rotEaseVel=0;                          // current eased angular velocity
 let rotTargetVel=0;                        // target angular velocity for easing
 let canvas=document.getElementById('molCanvas'); let ctx=canvas.getContext('2d');
+let lastImportMeta={source:'Awaiting import',format:'—',confidence:'—'};
+function renderImportDetails(meta){
+  const el=document.getElementById('importDetails');
+  if(!el) return;
+  if(!meta){ el.textContent='Awaiting structure import'; return; }
+  const fmt=(meta.format||'unknown').toUpperCase();
+  const src=meta.source||'Unknown source';
+  const name=meta.inputName||'Untitled';
+  const conf=meta.confidence||'parsed';
+  const extra=[];
+  if(meta.coordinateMode) extra.push('coords: '+meta.coordinateMode);
+  if(meta.units) extra.push('units: '+meta.units);
+  el.innerHTML=`<strong>${src}</strong> · ${fmt}\nFile: ${name}\nStatus: ${conf}${extra.length?' · '+extra.join(' · '):''}`;
+}
 
 function resizeCanvas() {
   const a=document.getElementById('canvasArea');
@@ -1342,147 +1406,542 @@ window.addEventListener('resize',resizeCanvas);
 // ═══════════════════════════════════════════════════════════
 // PARSERS
 // ═══════════════════════════════════════════════════════════
-function parseXYZ(text) {
-  const lines=text.trim().split('\n'), n=parseInt(lines[0].trim()), atoms=[];
-  for(let i=2;i<2+n&&i<lines.length;i++){
-    const p=lines[i].trim().split(/\s+/);
-    if(p.length>=4) atoms.push({symbol:p[0],x:parseFloat(p[1]),y:parseFloat(p[2]),z:parseFloat(p[3]),idx:atoms.length});
-  }
-  return {atoms,bonds:autoDetectBonds(atoms)};
-}
-function parseMOL(text) {
-  const lines=text.split('\n'), c=(lines[3]||'').trim().split(/\s+/);
-  const nA=parseInt(c[0])||0, nB=parseInt(c[1])||0, atoms=[], bonds=[];
-  for(let i=4;i<4+nA;i++){const p=(lines[i]||'').trim().split(/\s+/);if(p.length>=4)atoms.push({symbol:p[3],x:parseFloat(p[0]),y:parseFloat(p[1]),z:parseFloat(p[2]),idx:atoms.length});}
-  for(let i=4+nA;i<4+nA+nB;i++){const p=(lines[i]||'').trim().split(/\s+/);if(p.length>=3)bonds.push({a:parseInt(p[0])-1,b:parseInt(p[1])-1,order:parseInt(p[2])||1});}
-  return{atoms,bonds:bonds.length?bonds:autoDetectBonds(atoms)};
-}
-function parseMOL2(text) {
-  const lines=text.split('\n'), atoms=[], bonds=[];
-  let sec='';
-  for(const line of lines){
-    const t=line.trim();
-    if(t.startsWith('@<TRIPOS>')){sec=t.slice(9);continue;}
-    if(sec==='ATOM'){const p=t.split(/\s+/);if(p.length>=6){const sym=p[1].replace(/[0-9]/g,'').replace(/\..*/,'');atoms.push({symbol:sym||p[5].split('.')[0],x:parseFloat(p[2]),y:parseFloat(p[3]),z:parseFloat(p[4]),idx:atoms.length});}}
-    else if(sec==='BOND'){const p=t.split(/\s+/);if(p.length>=4){
-      const btype=p[3];
-      let order=1, type='covalent';
-      if(btype==='ar'||btype==='1.5'){order=1.5;type='aromatic';}
-      else if(btype==='am'){order=1;type='amide';}
-      else if(btype==='du'||btype==='un'){type='vdw';}
-      else if(btype==='hb'){type='hydrogen';}
-      else order=parseInt(btype)||1;
-      bonds.push({a:parseInt(p[1])-1,b:parseInt(p[2])-1,order,type});
-    }}
-  }
-  return{atoms,bonds:bonds.length?bonds:autoDetectBonds(atoms)};
-}
-function parseJSON(text) {
-  const d=JSON.parse(text);
-  if(d.atoms){const atoms=d.atoms.map((a,i)=>({symbol:a.symbol||a.element||'C',x:a.x??(a.coords?.[0]??0),y:a.y??(a.coords?.[1]??0),z:a.z??(a.coords?.[2]??0),idx:i}));const bonds=(d.bonds||[]).map(b=>({a:b[0]??b.a,b:b[1]??b.b,order:b[2]??b.order??1}));return{atoms,bonds:bonds.length?bonds:autoDetectBonds(atoms)};}
-  if(d.nodes&&d.edges){const atoms=d.nodes.map((n,i)=>({symbol:n.label||n.element||'C',x:n.x||0,y:n.y||0,z:n.z||0,idx:i}));const bonds=(d.edges||[]).map(e=>({a:e.source??e.from,b:e.target??e.to,order:e.weight??e.order??1}));return{atoms,bonds:bonds.length?bonds:autoDetectBonds(atoms)};}
-  throw new Error('Unsupported JSON schema');
-}
-function parsePDB(text) {
-  const atoms=[];
-  for(const line of text.split('\n')){
-    if(line.startsWith('ATOM')||line.startsWith('HETATM')){
-      let sym=(line.slice(76,78).trim()||line.slice(12,14).trim().replace(/[^A-Za-z]/g,''));
-      sym=sym.charAt(0).toUpperCase()+sym.slice(1).toLowerCase();
-      atoms.push({symbol:sym||'C',x:parseFloat(line.slice(30,38)),y:parseFloat(line.slice(38,46)),z:parseFloat(line.slice(46,54)),idx:atoms.length});
-    }
-  }
-  return{atoms,bonds:autoDetectBonds(atoms)};
-}
-// ═══════════════════════════════════════════════════════════
-// BOND TYPES
-// order values:  1=single  2=double  3=triple  1.5=aromatic/resonance
-// type strings:  'covalent'|'ionic'|'hydrogen'|'metallic'|'vdw'
-//                (absent = 'covalent' by default)
-// ═══════════════════════════════════════════════════════════
-const HBOND_DONORS    = new Set(['O','N','F','S']);
-const HBOND_ACCEPTORS = new Set(['O','N','F','Cl','S']);
-const IONIC_PAIRS = [
-  ['Na','Cl'],['K','Cl'],['Ca','O'],['Mg','O'],['Na','O'],
-  ['K','O'], ['Ca','F'],['Na','F'],['Fe','O'],['Zn','O'],
-  ['Ba','O'],['Li','O'],['Cs','Cl'],['Rb','Cl'],
-];
-const METALS = new Set(['Li','Na','K','Rb','Cs','Mg','Ca','Ba','Sr',
-  'Fe','Cu','Zn','Ag','Au','Pt','Pd','Ni','Co','Cr','Mn','Al','Ti']);
+const BOHR_TO_ANG = 0.529177210903;
+const ATOMIC_NUMBER_TO_SYMBOL = Object.fromEntries(Object.entries(ELEMENTS_DEFAULT).map(([sym,val])=>[String(val.z),sym]));
+const SUPPORTED_IMPORTERS = {
+  xyz:'XYZ cartesian coordinates',
+  mol:'MDL MOL / SDF',
+  mol2:'Tripos MOL2',
+  json:'JSON atom-bond schema',
+  pdb:'PDB / biomolecular cartesian coordinates',
+  gaussian:'Gaussian / GaussView input-output',
+  orca:'ORCA input-output',
+  vasp:'VASP POSCAR / CONTCAR',
+  qe:'Quantum ESPRESSO',
+  cp2k:'CP2K',
+  nwchem:'NWChem',
+  cube:'Gaussian cube',
+  cif:'Crystallographic CIF',
+  xsf:'XCrySDen XSF'
+};
 
-function isIonicPair(sA, sB){
-  return IONIC_PAIRS.some(([x,y])=>(x===sA&&y===sB)||(x===sB&&y===sA));
-}
-function isMetal(s){ return METALS.has(s); }
-
-function classifyBondType(ai, aj, dist){
-  const sA=ai.symbol, sB=aj.symbol;
-  // Hydrogen bond: H donor–acceptor pair, distance 1.5–3.5 Å
-  if((sA==='H'&&HBOND_ACCEPTORS.has(sB))||(sB==='H'&&HBOND_ACCEPTORS.has(sA))){
-    if(dist>1.3&&dist<3.5) return 'hydrogen';
+function normalizeSymbol(sym){
+  if(sym===undefined||sym===null) return 'C';
+  let s=String(sym).trim();
+  if(!s) return 'C';
+  s=s.replace(/^[0-9]+/,'').replace(/[^A-Za-z]/g,'');
+  if(!s) return 'C';
+  s=s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();
+  if(ELEMENTS_DEFAULT[s]) return s;
+  if(s.length>1){
+    const short=s.charAt(0).toUpperCase()+s.charAt(1).toLowerCase();
+    if(ELEMENTS_DEFAULT[short]) return short;
+    const one=s.charAt(0).toUpperCase();
+    if(ELEMENTS_DEFAULT[one]) return one;
   }
-  // Ionic
-  if(isIonicPair(sA,sB)) return 'ionic';
-  // Metallic
-  if(isMetal(sA)&&isMetal(sB)) return 'metallic';
-  // vdW (very long contacts)
-  const vdwThresh=(getElement(sA).r+getElement(sB).r)*1.8;
-  if(dist>2.0&&dist<vdwThresh) return 'vdw';
-  return 'covalent';
+  return s;
 }
-
-function autoDetectBonds(atoms) {
+function symbolFromAtomicNumber(z){ return ATOMIC_NUMBER_TO_SYMBOL[String(parseInt(z)||0)] || 'C'; }
+function makeAtom(symbol,x,y,z,idx,extra={}){ return {symbol:normalizeSymbol(symbol),x:+x,y:+y,z:+z,idx,...extra}; }
+const IMPORT_COVALENT_RADII = {
+  H:0.31, He:0.28, Li:1.28, Be:0.96, B:0.84, C:0.76, N:0.71, O:0.66, F:0.57, Ne:0.58,
+  Na:1.66, Mg:1.41, Al:1.21, Si:1.11, P:1.07, S:1.05, Cl:1.02, Ar:1.06,
+  K:2.03, Ca:1.76, Sc:1.70, Ti:1.60, V:1.53, Cr:1.39, Mn:1.39, Fe:1.32, Co:1.26,
+  Ni:1.24, Cu:1.32, Zn:1.22, Ga:1.22, Ge:1.20, As:1.19, Se:1.20, Br:1.20, Kr:1.16,
+  Rb:2.20, Sr:1.95, Y:1.90, Zr:1.75, Nb:1.64, Mo:1.54, Tc:1.47, Ru:1.46, Rh:1.42,
+  Pd:1.39, Ag:1.45, Cd:1.44, In:1.42, Sn:1.39, Sb:1.39, Te:1.38, I:1.39, Xe:1.40,
+  Cs:2.44, Ba:2.15, La:2.07, Ce:2.04, Pr:2.03, Nd:2.01, Sm:1.98, Eu:1.98, Gd:1.96,
+  Tb:1.94, Dy:1.92, Ho:1.92, Er:1.89, Tm:1.90, Yb:1.87, Lu:1.87,
+  Hf:1.75, Ta:1.70, W:1.62, Re:1.51, Os:1.44, Ir:1.41, Pt:1.36, Au:1.36, Hg:1.32,
+  Tl:1.45, Pb:1.46, Bi:1.48, Po:1.40, At:1.50,
+  default:1.20
+};
+function getImportCovalentRadius(symbol){
+  return IMPORT_COVALENT_RADII[normalizeSymbol(symbol)] || IMPORT_COVALENT_RADII.default;
+}
+function autoDetectBonds(atoms){
   const bonds=[];
-  for(let i=0;i<atoms.length;i++){
-    for(let j=i+1;j<atoms.length;j++){
-      const ai=atoms[i],aj=atoms[j];
-      const covThresh=(getElement(ai.symbol).r+getElement(aj.symbol).r)*1.3;
-      const dx=ai.x-aj.x,dy=ai.y-aj.y,dz=ai.z-aj.z;
+  const seen=new Set();
+  for(let i=0;i<(atoms||[]).length;i++){
+    const ai=atoms[i];
+    if(!ai) continue;
+    const ri=getImportCovalentRadius(ai.symbol);
+    for(let j=i+1;j<(atoms||[]).length;j++){
+      const aj=atoms[j];
+      if(!aj) continue;
+      const dx=(ai.x-aj.x), dy=(ai.y-aj.y), dz=(ai.z-aj.z);
       const dist=Math.sqrt(dx*dx+dy*dy+dz*dz);
-      // Covalent range
-      if(dist<Math.min(covThresh,2.0)){
-        const type=classifyBondType(ai,aj,dist);
-        bonds.push({a:i,b:j,order:1,type});
-      }
-      // Hydrogen bond range (only if H involved)
-      else if(dist>=1.5&&dist<3.5){
-        if((ai.symbol==='H'&&HBOND_ACCEPTORS.has(aj.symbol))||
-           (aj.symbol==='H'&&HBOND_ACCEPTORS.has(ai.symbol))){
-          bonds.push({a:i,b:j,order:1,type:'hydrogen'});
+      if(!isFinite(dist) || dist<0.1) continue;
+      const rj=getImportCovalentRadius(aj.symbol);
+      const maxDist=Math.max(0.6,(ri+rj)*1.24 + 0.18);
+      const minDist=Math.max(0.35,Math.min(ri,rj)*0.45);
+      if(dist>=minDist && dist<=maxDist){
+        const key=`${i}-${j}`;
+        if(!seen.has(key)){
+          seen.add(key);
+          bonds.push({a:i,b:j,order:1,type:'covalent'});
         }
       }
     }
   }
-  return bonds;
+  const maxNeighbors={H:1,F:1,Cl:1,Br:1,I:1,O:3,N:4,C:4,P:6,S:6,default:6};
+  const degree=Array((atoms||[]).length).fill(0);
+  const sorted=bonds.sort((u,v)=>{
+    const au=atoms[u.a], bu=atoms[u.b], av=atoms[v.a], bv=atoms[v.b];
+    const du=(au.x-bu.x)**2 + (au.y-bu.y)**2 + (au.z-bu.z)**2;
+    const dv=(av.x-bv.x)**2 + (av.y-bv.y)**2 + (av.z-bv.z)**2;
+    return du-dv;
+  });
+  const pruned=[];
+  for(const b of sorted){
+    const sa=normalizeSymbol(atoms[b.a]?.symbol);
+    const sb=normalizeSymbol(atoms[b.b]?.symbol);
+    const ma=maxNeighbors[sa] ?? maxNeighbors.default;
+    const mb=maxNeighbors[sb] ?? maxNeighbors.default;
+    if(degree[b.a] >= ma || degree[b.b] >= mb) continue;
+    degree[b.a]++; degree[b.b]++;
+    pruned.push(b);
+  }
+  return pruned;
+}
+function finalizeMolecule(atoms,bonds=[],meta={}){
+  const cleanAtoms=[];
+  for(let i=0;i<(atoms||[]).length;i++){
+    const a=atoms[i];
+    if(!a||!isFinite(a.x)||!isFinite(a.y)||!isFinite(a.z)) continue;
+    cleanAtoms.push({...a,symbol:normalizeSymbol(a.symbol),idx:cleanAtoms.length});
+  }
+  const cleanBonds=(bonds||[])
+    .filter(b=>b&&Number.isInteger(b.a)&&Number.isInteger(b.b)&&b.a!==b.b&&b.a>=0&&b.b>=0&&b.a<cleanAtoms.length&&b.b<cleanAtoms.length)
+    .map(b=>({a:b.a,b:b.b,order:(b.order===1.5?1.5:(parseFloat(b.order)||1)),type:b.type||'covalent'}));
+  return {
+    atoms:cleanAtoms,
+    bonds:cleanBonds.length?cleanBonds:autoDetectBonds(cleanAtoms),
+    meta:{source:'unknown',format:'unknown',confidence:'parsed',...meta}
+  };
+}
+function parseXYZ(text, meta={}) {
+  const lines=text.trim().split(/\r?\n/), n=parseInt((lines[0]||'').trim()), atoms=[];
+  if(!Number.isFinite(n)) throw new Error('Invalid XYZ header');
+  for(let i=2;i<2+n&&i<lines.length;i++){
+    const p=lines[i].trim().split(/\s+/);
+    if(p.length>=4) atoms.push(makeAtom(p[0],p[1],p[2],p[3],atoms.length));
+  }
+  return finalizeMolecule(atoms,[],{format:'xyz',source:'XYZ',...meta});
+}
+function parseMOL(text, meta={}) {
+  const lines=text.split(/\r?\n/), c=(lines[3]||'').trim().split(/\s+/);
+  const nA=parseInt(c[0])||0, nB=parseInt(c[1])||0, atoms=[], bonds=[];
+  for(let i=4;i<4+nA;i++){
+    const p=(lines[i]||'').trim().split(/\s+/);
+    if(p.length>=4) atoms.push(makeAtom(p[3],p[0],p[1],p[2],atoms.length));
+  }
+  for(let i=4+nA;i<4+nA+nB;i++){
+    const p=(lines[i]||'').trim().split(/\s+/);
+    if(p.length>=3) bonds.push({a:(parseInt(p[0])||1)-1,b:(parseInt(p[1])||1)-1,order:parseFloat(p[2])||1});
+  }
+  return finalizeMolecule(atoms,bonds,{format:'mol',source:'MDL MOL/SDF',...meta});
+}
+function parseMOL2(text, meta={}) {
+  const lines=text.split(/\r?\n/), atoms=[], bonds=[];
+  let sec='';
+  for(const line of lines){
+    const t=line.trim();
+    if(t.startsWith('@<TRIPOS>')){ sec=t.slice(9); continue; }
+    if(sec==='ATOM'){
+      const p=t.split(/\s+/);
+      if(p.length>=6){
+        const sym=normalizeSymbol(p[5].split('.')[0]||p[1].replace(/[0-9]/g,''));
+        atoms.push(makeAtom(sym,p[2],p[3],p[4],atoms.length));
+      }
+    } else if(sec==='BOND'){
+      const p=t.split(/\s+/);
+      if(p.length>=4){
+        const btype=p[3];
+        let order=1, type='covalent';
+        if(btype==='ar'||btype==='1.5'){order=1.5;type='aromatic';}
+        else if(btype==='am'){order=1;type='amide';}
+        else if(btype==='du'||btype==='un'){type='vdw';}
+        else if(btype==='hb'){type='hydrogen';}
+        else order=parseFloat(btype)||1;
+        bonds.push({a:parseInt(p[1])-1,b:parseInt(p[2])-1,order,type});
+      }
+    }
+  }
+  return finalizeMolecule(atoms,bonds,{format:'mol2',source:'Tripos MOL2',...meta});
+}
+function parseJSON(text, meta={}) {
+  const d=JSON.parse(text);
+  if(d.atoms){
+    const atoms=d.atoms.map((a,i)=>makeAtom(a.symbol||a.element||a.atomicSymbol||symbolFromAtomicNumber(a.atomicNumber),a.x??(a.coords?.[0]??0),a.y??(a.coords?.[1]??0),a.z??(a.coords?.[2]??0),i,a));
+    const bonds=(d.bonds||[]).map(b=>({a:b[0]??b.a,b:b[1]??b.b,order:b[2]??b.order??1,type:b.type||'covalent'}));
+    return finalizeMolecule(atoms,bonds,{format:'json',source:'JSON schema',...meta});
+  }
+  if(d.nodes&&d.edges){
+    const atoms=d.nodes.map((n,i)=>makeAtom(n.label||n.element||symbolFromAtomicNumber(n.atomicNumber),n.x||0,n.y||0,n.z||0,i,n));
+    const bonds=(d.edges||[]).map(e=>({a:e.source??e.from,b:e.target??e.to,order:e.weight??e.order??1,type:e.type||'covalent'}));
+    return finalizeMolecule(atoms,bonds,{format:'json',source:'Graph JSON schema',...meta});
+  }
+  throw new Error('Unsupported JSON schema');
+}
+function parsePDB(text, meta={}) {
+  const atoms=[], bonds=[];
+  for(const line of text.split(/\r?\n/)){
+    if(line.startsWith('ATOM')||line.startsWith('HETATM')){
+      let sym=(line.slice(76,78).trim()||line.slice(12,16).trim().replace(/[^A-Za-z]/g,''));
+      atoms.push(makeAtom(sym,line.slice(30,38),line.slice(38,46),line.slice(46,54),atoms.length,{residue:line.slice(17,20).trim(),chain:line.slice(21,22).trim()}));
+    } else if(line.startsWith('CONECT')){
+      const p=line.trim().split(/\s+/).slice(1).map(v=>parseInt(v)-1).filter(v=>Number.isInteger(v));
+      const a=p[0];
+      for(let i=1;i<p.length;i++) if(a<p[i]) bonds.push({a,b:p[i],order:1,type:'covalent'});
+    }
+  }
+  return finalizeMolecule(atoms,bonds,{format:'pdb',source:'Protein Data Bank',...meta});
+}
+function parseGaussian(text, meta={}){
+  const lines=text.split(/\r?\n/);
+  let block=[];
+  for(let i=0;i<lines.length;i++){
+    if(/Standard orientation:|Input orientation:|Z-Matrix orientation:/i.test(lines[i])){
+      let j=i+5, tmp=[];
+      while(j<lines.length && !/^\s*-+/.test(lines[j])){
+        const p=lines[j].trim().split(/\s+/);
+        if(p.length>=6 && /^\d+$/.test(p[1])) tmp.push(makeAtom(symbolFromAtomicNumber(p[1]),p[3],p[4],p[5],tmp.length));
+        j++;
+      }
+      if(tmp.length) block=tmp;
+    }
+  }
+  if(!block.length){
+    const gjf=[];
+    for(const line of lines){
+      const m=line.match(/^\s*([A-Z][a-z]?)\s+(-?\d*\.?\d+(?:[Ee][+-]?\d+)?)\s+(-?\d*\.?\d+(?:[Ee][+-]?\d+)?)\s+(-?\d*\.?\d+(?:[Ee][+-]?\d+)?)/);
+      if(m) gjf.push(makeAtom(m[1],m[2],m[3],m[4],gjf.length));
+    }
+    if(gjf.length) block=gjf;
+  }
+  if(!block.length) throw new Error('No Gaussian cartesian coordinates detected');
+  return finalizeMolecule(block,[],{format:'gaussian',source:'Gaussian / GaussView',...meta});
+}
+function parseOrca(text, meta={}){
+  const lines=text.split(/\r?\n/);
+  let best=[];
+  for(let i=0;i<lines.length;i++){
+    if(/CARTESIAN COORDINATES \(ANGSTROEM\)/i.test(lines[i])){
+      const tmp=[]; let j=i+2;
+      while(j<lines.length && lines[j].trim() && !/^[-*]/.test(lines[j].trim())){
+        const p=lines[j].trim().split(/\s+/);
+        if(p.length>=4 && /^[A-Za-z]/.test(p[0])) tmp.push(makeAtom(p[0],p[1],p[2],p[3],tmp.length));
+        j++;
+      }
+      if(tmp.length) best=tmp;
+    }
+    if(/CARTESIAN COORDINATES \(A\.U\.\)/i.test(lines[i])){
+      const tmp=[]; let j=i+2;
+      while(j<lines.length && lines[j].trim() && !/^[-*]/.test(lines[j].trim())){
+        const p=lines[j].trim().split(/\s+/);
+        if(p.length>=8 && /^[A-Za-z]/.test(p[0])) tmp.push(makeAtom(p[0],(+p[5])*BOHR_TO_ANG,(+p[6])*BOHR_TO_ANG,(+p[7])*BOHR_TO_ANG,tmp.length));
+        j++;
+      }
+      if(tmp.length) best=tmp;
+    }
+  }
+  if(!best.length){
+    const xyz=[];
+    let inBlock=false;
+    for(const line of lines){
+      if(/^\s*\*\s*xyz/i.test(line)){ inBlock=true; continue; }
+      if(inBlock && /^\s*\*/.test(line)) break;
+      if(inBlock){
+        const p=line.trim().split(/\s+/);
+        if(p.length>=4) xyz.push(makeAtom(p[0],p[1],p[2],p[3],xyz.length));
+      }
+    }
+    if(xyz.length) best=xyz;
+  }
+  if(!best.length) throw new Error('No ORCA coordinates detected');
+  return finalizeMolecule(best,[],{format:'orca',source:'ORCA',...meta});
+}
+function parseVASP(text, meta={}){
+  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter((l,i)=>!(i>0 && !l && i<8));
+  if(lines.length<8) throw new Error('VASP POSCAR/CONTCAR is too short');
+  const scale=parseFloat(lines[1])||1;
+  const lattice=[2,3,4].map(i=>lines[i].split(/\s+/).slice(0,3).map(Number).map(v=>v*scale));
+  let idx=5;
+  let symbols=lines[idx].split(/\s+/).map(normalizeSymbol);
+  let countsLine=lines[idx+1].split(/\s+/).map(v=>parseInt(v));
+  if(countsLine.some(v=>!Number.isInteger(v))){
+    symbols = symbols.map((_,i)=>symbolFromAtomicNumber(i+1));
+    countsLine = lines[idx].split(/\s+/).map(v=>parseInt(v));
+    idx=4;
+  }
+  idx += 2;
+  if(/^selective/i.test(lines[idx])) idx += 1;
+  const coordMode=(lines[idx]||'direct').toLowerCase();
+  idx += 1;
+  const atoms=[];
+  const fracToCart=(f)=>({x:f[0]*lattice[0][0]+f[1]*lattice[1][0]+f[2]*lattice[2][0],y:f[0]*lattice[0][1]+f[1]*lattice[1][1]+f[2]*lattice[2][1],z:f[0]*lattice[0][2]+f[1]*lattice[1][2]+f[2]*lattice[2][2]});
+  let sidx=0;
+  for(let s=0;s<symbols.length;s++){
+    const count=countsLine[s]||0;
+    for(let c=0;c<count;c++,idx++,sidx++){
+      const p=(lines[idx]||'').split(/\s+/);
+      if(p.length<3) continue;
+      let x=+p[0],y=+p[1],z=+p[2];
+      if(coordMode.startsWith('d')){ const cart=fracToCart([x,y,z]); x=cart.x; y=cart.y; z=cart.z; }
+      atoms.push(makeAtom(symbols[s]||'C',x,y,z,atoms.length));
+    }
+  }
+  return finalizeMolecule(atoms,[],{format:'vasp',source:'VASP POSCAR/CONTCAR',lattice,coordinateMode:coordMode,...meta});
+}
+function parseQE(text, meta={}){
+  const lines=text.split(/\r?\n/);
+  const atoms=[];
+  let mode='angstrom';
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    const m=line.match(/ATOMIC_POSITIONS\s*\(?\s*([A-Za-z]+)?\s*\)?/i);
+    if(m){
+      mode=(m[1]||'angstrom').toLowerCase();
+      let j=i+1;
+      while(j<lines.length){
+        const t=lines[j].trim();
+        if(!t || /^[A-Z_]+\b/.test(t) || /^K_POINTS/i.test(t) || /^CELL_PARAMETERS/i.test(t)) break;
+        const p=t.split(/\s+/);
+        if(p.length>=4 && /^[A-Za-z]/.test(p[0])){
+          let x=+p[1],y=+p[2],z=+p[3];
+          if(mode==='bohr'||mode==='au') { x*=BOHR_TO_ANG; y*=BOHR_TO_ANG; z*=BOHR_TO_ANG; }
+          atoms.push(makeAtom(p[0],x,y,z,atoms.length));
+        }
+        j++;
+      }
+    }
+    if(/site n\.\s+atom\s+positions/i.test(line)){
+      let j=i+1, tmp=[];
+      while(j<lines.length){
+        const p=lines[j].trim().split(/\s+/);
+        if(p.length>=7 && /^\d+$/.test(p[0])) tmp.push(makeAtom(p[1],p[4],p[5],p[6],tmp.length));
+        else if(tmp.length) break;
+        j++;
+      }
+      if(tmp.length) return finalizeMolecule(tmp,[],{format:'qe',source:'Quantum ESPRESSO',...meta});
+    }
+  }
+  if(!atoms.length) throw new Error('No Quantum ESPRESSO coordinates detected');
+  return finalizeMolecule(atoms,[],{format:'qe',source:'Quantum ESPRESSO',coordinateMode:mode,...meta});
+}
+function parseCP2K(text, meta={}){
+  const lines=text.split(/\r?\n/);
+  let best=[];
+  for(let i=0;i<lines.length;i++){
+    if(/^\s*&COORD/i.test(lines[i])){
+      const tmp=[]; let j=i+1;
+      while(j<lines.length && !/^\s*&END\s+COORD/i.test(lines[j])){
+        const p=lines[j].trim().split(/\s+/);
+        if(p.length>=4 && /^[A-Za-z]/.test(p[0])) tmp.push(makeAtom(p[0],p[1],p[2],p[3],tmp.length));
+        j++;
+      }
+      if(tmp.length) best=tmp;
+    }
+    if(/ATOMIC COORDINATES IN angstrom/i.test(lines[i])){
+      const tmp=[]; let j=i+2;
+      while(j<lines.length){
+        const p=lines[j].trim().split(/\s+/);
+        if(p.length>=7 && /^\d+$/.test(p[0])) tmp.push(makeAtom(p[2],p[4],p[5],p[6],tmp.length));
+        else if(tmp.length) break;
+        j++;
+      }
+      if(tmp.length) best=tmp;
+    }
+  }
+  if(!best.length) throw new Error('No CP2K coordinates detected');
+  return finalizeMolecule(best,[],{format:'cp2k',source:'CP2K',...meta});
+}
+function parseNWChem(text, meta={}){
+  const lines=text.split(/\r?\n/);
+  let best=[];
+  for(let i=0;i<lines.length;i++){
+    if(/Output coordinates in angstroms/i.test(lines[i])){
+      const tmp=[]; let j=i+4;
+      while(j<lines.length){
+        const p=lines[j].trim().split(/\s+/);
+        if(p.length>=6 && /^\d+$/.test(p[0])) tmp.push(makeAtom(p[1],p[3],p[4],p[5],tmp.length));
+        else if(tmp.length) break;
+        j++;
+      }
+      if(tmp.length) best=tmp;
+    }
+  }
+  if(!best.length){
+    const tmp=[]; let inGeom=false;
+    for(const line of lines){
+      if(/^\s*geometry\b/i.test(line)){ inGeom=true; continue; }
+      if(inGeom && /^\s*end\s*$/i.test(line)) break;
+      if(inGeom){
+        const p=line.trim().split(/\s+/);
+        if(p.length>=4 && /^[A-Za-z]/.test(p[0])) tmp.push(makeAtom(p[0],p[1],p[2],p[3],tmp.length));
+      }
+    }
+    if(tmp.length) best=tmp;
+  }
+  if(!best.length) throw new Error('No NWChem coordinates detected');
+  return finalizeMolecule(best,[],{format:'nwchem',source:'NWChem',...meta});
+}
+function parseCube(text, meta={}){
+  const lines=text.split(/\r?\n/).filter(Boolean);
+  if(lines.length<6) throw new Error('Cube file too short');
+  const head=lines[2].trim().split(/\s+/);
+  const nAtoms=Math.abs(parseInt(head[0])||0);
+  const atoms=[];
+  for(let i=6;i<6+nAtoms && i<lines.length;i++){
+    const p=lines[i].trim().split(/\s+/);
+    if(p.length>=5) atoms.push(makeAtom(symbolFromAtomicNumber(p[0]),(+p[2])*BOHR_TO_ANG,(+p[3])*BOHR_TO_ANG,(+p[4])*BOHR_TO_ANG,atoms.length));
+  }
+  return finalizeMolecule(atoms,[],{format:'cube',source:'Gaussian cube',units:'bohr->angstrom',...meta});
+}
+function fracToCartFromCell(a,b,c,alpha,beta,gamma,fx,fy,fz){
+  const ar=alpha*Math.PI/180, br=beta*Math.PI/180, gr=gamma*Math.PI/180;
+  const ax=a, ay=0, az=0;
+  const bx=b*Math.cos(gr), by=b*Math.sin(gr), bz=0;
+  const cx=c*Math.cos(br);
+  const cy=c*(Math.cos(ar)-Math.cos(br)*Math.cos(gr))/Math.sin(gr);
+  const cz=Math.sqrt(Math.max(0,c*c-cx*cx-cy*cy));
+  return {x:fx*ax+fy*bx+fz*cx,y:fx*ay+fy*by+fz*cy,z:fx*az+fy*bz+fz*cz};
+}
+function parseCIF(text, meta={}){
+  const lines=text.split(/\r?\n/);
+  const cell={a:null,b:null,c:null,alpha:90,beta:90,gamma:90};
+  for(const line of lines){
+    const m=line.match(/^_(cell_length_a|cell_length_b|cell_length_c|cell_angle_alpha|cell_angle_beta|cell_angle_gamma)\s+([^\s#]+)/i);
+    if(m){
+      const val=parseFloat(String(m[2]).replace(/\(.+?\)/,''));
+      const key=m[1].replace('cell_','').replace('length_','').replace('angle_','');
+      cell[key]=val;
+    }
+  }
+  const loopIdx=lines.findIndex((line,i)=>/^\s*loop_/i.test(line) && lines.slice(i,i+20).some(l=>/_atom_site_/i.test(l)));
+  if(loopIdx<0) throw new Error('No atom_site loop found in CIF');
+  let i=loopIdx+1, headers=[];
+  while(i<lines.length && /^\s*_atom_site_/i.test(lines[i].trim())){ headers.push(lines[i].trim()); i++; }
+  const idxSym=headers.findIndex(h=>/_atom_site_type_symbol|_atom_site_label/i.test(h));
+  const idxX=headers.findIndex(h=>/_atom_site_cartn_x/i.test(h));
+  const idxY=headers.findIndex(h=>/_atom_site_cartn_y/i.test(h));
+  const idxZ=headers.findIndex(h=>/_atom_site_cartn_z/i.test(h));
+  const idxFx=headers.findIndex(h=>/_atom_site_fract_x/i.test(h));
+  const idxFy=headers.findIndex(h=>/_atom_site_fract_y/i.test(h));
+  const idxFz=headers.findIndex(h=>/_atom_site_fract_z/i.test(h));
+  const atoms=[];
+  while(i<lines.length){
+    const t=lines[i].trim();
+    if(!t || /^loop_/i.test(t) || /^data_/i.test(t) || /^_/.test(t)) break;
+    const p=t.match(/'[^']*'|"[^"]*"|\S+/g) || [];
+    if(p.length>=headers.length){
+      const sym=normalizeSymbol((p[idxSym]||'C').replace(/^['"]|['"]$/g,''));
+      if(idxX>=0 && idxY>=0 && idxZ>=0){
+        atoms.push(makeAtom(sym,parseFloat(p[idxX]),parseFloat(p[idxY]),parseFloat(p[idxZ]),atoms.length));
+      } else if(idxFx>=0 && idxFy>=0 && idxFz>=0 && cell.a && cell.b && cell.c){
+        const cart=fracToCartFromCell(cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma,parseFloat(p[idxFx]),parseFloat(p[idxFy]),parseFloat(p[idxFz]));
+        atoms.push(makeAtom(sym,cart.x,cart.y,cart.z,atoms.length));
+      }
+    }
+    i++;
+  }
+  if(!atoms.length) throw new Error('CIF atom loop found, but no usable Cartesian/fractional coordinates parsed');
+  return finalizeMolecule(atoms,[],{format:'cif',source:'Crystallographic CIF',cell,...meta});
+}
+function parseXSF(text, meta={}){
+  const lines=text.split(/\r?\n/);
+  const idx=lines.findIndex(l=>/^\s*PRIMCOORD/i.test(l));
+  if(idx<0) throw new Error('No PRIMCOORD block found in XSF');
+  const counts=(lines[idx+1]||'').trim().split(/\s+/);
+  const n=parseInt(counts[0])||0;
+  const atoms=[];
+  for(let i=idx+2;i<idx+2+n && i<lines.length;i++){
+    const p=lines[i].trim().split(/\s+/);
+    if(p.length>=4){
+      const sym=/^\d+$/.test(p[0]) ? symbolFromAtomicNumber(p[0]) : p[0];
+      atoms.push(makeAtom(sym,p[1],p[2],p[3],atoms.length));
+    }
+  }
+  return finalizeMolecule(atoms,[],{format:'xsf',source:'XCrySDen XSF',...meta});
 }
 function detectFormat(name,text) {
-  const ext=name.split('.').pop().toLowerCase();
-  if(ext==='xyz')return'xyz';if(ext==='mol2')return'mol2';if(ext==='mol'||ext==='sdf')return'mol';
-  if(ext==='json')return'json';if(ext==='pdb')return'pdb';
-  if(text.includes('@<TRIPOS>ATOM'))return'mol2';
-  if(/^\d+\s*$/.test((text.split('\n')[0]||'').trim()))return'xyz';
-  try{JSON.parse(text);return'json';}catch(e){}return'xyz';
+  const ext=(name.split('.').pop()||'').toLowerCase();
+  const first=(text.split(/\r?\n/)[0]||'').trim();
+  if(['xyz'].includes(ext)) return 'xyz';
+  if(['mol2'].includes(ext)) return 'mol2';
+  if(['mol','sdf'].includes(ext)) return 'mol';
+  if(['json'].includes(ext)) return 'json';
+  if(['pdb','ent'].includes(ext)) return 'pdb';
+  if(['cube','cub'].includes(ext)) return 'cube';
+  if(['cif'].includes(ext)) return 'cif';
+  if(['xsf'].includes(ext)) return 'xsf';
+  if(['vasp','poscar','contcar'].includes(ext) || /^poscar|^contcar/i.test(name)) return 'vasp';
+  if(['gjf','com'].includes(ext)) return 'gaussian';
+  if(['nw','nwout'].includes(ext)) return 'nwchem';
+  if(['coord'].includes(ext)) return 'cp2k';
+  if(['out','log','inp','in'].includes(ext)){
+    if(/Entering Gaussian System|Standard orientation:|Z-Matrix orientation:/i.test(text)) return 'gaussian';
+    if(/\*\s*O\s*R\s*C\s*A\s*\*|CARTESIAN COORDINATES \(ANGSTROEM\)/i.test(text)) return 'orca';
+    if(/ATOMIC_POSITIONS|site n\.\s+atom\s+positions/i.test(text)) return 'qe';
+    if(/MODULE QUICKSTEP|&COORD/i.test(text)) return 'cp2k';
+    if(/Northwest Computational Chemistry Package|Output coordinates in angstroms/i.test(text)) return 'nwchem';
+  }
+  if(text.includes('@<TRIPOS>ATOM')) return 'mol2';
+  if(/^(ATOM|HETATM)/m.test(text)) return 'pdb';
+  if(/^\s*\d+\s*$/.test(first)) return 'xyz';
+  if(/^\s*loop_/im.test(text) && /_atom_site_/i.test(text)) return 'cif';
+  if(/\bPRIMCOORD\b/i.test(text)) return 'xsf';
+  if(/\bATOMIC_POSITIONS\b/i.test(text) || /site n\.\s+atom\s+positions/i.test(text)) return 'qe';
+  if(/Entering Gaussian System|Standard orientation:|Z-Matrix orientation:|^\s*[A-Z][a-z]?\s+-?\d/.test(text)) return 'gaussian';
+  if(/\*\s*xyz\b|CARTESIAN COORDINATES \(ANGSTROEM\)/i.test(text)) return 'orca';
+  if(/&COORD|ATOMIC COORDINATES IN angstrom/i.test(text)) return 'cp2k';
+  if(/Output coordinates in angstroms|^\s*geometry\b/im.test(text)) return 'nwchem';
+  try{ JSON.parse(text); return 'json'; }catch(e){}
+  return 'xyz';
 }
 function parseMolecule(name,text) {
   const fmt=detectFormat(name,text);
-  try{switch(fmt){case'xyz':return parseXYZ(text);case'mol':case'sdf':return parseMOL(text);case'mol2':return parseMOL2(text);case'json':return parseJSON(text);case'pdb':return parsePDB(text);default:return parseXYZ(text);}}
-  catch(e){throw new Error(`Parse error (${fmt}): ${e.message}`);}
+  const meta={inputName:name,importedAt:new Date().toISOString(),format:fmt};
+  try{
+    switch(fmt){
+      case 'xyz': return parseXYZ(text,meta);
+      case 'mol': return parseMOL(text,meta);
+      case 'mol2': return parseMOL2(text,meta);
+      case 'json': return parseJSON(text,meta);
+      case 'pdb': return parsePDB(text,meta);
+      case 'gaussian': return parseGaussian(text,meta);
+      case 'orca': return parseOrca(text,meta);
+      case 'vasp': return parseVASP(text,meta);
+      case 'qe': return parseQE(text,meta);
+      case 'cp2k': return parseCP2K(text,meta);
+      case 'nwchem': return parseNWChem(text,meta);
+      case 'cube': return parseCube(text,meta);
+      case 'cif': return parseCIF(text,meta);
+      case 'xsf': return parseXSF(text,meta);
+      default: return parseXYZ(text,meta);
+    }
+  } catch(e){
+    throw new Error(`Parse error (${fmt}): ${e.message}`);
+  }
 }
-
 // ═══════════════════════════════════════════════════════════
 // LOAD
 // ═══════════════════════════════════════════════════════════
 function loadMolecule(name, mol) {
+  if(!mol?.atoms?.length) throw new Error('No atoms were parsed from the input');
   let cx=0,cy=0,cz=0;
   mol.atoms.forEach(a=>{cx+=a.x;cy+=a.y;cz+=a.z;});
   cx/=mol.atoms.length;cy/=mol.atoms.length;cz/=mol.atoms.length;
   mol.atoms.forEach(a=>{a.x-=cx;a.y-=cy;a.z-=cz;});
   let maxR=0;mol.atoms.forEach(a=>{const r=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z);if(r>maxR)maxR=r;});
   mol.scale=maxR>0?120/maxR:60; mol.name=name;
+  lastImportMeta={...(mol.meta||{}), source:mol.meta?.source||'Imported structure', format:mol.meta?.format||'unknown'};
   molecule=mol; panX=0;panY=0;zoom=1;
   document.getElementById('emptyState').style.display='none';
   const mb=document.getElementById('moleculeName');
   mb.textContent=name;mb.classList.add('loaded');
+  renderImportDetails(lastImportMeta);
   updateStats();updateLegend();updateCanvasInfo();render();
   if(document.getElementById('editorPanel') && !document.getElementById('editorPanel').classList.contains('hidden')){ try{ loadEditorFromMolecule(); }catch(_){} }
   saveAppState();
@@ -1491,7 +1950,7 @@ function loadMolecule(name, mol) {
 function handleFileLoad(evt) {
   const file=evt.target.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=e=>{try{const mol=parseMolecule(file.name,e.target.result);loadMolecule(file.name.replace(/\.[^.]+$/,''),mol);}catch(err){notify('Error: '+err.message,'error');}};
+  reader.onload=e=>{try{const mol=parseMolecule(file.name,e.target.result);loadMolecule(file.name.replace(/\.[^.]+$/,''),mol);}catch(err){notify('Import failed: '+err.message,'error');}};
   reader.readAsText(file);
 }
 
@@ -1993,14 +2452,14 @@ function buildPublicationSvg(cfg){
   return lines.join('');
 }
 function exportSVG(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   const cfg=getPubShotSettings();
   const svg=buildPublicationSvg(cfg);
   download(svg,`${(molecule?.name||'molecule').replace(/\s+/g,'_')}_pub.svg`,'image/svg+xml');
   notify('Saved vector SVG export','success');
 }
 function copySVGToClipboard(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   const svg=buildPublicationSvg(getPubShotSettings());
   navigator.clipboard.writeText(svg).then(()=>notify('SVG copied to clipboard','success')).catch(()=>notify('Clipboard copy failed','error'));
 }
@@ -2035,6 +2494,7 @@ function updateStats() {
   document.getElementById('statFormula').textContent=formula||'—';
   const hf=document.getElementById('headerFormula');
   hf.textContent=formula||'';hf.classList.toggle('visible',!!formula);
+  renderImportDetails(lastImportMeta);
 }
 function updateLegend() {
   if(!molecule)return;
@@ -2048,7 +2508,7 @@ function updateLegend() {
 function updateCanvasInfo() {
   if(!molecule||!showInfo)return;
   const counts={};molecule.atoms.forEach(a=>{const s=a.symbol.charAt(0).toUpperCase()+a.symbol.slice(1).toLowerCase();counts[s]=(counts[s]||0)+1;});
-  document.getElementById('canvasInfo').innerHTML=`<div style="color:var(--accent);margin-bottom:4px;font-weight:500;">${molecule.name}</div><div>Atoms: ${molecule.atoms.length}</div><div>Bonds: ${molecule.bonds.length}</div><div>Elements: ${Object.keys(counts).join(', ')}</div><div>Mode: ${viewMode}</div>`;
+  document.getElementById('canvasInfo').innerHTML=`<div style="color:var(--accent);margin-bottom:4px;font-weight:500;">${molecule.name}</div><div>Atoms: ${molecule.atoms.length}</div><div>Bonds: ${molecule.bonds.length}</div><div>Elements: ${Object.keys(counts).join(', ')}</div><div>Mode: ${viewMode}</div><div>Import: ${(lastImportMeta.source||'Unknown')} · ${(lastImportMeta.format||'—').toUpperCase()}</div>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2293,7 +2753,7 @@ function setBondStyleMode(mode){
 
 // ─── Manual bond assignment ───────────────────────────────
 function assignBond(order,type){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   if(measureAtoms.length<2)return notify('Select 2 atoms with 📏 Length first','error');
   const a=measureAtoms[0],b=measureAtoms[1];
   const existing=molecule.bonds.findIndex(bd=>(bd.a===a&&bd.b===b)||(bd.a===b&&bd.b===a));
@@ -2309,7 +2769,7 @@ function assignBond(order,type){
 }
 
 function removeBond(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   if(measureAtoms.length<2)return notify('Select 2 atoms with 📏 Length first','error');
   const a=measureAtoms[0],b=measureAtoms[1];
   const idx=molecule.bonds.findIndex(bd=>(bd.a===a&&bd.b===b)||(bd.a===b&&bd.b===a));
@@ -2352,10 +2812,36 @@ function setTheme(t){
 }
 function toggleSidebar(){
   const sb=document.getElementById('sidebar'),tog=document.getElementById('sidebarToggle');
-  sb.classList.toggle('collapsed');
-  tog.textContent=sb.classList.contains('collapsed')?'›':'‹';
+  if(sb.classList.contains('collapsed')){
+    sb.classList.remove('collapsed');
+    sb.classList.add('expanded');
+    sb.classList.remove('super-expanded');
+    tog.textContent='«';
+    tog.title='Collapse / resize sidebar';
+  } else if(!sb.classList.contains('expanded')){
+    sb.classList.add('expanded');
+    tog.textContent='«';
+    tog.title='Collapse / resize sidebar';
+  } else if(!sb.classList.contains('super-expanded')){
+    sb.classList.add('super-expanded');
+    tog.textContent='⇤';
+    tog.title='Collapse / resize sidebar';
+  } else {
+    sb.classList.remove('expanded','super-expanded');
+    sb.classList.add('collapsed');
+    tog.textContent='›';
+    tog.title='Expand sidebar';
+  }
   setTimeout(resizeCanvas,280);
   saveAppState();
+}
+function updateSidebarToggleUI(){
+  const sb=document.getElementById('sidebar'),tog=document.getElementById('sidebarToggle');
+  if(!sb||!tog) return;
+  if(sb.classList.contains('collapsed')){ tog.textContent='›'; tog.title='Expand sidebar'; }
+  else if(sb.classList.contains('super-expanded')){ tog.textContent='⇤'; tog.title='Collapse / resize sidebar'; }
+  else if(sb.classList.contains('expanded')){ tog.textContent='«'; tog.title='Collapse / resize sidebar'; }
+  else { tog.textContent='‹'; tog.title='Collapse / resize sidebar'; }
 }
 function toggleEditor(){document.getElementById('editorPanel').classList.toggle('hidden');setTimeout(resizeCanvas,280);}
 function toggleSection(head){head.closest('.section').classList.toggle('collapsed');}
@@ -2364,16 +2850,16 @@ function toggleSection(head){head.closest('.section').classList.toggle('collapse
 // EXPORT
 // ═══════════════════════════════════════════════════════════
 function exportXYZ(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   download(formatXYZFromMol(molecule),(molecule.name||'molecule')+'.xyz','text/plain');
 }
 function exportJSON(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   download(formatJSONFromMol(molecule),(molecule.name||'molecule')+'.json','application/json');
 }
 function download(content,filename,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=filename;a.click();}
 function screenshot(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   openPubShotModal();
 }
 
@@ -2674,7 +3160,7 @@ function renderMoleculeToCanvas(targetCanvas, scaleFactor, isLightBg, exportCfg=
 }
 
 function pubshotDownload(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   const cfg=getPubShotSettings();
   notify('Rendering publication image…','info');
   setTimeout(()=>{
@@ -2692,7 +3178,7 @@ function pubshotDownload(){
 }
 
 function pubshotCopyClipboard(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   const cfg=getPubShotSettings();
   notify('Copying to clipboard…','info');
   const oc=renderPubShot(cfg,1.0);
@@ -2738,6 +3224,7 @@ function formatMOLFromMol(mol){
 function formatMolTo(fmt,mol){
   if(fmt==='json') return formatJSONFromMol(mol);
   if(fmt==='mol') return formatMOLFromMol(mol);
+  if(fmt==='pdb') return formatXYZFromMol(mol);
   return formatXYZFromMol(mol);
 }
 function getEditorEl(){ return document.getElementById('rawEditor'); }
@@ -2805,7 +3292,7 @@ function parseFromEditor(){
   notify(`Rendered ${mol.atoms.length} atoms from ${getEditorFormat().toUpperCase()} editor`,'success');
 }
 function loadEditorFromMolecule(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   const fmt=getEditorFormat();
   editorSetValue(formatMolTo(fmt,molecule),{pushHistory:true,markDirty:false});
   editorState.lastParsedHash=editorHash(getEditorEl().value);
@@ -2930,6 +3417,7 @@ function restoreAppState(){
     }
     document.getElementById('sidebarToggle').textContent=document.getElementById('sidebar').classList.contains('collapsed')?'›':'‹';
     if(s.editorOpen) document.getElementById('editorPanel').classList.remove('hidden');
+    updateSidebarToggleUI();
     if(s.molecule?.atoms?.length) loadMolecule(s.molecule.name||'Recovered Molecule',{atoms:s.molecule.atoms,bonds:s.molecule.bonds||[]});
     if(s.autoRotate && !autoRotate) toggleAutoRotate();
     if(s.showLabels && !showLabels) toggleLabels();
@@ -2973,10 +3461,10 @@ function initEditorRegime(){
 const fileDrop=document.getElementById('fileDrop');
 fileDrop.addEventListener('dragover',e=>{e.preventDefault();fileDrop.classList.add('drag-over');});
 fileDrop.addEventListener('dragleave',()=>fileDrop.classList.remove('drag-over'));
-fileDrop.addEventListener('drop',e=>{e.preventDefault();fileDrop.classList.remove('drag-over');const file=e.dataTransfer.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{loadMolecule(file.name.replace(/\.[^.]+$/,''),parseMolecule(file.name,ev.target.result));}catch(err){notify('Error: '+err.message,'error');}};reader.readAsText(file);});
+fileDrop.addEventListener('drop',e=>{e.preventDefault();fileDrop.classList.remove('drag-over');const file=e.dataTransfer.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{loadMolecule(file.name.replace(/\.[^.]+$/,''),parseMolecule(file.name,ev.target.result));}catch(err){notify('Import failed: '+err.message,'error');}};reader.readAsText(file);});
 const canvasArea=document.getElementById('canvasArea');
 canvasArea.addEventListener('dragover',e=>e.preventDefault());
-canvasArea.addEventListener('drop',e=>{e.preventDefault();const file=e.dataTransfer.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{loadMolecule(file.name.replace(/\.[^.]+$/,''),parseMolecule(file.name,ev.target.result));}catch(err){notify('Error: '+err.message,'error');}};reader.readAsText(file);});
+canvasArea.addEventListener('drop',e=>{e.preventDefault();const file=e.dataTransfer.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{loadMolecule(file.name.replace(/\.[^.]+$/,''),parseMolecule(file.name,ev.target.result));}catch(err){notify('Import failed: '+err.message,'error');}};reader.readAsText(file);});
 
 // ─── NOTIFICATIONS ─────────────────────────────────────────
 let notifTimer=null;
@@ -2991,7 +3479,7 @@ function notify(msg,type='success'){
 function clearMolecule(){
   molecule=null;
   document.getElementById('emptyState').style.display='flex';
-  const mb=document.getElementById('moleculeName');mb.textContent='No molecule loaded';mb.classList.remove('loaded');
+  const mb=document.getElementById('moleculeName');mb.textContent='No structure loaded';mb.classList.remove('loaded');
   document.getElementById('headerFormula').textContent='';document.getElementById('headerFormula').classList.remove('visible');
   ['statAtoms','statBonds','statElems'].forEach(id=>document.getElementById(id).textContent='0');
   ['statMW','statFormula'].forEach(id=>document.getElementById(id).textContent='—');
@@ -3111,7 +3599,7 @@ function toggleAtomList(){
 }
 function buildAtomList(filter){
   const list=document.getElementById('alpList');
-  if(!molecule){list.innerHTML='<div style="padding:10px;color:var(--text-muted);font-size:10px;">No molecule loaded</div>';return;}
+  if(!molecule){list.innerHTML='<div style="padding:10px;color:var(--text-muted);font-size:10px;">No structure loaded</div>';return;}
   const rows=molecule.atoms.filter(a=>{
     if(!filter)return true;
     return a.symbol.toLowerCase().includes(filter.toLowerCase())||String(a.idx+1).includes(filter);
@@ -3157,7 +3645,7 @@ function clearFocus(){
 // ═══════════════════════════════════════════════════════════
 const snapshots=[];
 function takeSnapshot(){
-  if(!molecule)return notify('No molecule loaded','error');
+  if(!molecule)return notify('No structure loaded','error');
   const thumb=canvas.toDataURL('image/jpeg',0.55);
   snapshots.push({rotX,rotY,zoom,panX,panY,viewMode,colorScheme,thumb,label:molecule.name});
   renderSnapshotStrip();
@@ -3382,6 +3870,7 @@ function _renderFull(){
 }
 
 // ─── INIT ─────────────────────────────────────────────────
+renderImportDetails(lastImportMeta);
 resizeCanvas();
 drawBondLegends();
 const _restoredState = restoreAppState();
@@ -3464,7 +3953,9 @@ let dmGhostPos = null;  // ghost atom position when hovering
 
 // ── Init draw modal ─────────────────────────────────────────
 function openDrawModal() {
-  document.getElementById('drawModal').style.display='flex';
+  const modal=document.getElementById('drawModal');
+  modal.style.display='flex';
+  modal.focus();
   if (!dmCanvasEl) {
     dmCanvasEl = document.getElementById('drawCanvas');
     dmCtx = dmCanvasEl.getContext('2d');
@@ -3472,11 +3963,41 @@ function openDrawModal() {
     dmBindEvents();
   }
   dmBuildElemList('');
+  dmInitTemplatePalette();
   dmRender();
 }
 function closeDrawModal() {
   document.getElementById('drawModal').style.display='none';
   dmBondStart = null;
+}
+function toggleDrawSidebar() {
+  const left=document.querySelector('#drawModal .dm-left');
+  if(!left) return;
+  left.classList.remove('compact');
+  if(left.classList.contains('expanded')){
+    left.classList.remove('expanded');
+    left.classList.add('collapsed');
+  } else if(left.classList.contains('collapsed')){
+    left.classList.remove('collapsed');
+  } else {
+    left.classList.add('expanded');
+  }
+  const toggleBtn = document.querySelector('#drawModal button[onclick="toggleDrawSidebar()"]');
+  if(toggleBtn){
+    toggleBtn.textContent = left.classList.contains('collapsed') ? '⇔ Tools' : (left.classList.contains('expanded') ? '⇔ Tools++' : '⇔ Tools');
+  }
+  setTimeout(()=>{ if(dmCanvasEl) dmResizeCanvas(); }, 230);
+}
+
+function dmToggleSection(btn) {
+  const section = btn && btn.closest('.dm-section');
+  if(!section) return;
+  section.classList.toggle('is-collapsed');
+  const expanded = !section.classList.contains('is-collapsed');
+  btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  const glyph = btn.querySelector('.dm-section-toggle');
+  if(glyph) glyph.textContent = expanded ? '−' : '+';
+  if(expanded) requestAnimationFrame(()=>section.scrollIntoView({block:'nearest', behavior:'smooth'}));
 }
 
 function dmResizeCanvas() {
@@ -3659,10 +4180,13 @@ function dmHasBond(iA,iB){ return dmBonds.some(b=>(b.a===iA&&b.b===iB)||(b.a===i
 // ── Events ──────────────────────────────────────────────────
 function dmBindEvents(){
   const wrap=document.getElementById('dmCanvasWrap');
+  if(wrap.dataset.bound==='1') return;
+  wrap.dataset.bound='1';
 
   wrap.addEventListener('mousedown', dmMouseDown);
   wrap.addEventListener('mousemove', dmMouseMove);
   wrap.addEventListener('mouseup',   dmMouseUp);
+  wrap.addEventListener('mouseleave', dmMouseUp);
   wrap.addEventListener('wheel',     dmWheel, {passive:false});
   wrap.addEventListener('contextmenu', e=>e.preventDefault());
 
@@ -4100,55 +4624,427 @@ function dmUpdateMeasurements(){
     </div>`;
 }
 
+
 // ── Templates ───────────────────────────────────────────────
-function dmInsertTemplate(name){
-  dmSaveHistory();
-  const cx=0, cy=0, d=1.5, r=d; // ~1.54 Å C-C in drawing units
-  const templates={
-    water:()=>{
-      const O=dmAddAtom(cx,cy,'O',true);
-      const H1=dmAddAtom(cx-1.2,cy+0.9,'H',true);
-      const H2=dmAddAtom(cx+1.2,cy+0.9,'H',true);
-      const oi=dmAtoms.indexOf(O),h1i=dmAtoms.indexOf(H1),h2i=dmAtoms.indexOf(H2);
-      dmAddBond(oi,h1i,1,true); dmAddBond(oi,h2i,1,true);
+function dmTplBuilder(){
+  return {
+    atoms: [],
+    bonds: [],
+    atom(sym, x, y, unique=false, eps=0.08){
+      if(unique){
+        const hit=this.atoms.findIndex(a=>a.sym===sym && Math.hypot(a.x-x,a.y-y)<=eps);
+        if(hit>=0) return hit;
+      }
+      this.atoms.push({sym, x, y});
+      return this.atoms.length-1;
     },
-    methane:()=>{
-      const C=dmAddAtom(cx,cy,'C',true);
-      const ci=dmAtoms.indexOf(C);
-      [[-1,-1],[1,-1],[0,1.4],[-1.4,0.5]].forEach(([dx,dy],i)=>{
-        const H=dmAddAtom(cx+dx*1.0,cy+dy*1.0,'H',true);
-        dmAddBond(ci,dmAtoms.indexOf(H),1,true);
-      });
-    },
-    ammonia:()=>{
-      const N=dmAddAtom(cx,cy,'N',true);
-      const ni=dmAtoms.indexOf(N);
-      [[-1.1,0.8],[1.1,0.8],[0,-1.2]].forEach(([dx,dy])=>{
-        const H=dmAddAtom(cx+dx,cy+dy,'H',true);
-        dmAddBond(ni,dmAtoms.indexOf(H),1,true);
-      });
-    },
-    ring5:()=>{
-      const pts=[], n=5;
-      for(let i=0;i<n;i++){pts.push({x:cx+r*1.3*Math.cos(i*2*Math.PI/n-Math.PI/2),y:cy+r*1.3*Math.sin(i*2*Math.PI/n-Math.PI/2)});}
-      const atoms=pts.map(p=>dmAddAtom(p.x,p.y,'C',true));
-      for(let i=0;i<n;i++) dmAddBond(dmAtoms.indexOf(atoms[i]),dmAtoms.indexOf(atoms[(i+1)%n]),1,true);
-    },
-    ring6:()=>{
-      const pts=[], n=6;
-      for(let i=0;i<n;i++){pts.push({x:cx+r*1.4*Math.cos(i*2*Math.PI/n-Math.PI/2),y:cy+r*1.4*Math.sin(i*2*Math.PI/n-Math.PI/2)});}
-      const atoms=pts.map(p=>dmAddAtom(p.x,p.y,'C',true));
-      for(let i=0;i<n;i++) dmAddBond(dmAtoms.indexOf(atoms[i]),dmAtoms.indexOf(atoms[(i+1)%n]),1,true);
-    },
-    benzene:()=>{
-      const pts=[], n=6;
-      for(let i=0;i<n;i++){pts.push({x:cx+r*1.4*Math.cos(i*2*Math.PI/n-Math.PI/2),y:cy+r*1.4*Math.sin(i*2*Math.PI/n-Math.PI/2)});}
-      const atoms=pts.map(p=>dmAddAtom(p.x,p.y,'C',true));
-      for(let i=0;i<n;i++) dmAddBond(dmAtoms.indexOf(atoms[i]),dmAtoms.indexOf(atoms[(i+1)%n]),i%2===0?2:1,true);
+    bond(a, b, order=1){
+      if(a==null || b==null || a===b) return;
+      if(this.bonds.some(x=>(x.a===a&&x.b===b)||(x.a===b&&x.b===a))) return;
+      this.bonds.push({a,b,order});
     }
   };
-  if(templates[name]){ templates[name](); dmZoomFit(); dmRender(); dmUpdateStats(); dmUpdateMeasurements(); }
 }
+function dmTplRing(b, opts={}){
+  const {
+    n=6, radius=2.1, cx=0, cy=0, sym='C',
+    rotation=-Math.PI/2, bondPattern=null,
+    ellipticalY=1, unique=false
+  } = opts;
+  const idx=[];
+  for(let i=0;i<n;i++){
+    const t=rotation + i*2*Math.PI/n;
+    idx.push(b.atom(sym, cx + radius*Math.cos(t), cy + radius*ellipticalY*Math.sin(t), unique));
+  }
+  for(let i=0;i<n;i++){
+    const order=bondPattern ? bondPattern[i % bondPattern.length] : 1;
+    b.bond(idx[i], idx[(i+1)%n], order);
+  }
+  return idx;
+}
+function dmTplChain(b, points, syms='C', bondOrders=null){
+  const idx=points.map((p,i)=>b.atom(Array.isArray(syms)?(syms[i]||syms[syms.length-1]||'C'):syms, p.x, p.y));
+  for(let i=0;i<idx.length-1;i++) b.bond(idx[i], idx[i+1], bondOrders ? (bondOrders[i]||1) : 1);
+  return idx;
+}
+function dmTplBounds(struct){
+  const xs=struct.atoms.map(a=>a.x), ys=struct.atoms.map(a=>a.y);
+  return {
+    minX: Math.min(...xs), maxX: Math.max(...xs),
+    minY: Math.min(...ys), maxY: Math.max(...ys)
+  };
+}
+function dmTplNormalize(struct){
+  const bounds=dmTplBounds(struct);
+  const cx=(bounds.minX+bounds.maxX)/2;
+  const cy=(bounds.minY+bounds.maxY)/2;
+  return {
+    atoms: struct.atoms.map(a=>({sym:a.sym,x:a.x-cx,y:a.y-cy})),
+    bonds: struct.bonds.map(b=>({...b}))
+  };
+}
+function dmTplInsertOffset(bounds){
+  if(!dmAtoms.length) return {dx:0, dy:0};
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  dmAtoms.forEach(a=>{
+    minX=Math.min(minX,a.x); maxX=Math.max(maxX,a.x);
+    minY=Math.min(minY,a.y); maxY=Math.max(maxY,a.y);
+  });
+  const gap=Math.max(2.8, (bounds.maxX-bounds.minX)*0.18 + 2.2);
+  const existingCY=(minY+maxY)/2;
+  const localCY=(bounds.minY+bounds.maxY)/2;
+  return { dx:maxX - bounds.minX + gap, dy:existingCY - localCY };
+}
+function dmAppendTemplateStructure(struct, label){
+  if(!struct || !struct.atoms || !struct.atoms.length) return;
+  const centered=dmTplNormalize(struct);
+  const bounds=dmTplBounds(centered);
+  const {dx,dy}=dmTplInsertOffset(bounds);
+  const map=centered.atoms.map(a=>dmAtoms.push({
+    id:dmNextId++, sym:a.sym, x:a.x+dx, y:a.y+dy, selected:false
+  })-1);
+  centered.bonds.forEach(b=>dmAddBond(map[b.a], map[b.b], b.order, true));
+  dmZoomFit(); dmRender(); dmUpdateStats(); dmUpdateMeasurements();
+  notify(`${label} template inserted`, 'success');
+}
+
+function dmBuildTemplate(name){
+  const b=dmTplBuilder();
+  const aromatic=[2,1,2,1,2,1];
+
+  const makeNanotube=(symA='C', symB='C')=>{
+    const cols=5, rows=4;
+    const A=[...Array(rows)].map(()=>Array(cols).fill(null));
+    const B=[...Array(rows)].map(()=>Array(cols).fill(null));
+    const dx=2.15, dy=1.86, skew=1.08;
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const bx=(c-(cols-1)/2)*dx + (r%2?skew:0);
+        const by=(r-(rows-1)/2)*dy;
+        A[r][c]=b.atom(symA, bx-0.62, by-0.44);
+        B[r][c]=b.atom(symB, bx+0.62, by+0.44);
+      }
+    }
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        b.bond(A[r][c], B[r][c], 1);
+        if(c<cols-1) b.bond(B[r][c], A[r][c+1], 1);
+        if(r<rows-1) b.bond(B[r][c], A[r+1][c], 1);
+      }
+    }
+    return b;
+  };
+
+  switch(name){
+    case 'water': {
+      const O=b.atom('O',0,0), H1=b.atom('H',-1.25,0.88), H2=b.atom('H',1.25,0.88);
+      b.bond(O,H1,1); b.bond(O,H2,1);
+      return b;
+    }
+    case 'methane': {
+      const C=b.atom('C',0,0);
+      [[-1.05,-1.05],[1.05,-1.05],[1.05,1.05],[-1.05,1.05]].forEach(([x,y])=>{
+        const H=b.atom('H',x,y); b.bond(C,H,1);
+      });
+      return b;
+    }
+    case 'ammonia': {
+      const N=b.atom('N',0,0);
+      [[-1.18,0.82],[1.18,0.82],[0,-1.28]].forEach(([x,y])=>{
+        const H=b.atom('H',x,y); b.bond(N,H,1);
+      });
+      return b;
+    }
+    case 'ring5':
+      dmTplRing(b,{n:5,radius:2.0,sym:'C'});
+      return b;
+    case 'ring6':
+      dmTplRing(b,{n:6,radius:2.1,sym:'C'});
+      return b;
+    case 'benzene':
+      dmTplRing(b,{n:6,radius:2.1,sym:'C',bondPattern:aromatic});
+      return b;
+
+    case 'fullerene': {
+      const outer=dmTplRing(b,{n:10,radius:4.1,sym:'C',rotation:-Math.PI/2+Math.PI/10});
+      const inner=dmTplRing(b,{n:10,radius:2.55,sym:'C',rotation:-Math.PI/2});
+      const core=dmTplRing(b,{n:5,radius:1.05,sym:'C'});
+      outer.forEach((id,i)=>b.bond(id, inner[i], 1));
+      inner.forEach((id,i)=>{
+        b.bond(id, core[Math.floor(i/2)%core.length], 1);
+        if(i%2===0) b.bond(id, core[(Math.floor(i/2)+1)%core.length], 1);
+      });
+      return b;
+    }
+    case 'fullerenol': {
+      const shell=dmBuildTemplate('fullerene');
+      shell.atoms.forEach(a=>b.atoms.push({...a}));
+      shell.bonds.forEach(x=>b.bonds.push({...x}));
+      const bounds=dmTplBounds(shell);
+      const shellCenter={x:(bounds.minX+bounds.maxX)/2, y:(bounds.minY+bounds.maxY)/2};
+      const pick=[0,2,4,6,8,9];
+      pick.forEach(i=>{
+        const base=b.atoms[i];
+        const vx=base.x-shellCenter.x, vy=base.y-shellCenter.y;
+        const mag=Math.hypot(vx,vy)||1;
+        const O=b.atom('O', base.x + vx/mag*1.25, base.y + vy/mag*1.25);
+        const H=b.atom('H', base.x + vx/mag*2.1,  base.y + vy/mag*2.1);
+        b.bond(i,O,1); b.bond(O,H,1);
+      });
+      return b;
+    }
+    case 'nanotube':
+      return makeNanotube('C','C');
+    case 'bn_nanotube':
+      return makeNanotube('B','N');
+
+    case 'borospherene': {
+      const outer=dmTplRing(b,{n:12,radius:4.0,sym:'B',rotation:-Math.PI/2+Math.PI/12});
+      const inner=dmTplRing(b,{n:6,radius:2.0,sym:'B',rotation:-Math.PI/2});
+      const core=b.atom('B',0,0);
+      outer.forEach((id,i)=>b.bond(id, inner[Math.floor(i/2)%inner.length], 1));
+      inner.forEach((id,i)=>{
+        b.bond(id, core, 1);
+        b.bond(id, outer[(i*2+1)%outer.length], 1);
+      });
+      return b;
+    }
+    case 'dodecahedrane': {
+      const outer=dmTplRing(b,{n:5,radius:4.2,sym:'C'});
+      const mid=dmTplRing(b,{n:10,radius:2.75,sym:'C',rotation:-Math.PI/2+Math.PI/10});
+      const inner=dmTplRing(b,{n:5,radius:1.08,sym:'C'});
+      outer.forEach((id,i)=>b.bond(id, mid[(i*2)%mid.length], 1));
+      inner.forEach((id,i)=>b.bond(id, mid[(i*2+1)%mid.length], 1));
+      return b;
+    }
+    case 'cubane': {
+      const front=[[-2.2,-2.2],[0.4,-2.2],[0.4,0.4],[-2.2,0.4]].map(([x,y])=>b.atom('C',x,y));
+      const back=[[-0.9,-0.9],[1.7,-0.9],[1.7,1.7],[-0.9,1.7]].map(([x,y])=>b.atom('C',x,y));
+      for(let i=0;i<4;i++){ b.bond(front[i], front[(i+1)%4],1); b.bond(back[i], back[(i+1)%4],1); b.bond(front[i], back[i],1); }
+      return b;
+    }
+    case 'prismane': {
+      const front=[[0,-2.4],[-2.1,1.0],[2.1,1.0]].map(([x,y])=>b.atom('C',x,y));
+      const back=[[0,-0.7],[-2.1,2.7],[2.1,2.7]].map(([x,y])=>b.atom('C',x,y));
+      for(let i=0;i<3;i++){ b.bond(front[i], front[(i+1)%3],1); b.bond(back[i], back[(i+1)%3],1); b.bond(front[i], back[i],1); }
+      return b;
+    }
+    case 'propellane': {
+      const top=b.atom('C',0,-2.05), bottom=b.atom('C',0,2.05);
+      const left=b.atom('C',-2.1,0), right=b.atom('C',2.1,0), mid=b.atom('C',0,0);
+      b.bond(top,bottom,1);
+      [left,right,mid].forEach(x=>{ b.bond(top,x,1); b.bond(bottom,x,1); });
+      return b;
+    }
+    case 'helicene': {
+      const r=1.25, rt=-Math.PI/2;
+      const dx=Math.sqrt(3)*r, diagx=Math.sqrt(3)*r/2, dy=1.5*r;
+      const centers=[
+        {x:-4.4,y:-1.9},
+        {x:-4.4+dx,y:-1.9},
+        {x:-4.4+dx+diagx,y:-1.9+dy},
+        {x:-4.4+dx+diagx+dx,y:-1.9+dy},
+        {x:-4.4+dx+diagx+dx+diagx,y:-1.9+2*dy}
+      ];
+      centers.forEach(c=>dmTplRing(b,{n:6,radius:r,cx:c.x,cy:c.y,sym:'C',rotation:rt,bondPattern:aromatic,unique:true}));
+      return b;
+    }
+    case 'mobius': {
+      const ring=dmTplRing(b,{n:12,radius:4.0,sym:'C',rotation:-Math.PI/2+Math.PI/12,bondPattern:[2,1]});
+      b.bond(ring[1], ring[7], 1);
+      b.bond(ring[4], ring[10], 1);
+      return b;
+    }
+    case 'molecular_tweezers': {
+      const left=dmTplRing(b,{n:6,radius:1.7,cx:-3.0,cy:-0.2,sym:'C',rotation:-Math.PI/2,bondPattern:aromatic});
+      const right=dmTplRing(b,{n:6,radius:1.7,cx:3.0,cy:-0.2,sym:'C',rotation:-Math.PI/2,bondPattern:aromatic});
+      const bridge=dmTplChain(b,[{x:-1.55,y:1.35},{x:-0.8,y:2.55},{x:0,y:3.15},{x:0.8,y:2.55},{x:1.55,y:1.35}],'C');
+      b.bond(left[2], bridge[0],1); b.bond(right[4], bridge[bridge.length-1],1);
+      return b;
+    }
+    case 'catenane': {
+      dmTplRing(b,{n:10,radius:2.6,cx:-1.95,cy:0,sym:'C',rotation:-Math.PI/2+Math.PI/10,ellipticalY:0.78});
+      dmTplRing(b,{n:10,radius:2.6,cx:1.95,cy:0,sym:'C',rotation:-Math.PI/2,ellipticalY:0.78});
+      return b;
+    }
+    case 'rotaxane': {
+      const chain=dmTplChain(b,
+        [{x:-5.8,y:0},{x:-4.2,y:0},{x:-2.6,y:0},{x:-1.0,y:0},{x:0.6,y:0},{x:2.2,y:0},{x:3.8,y:0},{x:5.4,y:0}],
+        'C');
+      const leftStop=dmTplRing(b,{n:6,radius:1.55,cx:-7.7,cy:0,sym:'C',rotation:-Math.PI/2,bondPattern:aromatic});
+      const rightStop=dmTplRing(b,{n:6,radius:1.55,cx:7.7,cy:0,sym:'C',rotation:-Math.PI/2,bondPattern:aromatic});
+      b.bond(leftStop[2], chain[0], 1); b.bond(chain[chain.length-1], rightStop[4], 1);
+      dmTplRing(b,{n:10,radius:3.0,cx:0.2,cy:0,sym:'C',rotation:-Math.PI/2+Math.PI/10,ellipticalY:0.72});
+      return b;
+    }
+    case 'cryptand': {
+      const top=b.atom('N',0,-3.15), bottom=b.atom('N',0,3.15);
+      const left=[b.atom('O',-1.7,-1.95), b.atom('C',-2.7,0), b.atom('O',-1.7,1.95)];
+      const mid=[b.atom('C',0,-1.25), b.atom('O',0,0), b.atom('C',0,1.25)];
+      const right=[b.atom('O',1.7,-1.95), b.atom('C',2.7,0), b.atom('O',1.7,1.95)];
+      [left,mid,right].forEach(path=>{
+        b.bond(top,path[0],1); b.bond(path[0],path[1],1); b.bond(path[1],path[2],1); b.bond(path[2],bottom,1);
+      });
+      return b;
+    }
+    case 'molecular_motor': {
+      const leftAx=b.atom('C',-1.1,0), rightAx=b.atom('C',1.1,0);
+      b.bond(leftAx,rightAx,2);
+      const leftRing=dmTplRing(b,{n:5,radius:1.8,cx:-3.7,cy:-0.8,sym:'C',rotation:-Math.PI/2});
+      const rightRing=dmTplRing(b,{n:5,radius:1.8,cx:3.7,cy:0.8,sym:'C',rotation:-Math.PI/2});
+      b.bond(leftAx,leftRing[1],1); b.bond(leftAx,leftRing[2],1);
+      b.bond(rightAx,rightRing[4],1); b.bond(rightAx,rightRing[3],1);
+      b.bond(leftRing[4], b.atom('C',-5.8,-1.5),1);
+      b.bond(rightRing[1], b.atom('C',5.8,1.5),1);
+      return b;
+    }
+    case 'enzyme': {
+      const backbone=[];
+      const n=6;
+      for(let i=0;i<n;i++){
+        const x=i*2.45-6.2;
+        const N=b.atom('N',x, Math.sin(i*0.82)*0.55);
+        const CA=b.atom('C',x+0.82, Math.sin(i*0.82+0.35)*1.05);
+        const C=b.atom('C',x+1.64, Math.sin(i*0.82+0.78)*0.35);
+        const O=b.atom('O',x+2.18, Math.sin(i*0.82+0.95)-1.15);
+        b.bond(N,CA,1); b.bond(CA,C,1); b.bond(C,O,2);
+        if(backbone.length) b.bond(backbone[backbone.length-1].C, N, 1);
+        backbone.push({N,CA,C});
+        const side=b.atom('C',x+0.75, Math.sin(i*0.82+0.35)*1.05 + (i%2===0?1.55:-1.55));
+        b.bond(CA,side,1);
+      }
+      return b;
+    }
+    case 'dendrimer': {
+      const root=b.atom('N',0,0);
+      const level1=[[0,-2.2],[-2.05,1.45],[2.05,1.45]].map(([x,y])=>b.atom('C',x,y));
+      level1.forEach(id=>b.bond(root,id,1));
+      const branches=[
+        [{x:-0.95,y:-4.15,s:'N'},{x:0.95,y:-4.15,s:'N'}],
+        [{x:-4.0,y:2.8,s:'N'},{x:-2.55,y:4.55,s:'N'}],
+        [{x:4.0,y:2.8,s:'N'},{x:2.55,y:4.55,s:'N'}]
+      ];
+      level1.forEach((parent,i)=>{
+        branches[i].forEach(p=>{
+          const child=b.atom(p.s,p.x,p.y);
+          b.bond(parent,child,1);
+        });
+      });
+      return b;
+    }
+    case 'mxene': {
+      const tiTop=[-2.6,0,2.6].map(x=>b.atom('Ti',x,-1.5));
+      const tiBot=[-2.6,0,2.6].map(x=>b.atom('Ti',x,1.5));
+      const carb=[-1.3,1.3].map(x=>b.atom('C',x,0));
+      const oxTop=[-1.3,1.3].map(x=>b.atom('O',x,-2.8));
+      const oxBot=[-1.3,1.3].map(x=>b.atom('O',x,2.8));
+      tiTop.forEach((id,i)=>{ if(i<tiTop.length-1) b.bond(id, tiTop[i+1], 1); });
+      tiBot.forEach((id,i)=>{ if(i<tiBot.length-1) b.bond(id, tiBot[i+1], 1); });
+      carb.forEach((cid,i)=>{
+        b.bond(cid, tiTop[i],1); b.bond(cid, tiTop[i+1],1);
+        b.bond(cid, tiBot[i],1); b.bond(cid, tiBot[i+1],1);
+        b.bond(cid, oxTop[i],1); b.bond(cid, oxBot[i],1);
+      });
+      return b;
+    }
+    case 'mof': {
+      const tl=b.atom('Zn',-4.2,-4.2), tr=b.atom('Zn',4.2,-4.2), br=b.atom('Zn',4.2,4.2), bl=b.atom('Zn',-4.2,4.2);
+      const topO1=b.atom('O',-2.8,-4.2), topC1=b.atom('C',-1.3,-4.2), topC2=b.atom('C',1.3,-4.2), topO2=b.atom('O',2.8,-4.2);
+      const rightO1=b.atom('O',4.2,-2.8), rightC1=b.atom('C',4.2,-1.3), rightC2=b.atom('C',4.2,1.3), rightO2=b.atom('O',4.2,2.8);
+      const bottomO1=b.atom('O',2.8,4.2), bottomC1=b.atom('C',1.3,4.2), bottomC2=b.atom('C',-1.3,4.2), bottomO2=b.atom('O',-2.8,4.2);
+      const leftO1=b.atom('O',-4.2,2.8), leftC1=b.atom('C',-4.2,1.3), leftC2=b.atom('C',-4.2,-1.3), leftO2=b.atom('O',-4.2,-2.8);
+      [[tl,topO1],[topO1,topC1],[topC1,topC2],[topC2,topO2],[topO2,tr],
+       [tr,rightO1],[rightO1,rightC1],[rightC1,rightC2],[rightC2,rightO2],[rightO2,br],
+       [br,bottomO1],[bottomO1,bottomC1],[bottomC1,bottomC2],[bottomC2,bottomO2],[bottomO2,bl],
+       [bl,leftO1],[leftO1,leftC1],[leftC1,leftC2],[leftC2,leftO2],[leftO2,tl]].forEach(([a1,a2])=>b.bond(a1,a2,1));
+      const center=dmTplRing(b,{n:6,radius:1.55,cx:0,cy:0,sym:'C',rotation:-Math.PI/2,bondPattern:aromatic});
+      [center[0],center[1],center[3],center[4]].forEach((id,i)=>b.bond(id, [tl,tr,br,bl][i], 1));
+      return b;
+    }
+    default:
+      return null;
+  }
+}
+
+const dmTemplateRegistry = [
+  {id:'benzene', label:'Benzene', icon:'⬡', category:'Organic', desc:'Aromatic six-membered ring', featured:true},
+  {id:'ring5', label:'Ring 5', icon:'⬠', category:'Organic', desc:'Five-membered carbocycle'},
+  {id:'ring6', label:'Ring 6', icon:'⬢', category:'Organic', desc:'Six-membered carbocycle'},
+  {id:'water', label:'Water', icon:'💧', category:'Organic', desc:'Bent H₂O geometry'},
+  {id:'methane', label:'Methane', icon:'✦', category:'Organic', desc:'Tetrahedral carbon sketch'},
+  {id:'ammonia', label:'Ammonia', icon:'🜁', category:'Organic', desc:'Trigonal pyramidal NH₃'},
+  {id:'cubane', label:'Cubane', icon:'🧊', category:'Cages', desc:'Strained cubic hydrocarbon', featured:true},
+  {id:'prismane', label:'Prismane', icon:'△', category:'Cages', desc:'Triangular prism cage'},
+  {id:'propellane', label:'Propellane', icon:'✣', category:'Cages', desc:'Compact bridgehead scaffold'},
+  {id:'dodecahedrane', label:'Dodecahedrane', icon:'⬟', category:'Cages', desc:'Polyhedral carbon cage', featured:true},
+  {id:'fullerene', label:'Fullerene', icon:'⚽', category:'Carbon & Boron', desc:'Cage-like carbon starter', featured:true},
+  {id:'fullerenol', label:'Fullerenol', icon:'💠', category:'Carbon & Boron', desc:'Hydroxylated fullerene motif'},
+  {id:'nanotube', label:'Nanotube', icon:'🧵', category:'Carbon & Boron', desc:'Honeycomb tube segment', featured:true},
+  {id:'bn_nanotube', label:'BN Nanotube', icon:'🌀', category:'Carbon & Boron', desc:'Alternating B/N tube strip'},
+  {id:'borospherene', label:'Borospherene', icon:'◌', category:'Carbon & Boron', desc:'Boron cage-inspired motif'},
+  {id:'helicene', label:'Helicene', icon:'🜭', category:'Carbon & Boron', desc:'Fused aromatic helix starter'},
+  {id:'mobius', label:'Möbius Molecule', icon:'∞', category:'Carbon & Boron', desc:'Twisted conjugated macrocycle'},
+  {id:'catenane', label:'Catenane', icon:'⛓', category:'Supramolecular', desc:'Interlocked macrocycles', featured:true},
+  {id:'rotaxane', label:'Rotaxane', icon:'🪢', category:'Supramolecular', desc:'Axle through macrocycle', featured:true},
+  {id:'molecular_tweezers', label:'Molecular Tweezers', icon:'🗜', category:'Supramolecular', desc:'Host-guest clamp motif'},
+  {id:'cryptand', label:'Cryptand', icon:'⌬', category:'Supramolecular', desc:'Three-bridge cage host'},
+  {id:'molecular_motor', label:'Molecular Motor', icon:'↻', category:'Supramolecular', desc:'Overcrowded-alkene-inspired rotor'},
+  {id:'enzyme', label:'Enzyme', icon:'🧬', category:'Bio & Polymer', desc:'Peptide backbone pocket starter', featured:true},
+  {id:'dendrimer', label:'Dendrimer', icon:'🌿', category:'Bio & Polymer', desc:'Branched generation scaffold'},
+  {id:'mxene', label:'MXene', icon:'▦', category:'Materials & Frameworks', desc:'Layered Ti/C/O fragment', featured:true},
+  {id:'mof', label:'MOF', icon:'▣', category:'Materials & Frameworks', desc:'Metal-organic framework cell', featured:true}
+];
+function dmTemplateCategories(){
+  return ['All','Featured', ...Array.from(new Set(dmTemplateRegistry.map(t=>t.category)))];
+}
+function dmInitTemplatePalette(){
+  const sel=document.getElementById('dmTemplateCategory');
+  const grid=document.getElementById('dmTemplateGrid');
+  if(!sel || !grid) return;
+  if(sel.dataset.ready!=='1'){
+    sel.innerHTML = dmTemplateCategories().map(cat=>`<option value="${cat}">${cat}</option>`).join('');
+    sel.value='Featured';
+    sel.dataset.ready='1';
+  }
+  dmRenderTemplatePalette();
+}
+function dmRenderTemplatePalette(){
+  const sel=document.getElementById('dmTemplateCategory');
+  const search=document.getElementById('dmTemplateSearch');
+  const grid=document.getElementById('dmTemplateGrid');
+  const meta=document.getElementById('dmTemplateMeta');
+  if(!sel || !grid) return;
+  const cat=(sel.value||'Featured').toLowerCase();
+  const q=(search?.value||'').trim().toLowerCase();
+  const list=dmTemplateRegistry.filter(t=>{
+    const passCat = cat==='all' ? true : cat==='featured' ? !!t.featured : t.category.toLowerCase()===cat;
+    const hay=[t.label,t.category,t.desc].join(' ').toLowerCase();
+    return passCat && (!q || hay.includes(q));
+  });
+  if(meta) meta.innerHTML = `<strong>${list.length}</strong> template${list.length===1?'':'s'}`;
+  if(!list.length){
+    grid.innerHTML = `<div class="dm-template-empty">No templates match this filter.<br>Try another category or a less fussy search term.</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(t=>`
+    <button class="dm-template-card ${t.featured?'featured':''} ${(t.featured && ['Benzene','Fullerene','Nanotube','MOF','Enzyme','Dodecahedrane','Catenane','Rotaxane'].includes(t.label))?'wide':''}"
+            onclick="dmInsertTemplate('${t.id}')" title="${t.desc}">
+      <span class="dm-template-card-icon">${t.icon}</span>
+      <span class="dm-template-card-title">${t.label}</span>
+      <span class="dm-template-card-desc">${t.desc}</span>
+      <span class="dm-template-card-tag">${t.category}</span>
+    </button>
+  `).join('');
+}
+function dmInsertTemplate(name){
+  const tpl=dmTemplateRegistry.find(t=>t.id===name);
+  if(!tpl) return notify('Template not found','error');
+  const struct=dmBuildTemplate(name);
+  if(!struct || !struct.atoms?.length) return notify('Template failed to build','error');
+  dmSaveHistory();
+  dmAppendTemplateStructure(struct, tpl.label);
+}
+
 
 // ── Auto-add Hydrogens by valence ────────────────────────────
 function dmAddHydrogens(){
@@ -4249,7 +5145,7 @@ function dmSendToViewer(){
 }
 
 // Init draw modal element list on page load
-window.addEventListener('DOMContentLoaded',()=>{ try{updateDatabaseUI();}catch(_){} /* lazy init */ });
+window.addEventListener('DOMContentLoaded',()=>{ try{updateDatabaseUI();}catch(_){} updateSidebarToggleUI(); try{dmInitTemplatePalette();}catch(_){} /* lazy init */ });
 
 </script>
 
@@ -4502,36 +5398,71 @@ input.ps-text:focus { border-color:var(--accent); }
 .dm-pill.live { border-color:rgba(16,185,129,0.4); color:var(--green); }
 .dm-pill.live::before { content:'●'; margin-right:4px; font-size:7px; }
 
-.dm-body { flex:1; display:flex; overflow:hidden; min-height:0; }
+.dm-body { flex:1; display:flex; overflow:hidden; min-height:0; align-items:stretch; }
 
 /* ─── LEFT PANEL ─── */
 .dm-left {
-  width:234px; min-width:234px; flex-shrink:0;
+  width:260px; min-width:260px; max-width:min(32vw,360px); flex-shrink:0;
   border-right:1px solid var(--border);
-  display:flex; flex-direction:column; overflow:auto;
+  display:flex; flex-direction:column; overflow:hidden; min-height:0;
   background:var(--surface);
+  transition:width .22s ease, min-width .22s ease, max-width .22s ease, opacity .18s ease;
 }
-.dm-left.expanded { width:380px; min-width:380px; }
-.dm-left::-webkit-scrollbar { height:10px; width:10px; }
-.dm-left::-webkit-scrollbar-thumb { background:var(--border2); border-radius:8px; }
+.dm-left.expanded { width:340px; min-width:340px; max-width:min(40vw,420px); }
+.dm-left.compact { width:190px; min-width:190px; max-width:190px; }
+.dm-left.collapsed { width:0; min-width:0; max-width:0; opacity:0; border-right:none; }
+.dm-left-scroll {
+  flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain;
+  scrollbar-gutter:stable both-edges;
+}
+.dm-left-scroll::-webkit-scrollbar { height:10px; width:10px; }
+.dm-left-scroll::-webkit-scrollbar-thumb { background:var(--border2); border-radius:8px; }
 
 .dm-section {
   padding:12px 14px;
   border-bottom:1px solid var(--border);
-  overflow-x:auto;
+  overflow:hidden;
+  min-width:0;
+  flex:0 0 auto;
 }
+.dm-section.section-fill {
+  flex:1 1 auto; min-height:170px; display:flex; flex-direction:column;
+}
+.dm-section-head {
+  width:100%; padding:0; border:none; background:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  text-align:left; color:inherit;
+}
+.dm-section-head:hover .dm-section-title { color:var(--text); }
+.dm-section-content { min-width:0; }
+.dm-section.section-fill .dm-section-content {
+  flex:1; min-height:0; display:flex; flex-direction:column;
+}
+.dm-section.is-collapsed .dm-section-content { display:none !important; }
+.dm-section.is-collapsed.section-fill { min-height:auto; flex:0 0 auto; }
+.dm-section-toggle {
+  width:22px; height:22px; flex-shrink:0; border-radius:7px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--border);
+  background:rgba(124,58,237,0.06); color:var(--accent2);
+  font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1;
+  transition:transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+}
+.dm-section-head:hover .dm-section-toggle { border-color:rgba(124,58,237,0.42); background:rgba(124,58,237,0.12); }
+.dm-section.is-collapsed .dm-section-toggle { transform:rotate(-90deg); }
 .dm-section-title {
   font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:2.5px;
   text-transform:uppercase; color:var(--text-muted); margin-bottom:9px;
   display:flex; align-items:center; gap:7px;
 }
+.dm-section-head .dm-section-title { margin-bottom:0; }
 .dm-section-title::before {
   content:''; width:14px; height:2px; border-radius:1px;
   background:linear-gradient(90deg, var(--accent2), transparent);
 }
 
 /* ─── TOOLS GRID ─── */
-.dm-tools { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+.dm-tools { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; min-width:0; }
 .dm-tool {
   background:var(--bg); border:1px solid var(--border);
   color:var(--text-dim); padding:7px 6px; font-size:10.5px;
@@ -4560,15 +5491,15 @@ input.ps-text:focus { border-color:var(--accent); }
 
 /* ─── BOND ORDER TABS ─── */
 .dm-bond-opts {
-  display:flex; gap:3px;
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px;
   background:var(--bg); border:1px solid var(--border);
-  border-radius:8px; padding:3px;
+  border-radius:10px; padding:6px;
 }
 .dm-bond-btn {
-  flex:1; background:transparent; border:none;
+  min-width:0; background:transparent; border:none;
   color:var(--text-muted); font-family:'JetBrains Mono',monospace;
-  font-size:10px; padding:5px 2px; border-radius:6px; cursor:pointer;
-  text-align:center; transition:all 0.15s; user-select:none;
+  font-size:10px; padding:6px 4px; border-radius:6px; cursor:pointer;
+  text-align:center; transition:all 0.15s; user-select:none; white-space:normal; line-height:1.2;
 }
 .dm-bond-btn:hover { color:var(--text); background:var(--surface2); }
 .dm-bond-btn.active {
@@ -4589,8 +5520,8 @@ input.ps-text:focus { border-color:var(--accent); }
 .dm-elem-search::placeholder { color:var(--text-muted); }
 
 .dm-elem-sel {
-  display:flex; flex-wrap:wrap; gap:3px; max-height:160px;
-  overflow-y:auto; padding:2px;
+  display:flex; flex-wrap:wrap; gap:3px; min-height:120px; max-height:none; flex:1;
+  overflow-y:auto; overflow-x:hidden; padding:2px; align-content:flex-start; overscroll-behavior:contain;
 }
 .dm-elem-btn {
   background:var(--bg); border:1px solid var(--border);
@@ -4612,19 +5543,147 @@ input.ps-text:focus { border-color:var(--accent); }
 }
 .dm-elem-btn.active::after { width:0; }
 
+
 /* ─── QUICK TEMPLATES ─── */
-.dm-tpl-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
-.dm-tpl-btn {
-  background:var(--bg); border:1px solid var(--border);
-  color:var(--text-dim); font-size:10.5px; font-family:'DM Sans',sans-serif;
-  padding:6px 4px; border-radius:7px; cursor:pointer;
-  text-align:center; transition:all 0.15s; user-select:none;
-  display:flex; flex-direction:column; align-items:center; gap:2px;
+.dm-template-shell {
+  border:1px solid rgba(124,58,237,0.18);
+  background:
+    linear-gradient(180deg, rgba(124,58,237,0.08) 0%, rgba(12,17,24,0.0) 42%),
+    linear-gradient(180deg, var(--surface2) 0%, var(--bg) 100%);
+  border-radius:14px;
+  padding:10px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.025), 0 10px 24px rgba(2,6,23,0.22);
 }
-.dm-tpl-btn:hover { border-color:var(--accent2); color:var(--text); background:rgba(124,58,237,0.05); transform:translateY(-1px); }
-.dm-tpl-btn.wide { grid-column:1/-1; }
-.dm-tpl-icon { font-size:16px; }
-.dm-tpl-label { font-size:9px; font-family:'JetBrains Mono',monospace; opacity:0.7; }
+.dm-template-toolbar {
+  display:grid; grid-template-columns:1fr; gap:8px; margin-bottom:8px;
+}
+.dm-template-select,
+.dm-template-search {
+  width:100%;
+  background:rgba(8,12,18,0.72);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:10px;
+  outline:none;
+  transition:all 0.18s ease;
+}
+.dm-template-select {
+  padding:8px 10px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  cursor:pointer;
+}
+.dm-template-search {
+  padding:9px 11px;
+  font-family:'DM Sans',sans-serif;
+  font-size:11px;
+}
+.dm-template-select:focus,
+.dm-template-search:focus {
+  border-color:var(--accent2);
+  box-shadow:0 0 0 3px rgba(124,58,237,0.12);
+}
+.dm-template-search::placeholder { color:var(--text-muted); }
+.dm-template-meta {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; margin-bottom:8px;
+  font-family:'JetBrains Mono',monospace; font-size:8.5px;
+  letter-spacing:1.3px; text-transform:uppercase;
+  color:var(--text-muted);
+}
+.dm-template-meta strong { color:var(--accent2); font-weight:700; }
+.dm-template-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:7px;
+  max-height:min(42vh,420px); overflow-y:auto; overflow-x:hidden; padding-right:2px;
+  align-content:start; overscroll-behavior:contain;
+}
+.dm-template-grid::-webkit-scrollbar { width:8px; }
+.dm-template-grid::-webkit-scrollbar-thumb { background:var(--border2); border-radius:999px; }
+.dm-template-card {
+  position:relative;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(6,10,18,0.2) 100%), var(--bg);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:9px 10px 10px;
+  color:var(--text-dim);
+  cursor:pointer;
+  text-align:left;
+  transition:transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+  display:flex; flex-direction:column; gap:5px;
+  min-height:86px;
+  overflow:hidden;
+}
+.dm-template-card::before {
+  content:'';
+  position:absolute; inset:0 auto auto 0;
+  width:100%; height:2px;
+  background:linear-gradient(90deg, rgba(124,58,237,0.85), rgba(0,217,255,0.25), transparent 82%);
+  opacity:0.85;
+}
+.dm-template-card:hover {
+  transform:translateY(-2px);
+  border-color:rgba(124,58,237,0.65);
+  color:var(--text);
+  box-shadow:0 10px 24px rgba(15,23,42,0.34), 0 0 0 1px rgba(124,58,237,0.12);
+  background:linear-gradient(180deg, rgba(124,58,237,0.09) 0%, rgba(8,12,18,0.88) 100%);
+}
+.dm-template-card.featured {
+  border-color:rgba(0,217,255,0.28);
+  box-shadow:inset 0 0 0 1px rgba(0,217,255,0.05);
+}
+.dm-template-card.featured::before {
+  background:linear-gradient(90deg, rgba(0,217,255,0.9), rgba(124,58,237,0.55), transparent 82%);
+}
+.dm-template-card.wide { grid-column:1/-1; min-height:78px; }
+.dm-template-card-icon {
+  font-size:18px; line-height:1;
+  filter:drop-shadow(0 3px 10px rgba(124,58,237,0.18));
+}
+.dm-template-card-title {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; color:var(--text);
+  letter-spacing:0.25px;
+}
+.dm-template-card-desc {
+  font-size:10px; line-height:1.35;
+  color:var(--text-dim);
+  flex:1;
+}
+.dm-template-card-tag {
+  align-self:flex-start;
+  padding:3px 7px;
+  border-radius:999px;
+  background:rgba(124,58,237,0.1);
+  border:1px solid rgba(124,58,237,0.22);
+  color:var(--accent2);
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;
+  letter-spacing:0.7px;
+  text-transform:uppercase;
+}
+.dm-template-empty {
+  grid-column:1/-1;
+  padding:16px 12px;
+  border:1px dashed var(--border2);
+  border-radius:12px;
+  text-align:center;
+  color:var(--text-muted);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;
+  line-height:1.8;
+  background:rgba(8,12,18,0.45);
+}
+.dm-template-foot {
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px solid rgba(124,58,237,0.12);
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;
+  color:var(--text-muted);
+  line-height:1.7;
+}
+.dm-template-foot strong { color:var(--accent2); }
+
 
 /* ─── INFO PANEL ─── */
 .dm-info {
@@ -4632,12 +5691,13 @@ input.ps-text:focus { border-color:var(--accent); }
   font-size:9px; color:var(--text-muted); line-height:1.8; flex-shrink:0;
   border-top:1px solid var(--border);
   background:linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+  position:sticky; bottom:0; z-index:2;
 }
 .dm-info b { color:var(--accent2); }
 
 /* ─── CANVAS AREA ─── */
 .dm-canvas-wrap {
-  flex:1; position:relative; overflow:hidden;
+  flex:1; min-width:0; position:relative; overflow:hidden;
   background:var(--bg);
   cursor:crosshair;
 }
@@ -4659,11 +5719,14 @@ input.ps-text:focus { border-color:var(--accent); }
 
 /* ─── RIGHT PANEL ─── */
 .dm-right {
-  width:210px; flex-shrink:0; border-left:1px solid var(--border);
-  display:flex; flex-direction:column;
+  width:232px; min-width:232px; max-width:min(26vw,300px); flex-shrink:0; border-left:1px solid var(--border);
+  display:flex; flex-direction:column; min-height:0;
   background:var(--surface); overflow:hidden;
 }
-.dm-right-scroll { flex:1; overflow-y:auto; }
+.dm-right-shell { flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; scrollbar-gutter:stable both-edges; }
+.dm-right-shell::-webkit-scrollbar { width:10px; }
+.dm-right-shell::-webkit-scrollbar-thumb { background:var(--border2); border-radius:8px; }
+.dm-right-scroll { flex:1; min-height:120px; overflow-y:auto; overscroll-behavior:contain; }
 
 .dm-meas-item {
   padding:9px 14px; border-bottom:1px solid var(--border);
@@ -4957,7 +6020,7 @@ input.ps-text:focus { border-color:var(--accent); }
 </div>
 
 <!-- ── DRAW MOLECULE MODAL — PREMIUM ──────────────────────── -->
-<div id="drawModal" onclick="if(event.target===this)closeDrawModal()">
+<div id="drawModal" tabindex="-1" onclick="if(event.target===this)closeDrawModal()">
   <div class="dm-dialog" onclick="event.stopPropagation()">
 
     <!-- HEADER -->
@@ -4984,86 +6047,102 @@ input.ps-text:focus { border-color:var(--accent); }
 
       <!-- LEFT PANEL -->
       <div class="dm-left">
+        <div class="dm-left-scroll">
 
-        <!-- TOOL MODE -->
-        <div class="dm-section">
-          <div class="dm-section-title">Drawing Tools</div>
-          <div class="dm-tools">
-            <button class="dm-tool active" id="dm-tool-add"   onclick="dmSetTool('add')"    title="Add atom · Click canvas">
-              <span class="dm-tool-icon">⊕</span> Atom
+          <!-- TOOL MODE -->
+          <div class="dm-section">
+            <button type="button" class="dm-section-head" onclick="dmToggleSection(this)" aria-expanded="true">
+              <div class="dm-section-title">Drawing Tools</div>
+              <span class="dm-section-toggle">−</span>
             </button>
-            <button class="dm-tool"        id="dm-tool-bond"  onclick="dmSetTool('bond')"   title="Draw bond · Click 2 atoms">
-              <span class="dm-tool-icon">⟷</span> Bond
-            </button>
-            <button class="dm-tool"        id="dm-tool-move"  onclick="dmSetTool('move')"   title="Drag atoms to reposition">
-              <span class="dm-tool-icon">✥</span> Move
-            </button>
-            <button class="dm-tool"        id="dm-tool-erase" onclick="dmSetTool('erase')"  title="Delete atom or bond">
-              <span class="dm-tool-icon">✕</span> Erase
-            </button>
-            <button class="dm-tool dm-tool-wide" id="dm-tool-chain" onclick="dmSetTool('chain')" title="Grow carbon chain with ideal angles">
-              <span class="dm-tool-icon">⬡</span> Carbon Chain
-            </button>
+            <div class="dm-section-content" style="margin-top:9px;">
+              <div class="dm-tools">
+                <button class="dm-tool active" id="dm-tool-add"   onclick="dmSetTool('add')"    title="Add atom · Click canvas">
+                  <span class="dm-tool-icon">⊕</span> Atom
+                </button>
+                <button class="dm-tool"        id="dm-tool-bond"  onclick="dmSetTool('bond')"   title="Draw bond · Click 2 atoms">
+                  <span class="dm-tool-icon">⟷</span> Bond
+                </button>
+                <button class="dm-tool"        id="dm-tool-move"  onclick="dmSetTool('move')"   title="Drag atoms to reposition">
+                  <span class="dm-tool-icon">✥</span> Move
+                </button>
+                <button class="dm-tool"        id="dm-tool-erase" onclick="dmSetTool('erase')"  title="Delete atom or bond">
+                  <span class="dm-tool-icon">✕</span> Erase
+                </button>
+                <button class="dm-tool dm-tool-wide" id="dm-tool-chain" onclick="dmSetTool('chain')" title="Grow carbon chain with ideal angles">
+                  <span class="dm-tool-icon">⬡</span> Carbon Chain
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- BOND ORDER -->
-        <div class="dm-section">
-          <div class="dm-section-title">Bond Order</div>
-          <div class="dm-bond-opts">
-            <button class="dm-bond-btn active" id="dm-bond-1"  onclick="dmSetBondOrder(1)">— Single</button>
-            <button class="dm-bond-btn"        id="dm-bond-2"  onclick="dmSetBondOrder(2)">= Double</button>
-            <button class="dm-bond-btn"        id="dm-bond-3"  onclick="dmSetBondOrder(3)">≡ Triple</button>
-            <button class="dm-bond-btn"        id="dm-bond-ar" onclick="dmSetBondOrder(1.5)">∿ Arom</button>
+          <!-- BOND ORDER -->
+          <div class="dm-section">
+            <button type="button" class="dm-section-head" onclick="dmToggleSection(this)" aria-expanded="true">
+              <div class="dm-section-title">Bond Order</div>
+              <span class="dm-section-toggle">−</span>
+            </button>
+            <div class="dm-section-content" style="margin-top:9px;">
+              <div class="dm-bond-opts">
+                <button class="dm-bond-btn active" id="dm-bond-1"  onclick="dmSetBondOrder(1)">— Single</button>
+                <button class="dm-bond-btn"        id="dm-bond-2"  onclick="dmSetBondOrder(2)">= Double</button>
+                <button class="dm-bond-btn"        id="dm-bond-3"  onclick="dmSetBondOrder(3)">≡ Triple</button>
+                <button class="dm-bond-btn"        id="dm-bond-ar" onclick="dmSetBondOrder(1.5)">∿ Arom</button>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- ELEMENT SELECTOR -->
-        <div class="dm-section" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
-          <div class="dm-section-title">Element</div>
-          <input class="dm-elem-search" id="dmElemSearch" placeholder="Search element…" oninput="dmFilterElems(this.value)">
-          <div class="dm-elem-sel" id="dmElemList"></div>
-        </div>
-
-        <!-- TEMPLATES -->
-        <div class="dm-section">
-          <div class="dm-section-title">Quick Templates</div>
-          <div class="dm-tpl-grid">
-            <button class="dm-tpl-btn wide" onclick="dmInsertTemplate('benzene')" title="Benzene ring with alternating bonds">
-              <span class="dm-tpl-icon">⬡</span>
-              <span class="dm-tpl-label">Benzene</span>
+          <!-- ELEMENT SELECTOR -->
+          <div class="dm-section section-fill">
+            <button type="button" class="dm-section-head" onclick="dmToggleSection(this)" aria-expanded="true">
+              <div class="dm-section-title">Element</div>
+              <span class="dm-section-toggle">−</span>
             </button>
-            <button class="dm-tpl-btn" onclick="dmInsertTemplate('ring5')"   title="5-membered ring">
-              <span class="dm-tpl-icon">⬠</span>
-              <span class="dm-tpl-label">Ring 5</span>
-            </button>
-            <button class="dm-tpl-btn" onclick="dmInsertTemplate('ring6')"   title="6-membered ring">
-              <span class="dm-tpl-icon">⬡</span>
-              <span class="dm-tpl-label">Ring 6</span>
-            </button>
-            <button class="dm-tpl-btn" onclick="dmInsertTemplate('water')"   title="H₂O">
-              <span class="dm-tpl-icon">💧</span>
-              <span class="dm-tpl-label">Water</span>
-            </button>
-            <button class="dm-tpl-btn" onclick="dmInsertTemplate('methane')" title="CH₄">
-              <span class="dm-tpl-icon">🔵</span>
-              <span class="dm-tpl-label">Methane</span>
-            </button>
-            <button class="dm-tpl-btn" onclick="dmInsertTemplate('ammonia')" title="NH₃">
-              <span class="dm-tpl-icon">🟣</span>
-              <span class="dm-tpl-label">Ammonia</span>
-            </button>
+            <div class="dm-section-content" style="margin-top:9px;">
+              <input class="dm-elem-search" id="dmElemSearch" placeholder="Search element…" oninput="dmFilterElems(this.value)">
+              <div class="dm-elem-sel" id="dmElemList"></div>
+            </div>
           </div>
-        </div>
 
-        <div class="dm-section">
-          <div class="dm-section-title">Quick Actions</div>
-          <div class="dm-quick-actions">
-            <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmZoomFit()" title="Fit all atoms to view">⊞ Fit</button>
-            <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmAddHydrogens()" title="Auto-fill H by valence">H Auto-H</button>
-            <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmOptimize()" title="Force-directed layout">⟳ Optimize</button>
-            <button class="dm-ctx-btn primary" onclick="event.stopPropagation(); dmSendToViewer()">▶ View 3D</button>
+          <!-- TEMPLATES -->
+          <div class="dm-section dm-template-section">
+            <button type="button" class="dm-section-head" onclick="dmToggleSection(this)" aria-expanded="true">
+              <div class="dm-section-title">Quick Templates</div>
+              <span class="dm-section-toggle">−</span>
+            </button>
+            <div class="dm-section-content" style="margin-top:9px;">
+              <div class="dm-template-shell">
+                <div class="dm-template-toolbar">
+                  <select id="dmTemplateCategory" class="dm-template-select" onchange="dmRenderTemplatePalette()"></select>
+                  <input id="dmTemplateSearch" class="dm-template-search" placeholder="Search cages, hosts, nanotubes, frameworks…" oninput="dmRenderTemplatePalette()">
+                </div>
+                <div class="dm-template-meta">
+                  <span>Rapid scaffold library</span>
+                  <span id="dmTemplateMeta"><strong>0</strong> templates</span>
+                </div>
+                <div class="dm-template-grid" id="dmTemplateGrid"></div>
+                <div class="dm-template-foot">
+                  <strong>Starter motifs only.</strong> These insert editable scaffolds for rapid sketching, not fully optimized structures.
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div class="dm-section">
+            <button type="button" class="dm-section-head" onclick="dmToggleSection(this)" aria-expanded="true">
+              <div class="dm-section-title">Quick Actions</div>
+              <span class="dm-section-toggle">−</span>
+            </button>
+            <div class="dm-section-content" style="margin-top:9px;">
+              <div class="dm-quick-actions">
+                <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmZoomFit()" title="Fit all atoms to view">⊞ Fit</button>
+                <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmAddHydrogens()" title="Auto-fill H by valence">H Auto-H</button>
+                <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmOptimize()" title="Force-directed layout">⟳ Optimize</button>
+                <button class="dm-ctx-btn primary" onclick="event.stopPropagation(); dmSendToViewer()">▶ View 3D</button>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- CONTEXT INFO -->
@@ -5078,8 +6157,6 @@ input.ps-text:focus { border-color:var(--accent); }
       <!-- CANVAS AREA -->
       <div class="dm-canvas-wrap" id="dmCanvasWrap">
         <canvas id="drawCanvas"></canvas>
-          <button class="dm-ctx-btn primary" onclick="dmSendToViewer()">▶ View 3D</button>
-        </div>
 
         <!-- Coordinate readout -->
         <div class="dm-coords" id="dmCoords">x — y —</div>
@@ -5088,31 +6165,39 @@ input.ps-text:focus { border-color:var(--accent); }
 
       <!-- RIGHT PANEL -->
       <div class="dm-right">
+        <div class="dm-right-shell">
 
-        <!-- Live measurements -->
-        <div class="dm-section">
-          <div class="dm-section-title">Live Measurements</div>
-        </div>
-        <div class="dm-right-scroll" id="dmMeasList">
-          <div style="padding:14px 14px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted);line-height:1.9;text-align:center;">
-            <div style="font-size:22px;opacity:0.2;margin-bottom:6px;">📏</div>
-            Add bonds to see<br>lengths &amp; angles
+          <!-- Live measurements -->
+          <div class="dm-section section-fill">
+            <button type="button" class="dm-section-head" onclick="dmToggleSection(this)" aria-expanded="true">
+              <div class="dm-section-title">Live Measurements</div>
+              <span class="dm-section-toggle">−</span>
+            </button>
+            <div class="dm-section-content dm-right-scroll" id="dmMeasList" style="margin-top:9px;">
+              <div style="padding:14px 14px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted);line-height:1.9;text-align:center;">
+                <div style="font-size:22px;opacity:0.2;margin-bottom:6px;">📏</div>
+                Add bonds to see<br>lengths &amp; angles
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Molecule stats -->
-        <div style="flex-shrink:0;border-top:1px solid var(--border);">
-          <div class="dm-section" style="border-bottom:none;padding-bottom:6px;">
-            <div class="dm-section-title">Molecule Stats</div>
+          <!-- Molecule stats -->
+          <div class="dm-section">
+            <button type="button" class="dm-section-head" onclick="dmToggleSection(this)" aria-expanded="true">
+              <div class="dm-section-title">Molecule Stats</div>
+              <span class="dm-section-toggle">−</span>
+            </button>
+            <div class="dm-section-content" style="margin-top:9px;">
+              <div class="dm-stats-grid" id="dmStatsGrid">
+                <div class="dm-stat-box"><div class="dm-stat-lbl">Atoms</div><div class="dm-stat-val" id="dmStatAtoms">0</div></div>
+                <div class="dm-stat-box"><div class="dm-stat-lbl">Bonds</div><div class="dm-stat-val" id="dmStatBonds">0</div></div>
+              </div>
+              <div class="dm-section-title" style="padding:0 0 4px;margin-bottom:0;">Formula</div>
+              <div class="dm-formula-box" id="dmFormulaBox" style="margin:0;">—</div>
+            </div>
           </div>
-          <div class="dm-stats-grid" id="dmStatsGrid">
-            <div class="dm-stat-box"><div class="dm-stat-lbl">Atoms</div><div class="dm-stat-val" id="dmStatAtoms">0</div></div>
-            <div class="dm-stat-box"><div class="dm-stat-lbl">Bonds</div><div class="dm-stat-val" id="dmStatBonds">0</div></div>
-          </div>
-          <div class="dm-section-title" style="padding:0 14px 4px;margin-bottom:0;">Formula</div>
-          <div class="dm-formula-box" id="dmFormulaBox">—</div>
-        </div>
 
+        </div>
       </div>
     </div>
 
@@ -5126,6 +6211,569 @@ input.ps-text:focus { border-color:var(--accent); }
 
   </div>
 </div>
+
+
+<style id="premium-pro-overrides">
+:root{
+  --premium-shadow: 0 18px 50px rgba(0,0,0,.34);
+  --premium-shadow-soft: 0 10px 28px rgba(0,0,0,.22);
+  --premium-ring: 0 0 0 1px rgba(255,255,255,.03) inset;
+}
+body{
+  background:
+    radial-gradient(1200px 700px at 82% -10%, rgba(124,58,237,.14), transparent 60%),
+    radial-gradient(900px 520px at -10% 15%, rgba(0,217,255,.10), transparent 55%),
+    linear-gradient(180deg, #071019 0%, #060b12 100%);
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.015), transparent 18%, transparent 82%, rgba(255,255,255,.01));
+}
+header{
+  position:sticky;
+  top:0;
+  background:rgba(10,16,24,.82);
+  backdrop-filter:blur(20px) saturate(1.15);
+  box-shadow:0 10px 30px rgba(0,0,0,.24);
+}
+header::after{
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:-1px; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(0,217,255,.35), rgba(124,58,237,.35), transparent);
+}
+.logo{letter-spacing:.02em;}
+.logo-icon{
+  background:linear-gradient(135deg, rgba(0,217,255,.14), rgba(124,58,237,.14));
+  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset, 0 0 18px rgba(0,217,255,.12);
+}
+.mol-badge, .mol-formula-badge, .theme-switcher, .canvas-info, .hud-chip, .toolbar{
+  backdrop-filter:blur(16px) saturate(1.08);
+}
+.mol-badge{
+  background:rgba(7,12,18,.68);
+  border-color:rgba(103,130,165,.28);
+  box-shadow:var(--premium-ring);
+}
+.header-right{gap:8px;}
+.sidebar,
+.editor-panel{
+  background:linear-gradient(180deg, rgba(12,18,27,.92), rgba(9,14,21,.92));
+}
+.sidebar-scroll{padding:10px 10px 18px;}
+.section{
+  margin:0 0 12px;
+  border:1px solid rgba(94,120,155,.18);
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(20,28,40,.88), rgba(12,18,27,.92));
+  box-shadow:var(--premium-ring), var(--premium-shadow-soft);
+}
+.section:last-child{margin-bottom:0;}
+.section-head{margin-bottom:12px;}
+.section-title{font-size:10px; letter-spacing:2.1px;}
+.section-title::before{width:5px;height:5px;}
+.file-drop,
+.stat-box,
+.formula-box,
+.mode-btn,
+.demo-btn,
+.cs-btn,
+.db-card,
+.search-input,
+select.ps-sel,
+select.format-sel,
+.light-btn,
+textarea.raw-editor,
+#atomListPanel,
+#measurePanel,
+#focusBar,
+#notification,
+.bg-swatch,
+.editor-chip,
+.db-results,
+.ps-preview,
+.ps-dialog,
+.ce-dialog,
+.dm-dialog{
+  border-radius:14px;
+}
+.btn{
+  border-radius:12px;
+  padding:7px 12px;
+  background:linear-gradient(180deg, rgba(25,35,49,.94), rgba(18,26,38,.94));
+  border-color:rgba(101,127,161,.22);
+  box-shadow:var(--premium-ring);
+}
+.btn:hover,
+.demo-btn:hover,
+.mode-btn:hover,
+.cs-btn:hover,
+.db-card:hover,
+.light-btn:hover,
+.bg-swatch:hover,
+.theme-dot:hover{
+  transform:translateY(-1px);
+}
+.btn.active{
+  background:linear-gradient(135deg, var(--accent), #6ee7ff);
+  color:#02131a;
+  box-shadow:0 10px 24px rgba(0,217,255,.22);
+}
+.mode-btn.active,
+.cs-btn.active,
+.light-btn.active{
+  box-shadow:0 0 0 1px rgba(0,217,255,.18) inset, 0 10px 24px rgba(0,217,255,.08);
+}
+.stat-box{
+  background:linear-gradient(180deg, rgba(10,15,23,.92), rgba(12,18,27,.74));
+  border-color:rgba(101,127,161,.16);
+}
+.formula-box,
+.import-box,
+.db-results,
+textarea.raw-editor,
+.search-input,
+select.ps-sel,
+select.format-sel{
+  background:rgba(7,11,17,.78);
+  border-color:rgba(101,127,161,.18);
+  box-shadow:var(--premium-ring);
+}
+.search-input:focus,
+textarea.raw-editor:focus,
+select.ps-sel:focus,
+select.format-sel:focus,
+input.ps-text:focus{
+  border-color:rgba(0,217,255,.7);
+  box-shadow:0 0 0 3px rgba(0,217,255,.10);
+}
+.canvas-wrap::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(720px 420px at 50% 45%, rgba(255,255,255,.03), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.02), transparent 22%, transparent 78%, rgba(255,255,255,.02));
+}
+.toolbar{
+  border:1px solid rgba(101,127,161,.22);
+  background:rgba(7,12,18,.78);
+  box-shadow:0 16px 40px rgba(0,0,0,.40);
+}
+.hud-chip,
+.canvas-info,
+#atomListPanel,
+#focusBar,
+#measurePanel{
+  background:rgba(8,12,18,.78);
+  border-color:rgba(101,127,161,.22);
+  box-shadow:var(--premium-shadow-soft);
+}
+#notification{
+  background:rgba(10,16,24,.90);
+  box-shadow:0 18px 40px rgba(0,0,0,.28);
+}
+.theme-switcher{background:rgba(7,11,17,.62); border-color:rgba(101,127,161,.22);}
+.editor-panel{border-left:1px solid rgba(101,127,161,.18);}
+.editor-header,
+.editor-tools,
+.editor-meta{background:rgba(15,22,32,.66);}
+.empty-title{font-size:24px; color:#e8f3ff;}
+.empty-sub{max-width:460px; color:#9ab0c8;}
+.file-drop{padding:18px 16px; background:linear-gradient(180deg, rgba(10,15,23,.78), rgba(8,12,18,.92));}
+.db-search-toolbar{margin-bottom:14px;}
+.db-search-kicker{color:#84e7ff;}
+.db-chip{background:rgba(17,25,37,.78); border-color:rgba(101,127,161,.18);}
+.db-chip.active{box-shadow:0 0 0 1px rgba(0,217,255,.18) inset, 0 10px 24px rgba(0,217,255,.06);}
+.quick-load,.view-modes,.color-scheme-opts{gap:6px;}
+.demo-btn,.mode-btn,.cs-btn{padding:10px 12px;}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(0,217,255,.14);
+}
+#premiumStatusRail{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-left:6px;
+  flex-wrap:wrap;
+}
+.premium-chip{
+  padding:4px 9px;
+  border-radius:999px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#a3bbd5;
+  border:1px solid rgba(101,127,161,.18);
+  background:rgba(7,11,17,.62);
+  box-shadow:var(--premium-ring);
+}
+.premium-chip strong{color:var(--accent); font-weight:600;}
+@media (max-width: 1200px){
+  #premiumStatusRail{display:none;}
+  .sidebar-scroll{padding:8px;}
+}
+@media (max-width: 920px){
+  header{padding:0 10px; gap:8px;}
+  .btn{padding:6px 10px;}
+  .section{border-radius:14px;}
+}
+</style>
+
+
+<script id="premium-pro-patches">
+(function(){
+  const SUPPORTED_EXTENSIONS = new Set(['xyz','mol','mol2','json','sdf','pdb','ent','out','log','gjf','com','inp','in','cube','cub','cif','xsf','vasp','poscar','contcar','coord','nw','nwout']);
+  const NET_TIMEOUT_MS = 12000;
+  function esc(v){ return String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function niceError(err){
+    const msg = (err && err.message ? err.message : String(err || 'Unknown error')).trim();
+    if(/AbortError/i.test(msg)) return 'The request timed out. The database may be slow or blocking cross-origin requests.';
+    if(/Failed to fetch|NetworkError|Load failed/i.test(msg)) return navigator.onLine===false ? 'You appear to be offline. Database search needs an internet connection.' : 'Network request failed. Some public databases block local-file requests or may be temporarily unavailable.';
+    return msg || 'Unexpected error';
+  }
+  function sanitizeFilename(name, fallback){
+    const base = String(name || fallback || 'molecule')
+      .replace(/[\\/:*?"<>|]+/g,' ')
+      .replace(/\s+/g,' ')
+      .trim()
+      .slice(0,120);
+    return base || (fallback || 'molecule');
+  }
+  function stripExtension(name){ return String(name||'').replace(/\.[^.]+$/,''); }
+  function currentQuery(){
+    const el = document.getElementById('dbSearchInput') || document.getElementById('pubchemInput');
+    return (el && typeof el.value === 'string' ? el.value : '').trim();
+  }
+  function withProgress(start){
+    const prog=document.getElementById('searchProgress');
+    const fill=document.getElementById('searchFill');
+    if(prog) prog.style.display='block';
+    if(fill) fill.style.width=(start || 14) + '%';
+    return {
+      set(v){ if(fill) fill.style.width=v+'%'; },
+      done(){ if(fill) fill.style.width='100%'; setTimeout(()=>{ if(prog) prog.style.display='none'; if(fill) fill.style.width='0%'; }, 500); },
+      fail(){ if(prog) prog.style.display='none'; if(fill) fill.style.width='0%'; }
+    };
+  }
+  async function fetchWithTimeout(url, options, timeout){
+    const controller = new AbortController();
+    const t = setTimeout(()=>controller.abort(new DOMException('Timeout','AbortError')), timeout || NET_TIMEOUT_MS);
+    try {
+      return await fetch(url, {...(options||{}), signal: controller.signal});
+    } finally {
+      clearTimeout(t);
+    }
+  }
+  async function fetchJson(url, options, timeout){
+    const res = await fetchWithTimeout(url, options, timeout);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+  async function readTextFile(file){
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onerror = ()=> reject(new Error('File could not be read'));
+      reader.onload = e => resolve(String(e.target?.result ?? ''));
+      reader.readAsText(file);
+    });
+  }
+  async function importStructureFile(file){
+    if(!file) return;
+    const ext=(file.name.split('.').pop()||'').toLowerCase();
+    if(ext && !SUPPORTED_EXTENSIONS.has(ext)){
+      notify(`Unsupported file type: .${ext}. Use XYZ, MOL, MOL2, JSON, SDF, PDB, CIF, CUBE, XSF, or supported QM outputs.`,'error');
+      return;
+    }
+    if(file.size > 20 * 1024 * 1024){
+      notify('That file is too large for a safe in-browser parse. Keep it under 20 MB or trim the structure/output first.','error');
+      return;
+    }
+    try{
+      notify(`Importing ${file.name}…`,'info');
+      const text = await readTextFile(file);
+      if(!text.trim()) throw new Error('The file is empty');
+      const mol = parseMolecule(file.name, text);
+      const title = sanitizeFilename(stripExtension(file.name), 'Imported Molecule');
+      loadMolecule(title, mol);
+    }catch(err){
+      notify('Import failed: ' + niceError(err), 'error');
+    }
+  }
+  function dbName(q){ return q ? q.charAt(0).toUpperCase()+q.slice(1) : 'Imported Molecule'; }
+  function mapAtomicNumberToSymbol(z){
+    const EN={1:'H',2:'He',3:'Li',4:'Be',5:'B',6:'C',7:'N',8:'O',9:'F',10:'Ne',11:'Na',12:'Mg',13:'Al',14:'Si',15:'P',16:'S',17:'Cl',18:'Ar',19:'K',20:'Ca',21:'Sc',22:'Ti',23:'V',24:'Cr',25:'Mn',26:'Fe',27:'Co',28:'Ni',29:'Cu',30:'Zn',31:'Ga',32:'Ge',33:'As',34:'Se',35:'Br',36:'Kr',47:'Ag',53:'I',78:'Pt',79:'Au'};
+    return EN[z] || 'C';
+  }
+  function parsePubChemCompound(compound, dimensionality){
+    const conformer = compound?.coords?.[0]?.conformers?.[0];
+    const atomsList = compound?.atoms;
+    const bonds3d = compound?.bonds;
+    if(!conformer || !atomsList?.element?.length) return null;
+    const xs = conformer.x || [];
+    const ys = conformer.y || [];
+    const zs = conformer.z || xs.map(()=>0);
+    const atoms = atomsList.element.map((en,i)=>({
+      symbol: mapAtomicNumberToSymbol(en),
+      x: Number(xs[i] ?? 0),
+      y: Number(ys[i] ?? 0),
+      z: Number(zs[i] ?? 0),
+      idx: i
+    }));
+    let bonds=[];
+    if(bonds3d?.aid1?.length && bonds3d?.aid2?.length){
+      const ord=bonds3d.order||[];
+      for(let i=0;i<bonds3d.aid1.length;i++) bonds.push({a:bonds3d.aid1[i]-1,b:bonds3d.aid2[i]-1,order:ord[i]||1,type:'covalent'});
+    }
+    if(!bonds.length) bonds = autoDetectBonds(atoms);
+    return {atoms,bonds, meta:{source:'PubChem', format: dimensionality, confidence: dimensionality==='2d' ? '2D coordinates used as planar fallback' : '3D conformer'}};
+  }
+  async function robustSearchPubChem(){
+    const q=currentQuery();
+    if(!q) return notify('Enter a compound name, synonym, formula, or CID','error');
+    const prog=withProgress(14);
+    try{
+      const cidData = await fetchJson(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(q)}/cids/JSON`);
+      const cid = cidData?.IdentifierList?.CID?.[0];
+      if(!cid) throw new Error('Compound not found in PubChem');
+      prog.set(42);
+      for(const recordType of ['3d','2d']){
+        try{
+          const data = await fetchJson(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/record/JSON?record_type=${recordType}`);
+          const compound = data?.PC_Compounds?.[0];
+          const mol = parsePubChemCompound(compound, recordType);
+          if(mol?.atoms?.length){
+            prog.done();
+            loadMolecule(dbName(q), mol);
+            if(recordType==='2d') notify('Loaded planar coordinates from PubChem because a 3D conformer was unavailable','info');
+            return;
+          }
+        }catch(_){ }
+      }
+      throw new Error('No usable coordinates were available from PubChem');
+    }catch(err){ prog.fail(); notify(niceError(err),'error'); }
+  }
+  async function robustSearchPDB(){
+    const q=currentQuery();
+    if(!q) return notify('Enter a PDB ID or structure keyword','error');
+    const prog=withProgress(12);
+    try{
+      let pdbId='';
+      if(/^[A-Za-z0-9]{4}$/.test(q.trim())){
+        pdbId=q.trim().toUpperCase();
+        prog.set(38);
+      }else{
+        const bodyA={query:{type:'terminal',service:'text',parameters:{attribute:'rcsb_entry_container_identifiers.entry_id',operator:'exact_match',value:q.toUpperCase()}},return_type:'entry',request_options:{pager:{start:0,rows:1}}};
+        const bodyB={query:{type:'terminal',service:'text',parameters:{attribute:'struct.title',operator:'contains_phrase',value:q}},return_type:'entry',request_options:{pager:{start:0,rows:1}}};
+        let data;
+        try{ data = await fetchJson('https://search.rcsb.org/rcsbsearch/v2/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bodyA)}); }catch(_){ data=null; }
+        pdbId = data?.result_set?.[0]?.identifier || '';
+        if(!pdbId){
+          data = await fetchJson('https://search.rcsb.org/rcsbsearch/v2/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bodyB)});
+          pdbId = data?.result_set?.[0]?.identifier || '';
+        }
+        prog.set(54);
+      }
+      if(!pdbId) throw new Error('No Protein Data Bank structure matched that query');
+      const pdbFile = await fetchWithTimeout(`https://files.rcsb.org/download/${encodeURIComponent(pdbId)}.pdb`);
+      if(!pdbFile.ok) throw new Error('PDB file download failed');
+      prog.set(86);
+      const pdbText = await pdbFile.text();
+      const parsed = parsePDB(pdbText, {source:'Protein Data Bank', format:'pdb', inputName:`${pdbId}.pdb`, confidence:'downloaded from RCSB'});
+      if(!parsed?.atoms?.length) throw new Error('Could not parse the PDB structure');
+      prog.done();
+      loadMolecule(pdbId, parsed);
+    }catch(err){ prog.fail(); notify(niceError(err),'error'); }
+  }
+  async function robustSearchResearchDatabases(){
+    const q=currentQuery();
+    if(!q) return notify('Enter a compound, target, ligand, structure, or formula keyword','error');
+    if(typeof setDbResults === 'function') setDbResults('Inspecting Chemical &amp; Molecular, Structural / 3D, and Quantum / Materials sources…');
+    const sections=[];
+    const add=(title,badge,body,links)=>sections.push(`<div class="db-result-item"><div class="db-result-top"><div><div class="db-result-title">${title}</div><div>${body}</div></div><span class="db-badge">${badge}</span></div><div class="db-result-links">${links}</div></div>`);
+
+    const tasks = [
+      (async()=>{
+        try{
+          const cidData = await fetchJson(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(q)}/cids/JSON`);
+          const cid = cidData?.IdentifierList?.CID?.[0];
+          if(!cid) return;
+          let info = `CID ${cid}`;
+          try{
+            const props = await fetchJson(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/property/MolecularFormula,MolecularWeight,IUPACName/JSON`);
+            const p = props?.PropertyTable?.Properties?.[0] || {};
+            info = [p.IUPACName, p.MolecularFormula, p.MolecularWeight ? `MW ${Number(p.MolecularWeight).toFixed(2)}` : `CID ${cid}`].filter(Boolean).map(esc).join(' · ');
+          }catch(_){ }
+          add(`PubChem match for ${esc(q)}`,'Chemical &amp; molecular',info,
+            `<a class="db-link" href="https://pubchem.ncbi.nlm.nih.gov/compound/${cid}" target="_blank" rel="noopener noreferrer">Open record</a><a class="db-link" href="javascript:selectDatabase('pubchem');searchPubChem()">Load coordinates</a><a class="db-link" href="${getDatabaseSearchUrl('pubchem',q)}" target="_blank" rel="noopener noreferrer">More results</a>`);
+        }catch(_){ }
+      })(),
+      (async()=>{
+        try{
+          const data = await fetchJson(`https://www.ebi.ac.uk/chembl/api/data/molecule/search.json?q=${encodeURIComponent(q)}`);
+          const hit = data?.molecules?.[0];
+          if(!hit) return;
+          const chemblId = hit.molecule_chembl_id || 'ChEMBL';
+          const pref = esc(hit.pref_name || hit.molecule_synonyms?.[0]?.molecule_synonym || q);
+          const info = [hit.molecule_properties?.full_molformula, chemblId].filter(Boolean).map(esc).join(' · ');
+          add(pref,'Chemical &amp; molecular', info || esc(chemblId),
+            `<a class="db-link" href="https://www.ebi.ac.uk/chembl/explore/compound/${encodeURIComponent(chemblId)}" target="_blank" rel="noopener noreferrer">Open record</a><a class="db-link" href="${getDatabaseSearchUrl('chembl',q)}" target="_blank" rel="noopener noreferrer">More results</a>`);
+        }catch(_){ }
+      })(),
+      (async()=>{
+        try{
+          const body={query:{type:'terminal',service:'text',parameters:{attribute:'struct.title',operator:'contains_phrase',value:q}},return_type:'entry',request_options:{pager:{start:0,rows:1}}};
+          const data = await fetchJson('https://search.rcsb.org/rcsbsearch/v2/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+          const hit = data?.result_set?.[0];
+          if(!hit?.identifier) return;
+          add(`RCSB structure ${esc(hit.identifier)}`,'Structural / 3D', esc(q),
+            `<a class="db-link" href="https://www.rcsb.org/structure/${encodeURIComponent(hit.identifier)}" target="_blank" rel="noopener noreferrer">Open record</a><a class="db-link" href="javascript:selectDatabase('rcsb');searchPDB()">Load PDB</a><a class="db-link" href="${getDatabaseSearchUrl('rcsb',q)}" target="_blank" rel="noopener noreferrer">More results</a>`);
+        }catch(_){ }
+      })()
+    ];
+    await Promise.allSettled(tasks);
+    add('Materials Project','Quantum / materials', esc(q), `<a class="db-link" href="${getDatabaseSearchUrl('materialsproject',q)}" target="_blank" rel="noopener noreferrer">Open search</a>`);
+    add('NOMAD','Quantum / materials', esc(q), `<a class="db-link" href="${getDatabaseSearchUrl('nomad',q)}" target="_blank" rel="noopener noreferrer">Open search</a>`);
+    add('ZINC / ChemSpider / CSD','Additional resources', esc(q), `<a class="db-link" href="${getDatabaseSearchUrl('zinc',q)}" target="_blank" rel="noopener noreferrer">ZINC</a><a class="db-link" href="${getDatabaseSearchUrl('chemspider',q)}" target="_blank" rel="noopener noreferrer">ChemSpider</a><a class="db-link" href="${getDatabaseSearchUrl('csd',q)}" target="_blank" rel="noopener noreferrer">CSD</a>`);
+    const html = sections.length ? sections.join('') : 'No quick matches were returned. Try a more specific identifier, formula, ligand code, or exact structure name.';
+    if(typeof setDbResults === 'function') setDbResults(html);
+  }
+  function modalOpen(){
+    return ['drawModal','colorEditorModal','pubshotModal'].some(id=>{
+      const el=document.getElementById(id);
+      return !!(el && getComputedStyle(el).display !== 'none');
+    });
+  }
+  function isEditableTarget(t){
+    if(!t) return false;
+    if(t.isContentEditable) return true;
+    return !!(t.closest && t.closest('input, textarea, select, [contenteditable="true"], [contenteditable=""]'));
+  }
+  function patchDynamicText(){
+    const emptySub=document.querySelector('#emptyState .empty-sub');
+    if(emptySub) emptySub.textContent='Drop a structure file, sketch a molecule, paste raw output, or query a live scientific database.';
+    const wrap=document.querySelector('.mol-title-wrap');
+    if(wrap && !document.getElementById('premiumStatusRail')){
+      const rail=document.createElement('div');
+      rail.id='premiumStatusRail';
+      rail.innerHTML='<span class="premium-chip"><strong>Import</strong> multi-format</span><span class="premium-chip"><strong>Search</strong> live databases</span><span class="premium-chip"><strong>Export</strong> publication-ready</span>';
+      wrap.appendChild(rail);
+    }
+  }
+  const originalRenderImportDetails = window.renderImportDetails;
+  window.renderImportDetails = function(meta){
+    const el=document.getElementById('importDetails');
+    if(!el) return;
+    if(!meta){ el.textContent='Awaiting structure import'; return; }
+    const fmt=esc((meta.format||'unknown').toUpperCase());
+    const src=esc(meta.source||'Unknown source');
+    const name=esc(meta.inputName||'Untitled');
+    const conf=esc(meta.confidence||'parsed');
+    const extra=[];
+    if(meta.coordinateMode) extra.push('coords: '+esc(meta.coordinateMode));
+    if(meta.units) extra.push('units: '+esc(meta.units));
+    el.innerHTML=`<strong>${src}</strong> · ${fmt}\nFile: ${name}\nStatus: ${conf}${extra.length ? ' · ' + extra.join(' · ') : ''}`;
+  };
+  window.updateCanvasInfo = function(){
+    const box=document.getElementById('canvasInfo');
+    if(!box) return;
+    if(!window.molecule || !molecule?.atoms?.length){ box.classList.remove('visible'); return; }
+    const counts={};
+    molecule.atoms.forEach(a=>counts[a.symbol]=(counts[a.symbol]||0)+1);
+    box.innerHTML = `<div style="color:var(--accent);margin-bottom:4px;font-weight:600;">${esc(molecule.name || 'Molecule')}</div>`+
+      `<div>Atoms: ${molecule.atoms.length}</div>`+
+      `<div>Bonds: ${molecule.bonds.length}</div>`+
+      `<div>Elements: ${esc(Object.keys(counts).join(', '))}</div>`+
+      `<div>Mode: ${esc(window.viewMode || '')}</div>`+
+      `<div>Import: ${esc((window.lastImportMeta?.source)||'Unknown')} · ${esc(String((window.lastImportMeta?.format)||'—').toUpperCase())}</div>`;
+    box.classList.toggle('visible', !!window.showInfo);
+  };
+  window.download = function(content, filename, mime){
+    const blob = new Blob([content], {type: mime || 'application/octet-stream'});
+    const url = URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=sanitizeFilename(filename, 'download');
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1200);
+  };
+  window.handleFileLoad = function(evt){
+    const file = evt?.target?.files?.[0];
+    if(!file) return;
+    importStructureFile(file).finally(()=>{ if(evt?.target) evt.target.value=''; });
+  };
+  window.getDatabaseQuery = currentQuery;
+  window.searchPubChem = robustSearchPubChem;
+  window.searchPDB = robustSearchPDB;
+  window.searchResearchDatabases = robustSearchResearchDatabases;
+  const originalOpenExternal = window.openExternal;
+  window.openExternal = function(url){
+    const win = window.open(url,'_blank','noopener,noreferrer');
+    if(!win) notify('The popup was blocked by the browser. Allow popups for external database links.','info');
+    return win;
+  };
+
+  document.addEventListener('keydown', function(e){
+    const hotkeys = [' ','Spacebar','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','a','A','s','S','p','P','l','L','i','I','r','R','Escape'];
+    if(modalOpen() || isEditableTarget(e.target)){
+      if(hotkeys.includes(e.key)){
+        e.stopImmediatePropagation();
+      }
+    }
+  }, true);
+
+  function attachDropInterceptors(){
+    [['fileDrop', true], ['canvasArea', false]].forEach(([id, decorate])=>{
+      const el=document.getElementById(id);
+      if(!el || el.dataset.proDropBound==='1') return;
+      el.dataset.proDropBound='1';
+      el.addEventListener('dragover', e=>{
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if(decorate) el.classList.add('drag-over');
+      }, true);
+      el.addEventListener('dragleave', e=>{
+        if(decorate) el.classList.remove('drag-over');
+      }, true);
+      el.addEventListener('drop', e=>{
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if(decorate) el.classList.remove('drag-over');
+        const file=e.dataTransfer?.files?.[0];
+        if(file) importStructureFile(file);
+      }, true);
+    });
+  }
+
+  window.addEventListener('error', function(e){
+    const msg = niceError(e.error || e.message);
+    if(msg && !/Script error\.?/i.test(msg)) notify(msg, 'error');
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    const msg = niceError(e.reason);
+    if(msg) notify(msg, 'error');
+  });
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', ()=>{ patchDynamicText(); attachDropInterceptors(); });
+  } else {
+    patchDynamicText();
+    attachDropInterceptors();
+  }
+})();
+</script>
 
 </body>
 </html>
