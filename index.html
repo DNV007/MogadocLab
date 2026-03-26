@@ -157,10 +157,13 @@ header {
   display:flex; flex-direction:column; flex-shrink:0;
   overflow:hidden; transition:width 0.25s ease;
 }
+.sidebar.expanded { width:min(760px, 78vw); }
+.sidebar.super-expanded { width:min(980px, 92vw); }
 .sidebar.collapsed { width:0; overflow:hidden; }
-.sidebar-scroll { flex:1; overflow-y:auto; overflow-x:hidden; }
+.sidebar-scroll { flex:1; overflow-y:auto; overflow-x:auto; }
+.sidebar.expanded .sidebar-scroll { overflow-x:auto; }
 
-.section { padding:14px; border-bottom:1px solid var(--border); }
+.section { padding:14px; border-bottom:1px solid var(--border); min-width:0; }
 .section-head {
   display:flex; align-items:center; justify-content:space-between;
   margin-bottom:10px; cursor:pointer; user-select:none;
@@ -409,6 +412,28 @@ textarea.raw-editor {
 }
 .canvas-info.visible { display:block; }
 
+
+/* ─── PI GRADE EDITOR ENHANCEMENTS ───────────────────── */
+.editor-tools{
+  padding:8px 14px; border-bottom:1px solid var(--border);
+  display:flex; flex-wrap:wrap; gap:5px; background:var(--surface2); flex-shrink:0;
+}
+.editor-tools .btn{ padding:5px 8px; }
+.editor-tools .btn.active-soft{
+  border-color:var(--accent2); color:var(--accent2); background:rgba(124,58,237,0.08);
+}
+.editor-meta{
+  padding:7px 14px; border-top:1px solid var(--border);
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--surface);
+  font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-dim); flex-shrink:0;
+}
+.editor-chip{
+  padding:3px 7px; border:1px solid var(--border); border-radius:999px; background:var(--bg);
+}
+.editor-chip.dirty{ border-color:var(--yellow); color:var(--yellow); }
+.editor-chip.good{ border-color:var(--green); color:var(--green); }
+.editor-chip.bad{ border-color:var(--red); color:var(--red); }
+
 /* ─── MEASUREMENT PANEL ──────────────────────────────── */
 #measurePanel {
   position:absolute; bottom:64px; left:50%; transform:translateX(-50%);
@@ -494,6 +519,51 @@ textarea.raw-editor {
   box-shadow:0 0 16px rgba(245,158,11,0.2);
 }
 #focusBar.visible { display:flex; }
+
+.db-search-bar{display:flex;gap:8px;margin-bottom:10px;}
+.db-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.db-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.db-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 11px;text-align:left;color:var(--text);cursor:pointer;display:flex;flex-direction:column;gap:3px;transition:all .15s;}
+.db-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.16);}
+.db-card-title{font-size:11px;font-weight:700;}
+.db-card-meta{font-size:9.5px;color:var(--text-dim);line-height:1.45;}
+.db-results{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:10px 11px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text-dim);line-height:1.6;min-height:46px;}
+.db-result-item{padding:8px 0;border-top:1px dashed var(--border);}
+.db-result-item:first-child{border-top:none;padding-top:0;}
+.db-result-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;}
+.db-result-title{color:var(--text);font-weight:700;}
+.db-badge{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border2);border-radius:999px;padding:1px 7px;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
+.db-result-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;}
+.db-link{font-size:9px;color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dotted transparent;}
+.db-link:hover{border-bottom-color:currentColor;}
+@media (max-width: 1100px){.db-grid{grid-template-columns:1fr;}}
+
+
+.search-section .section-body{background:linear-gradient(180deg, rgba(99,102,241,0.06), rgba(99,102,241,0.02));}
+.db-search-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.db-search-heading{display:flex;flex-direction:column;gap:4px;min-width:0;}
+.db-search-kicker{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-family:'JetBrains Mono',monospace;}
+.db-search-subtext{font-size:9.5px;line-height:1.45;color:var(--text-dim);}
+.db-search-expand{min-width:98px; white-space:nowrap;}
+.db-search-bar.enhanced{display:grid;grid-template-columns:180px minmax(320px,1fr) auto auto;gap:8px;align-items:stretch;min-width:760px;}
+.db-search-main{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.db-search-main .search-input{width:100%;min-width:0;font-size:12px;padding:10px 12px;}
+.db-search-examples{font-size:9px;line-height:1.45;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.db-chip-row{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px;}
+.db-chip{border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);padding:6px 9px;border-radius:999px;font-size:9px;cursor:pointer;transition:all .15s;}
+.db-chip:hover{border-color:var(--accent);color:var(--text);}
+.db-chip.active{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,0.10);}
+.search-section.search-expanded .db-grid{grid-template-columns:1fr;}
+.search-section.search-expanded .db-results{max-height:420px;min-height:180px;}
+.search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:220px minmax(520px,1fr) auto auto;min-width:1080px;}
+.sidebar.super-expanded .search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:240px minmax(700px,1fr) auto auto;min-width:1320px;}
+.search-section.search-expanded .db-search-main .search-input{font-size:13px;padding:12px 13px;}
+.search-section .section-body{overflow-x:auto;}
+.search-section .db-results{max-height:250px;overflow:auto;min-width:0;}
+@media (max-width: 1220px){.db-search-bar.enhanced{grid-template-columns:160px minmax(0,1fr) auto auto;}}
+@media (max-width: 1100px){.db-search-bar.enhanced,.search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:1fr;}.db-grid{grid-template-columns:1fr;}}
+@media (max-width: 700px){.db-search-toolbar{flex-direction:column;align-items:flex-start;}.db-actions{flex-direction:column;}.db-actions .btn{width:100%;}}
+
 </style>
 </head>
 <body>
@@ -544,20 +614,90 @@ textarea.raw-editor {
         </div>
       </div>
 
-      <div class="section">
+      <div class="section search-section" id="searchSection">
         <div class="section-head" onclick="toggleSection(this)">
-          <div class="section-title">PubChem Search</div>
+          <div class="section-title">Scientific Database Search</div>
           <div class="section-toggle">▼</div>
         </div>
         <div class="section-body">
-          <div class="pubchem-bar">
-            <input class="search-input" id="pubchemInput" type="text" placeholder="aspirin, glucose, caffeine…" onkeydown="if(event.key==='Enter')searchPubChem()">
-            <button class="btn" onclick="searchPubChem()">⌕</button>
+          <div class="db-search-toolbar">
+            <div class="db-search-heading">
+              <div class="db-search-kicker">Search &amp; import</div>
+              <div class="db-search-subtext" id="dbSearchHint">PubChem-style search with direct 3D loading when supported.</div>
+            </div>
+            <button class="btn btn-sm db-search-expand" id="dbExpandBtn" onclick="toggleDatabasePanel(event)">⤢ Expand</button>
+          </div>
+          <div class="db-chip-row" id="dbChipRow">
+            <button class="db-chip active" data-db="pubchem" onclick="selectDatabase('pubchem')">PubChem</button>
+            <button class="db-chip" data-db="chembl" onclick="selectDatabase('chembl')">ChEMBL</button>
+            <button class="db-chip" data-db="chemspider" onclick="selectDatabase('chemspider')">ChemSpider</button>
+            <button class="db-chip" data-db="zinc" onclick="selectDatabase('zinc')">ZINC</button>
+            <button class="db-chip" data-db="rcsb" onclick="selectDatabase('rcsb')">Protein Data Bank</button>
+            <button class="db-chip" data-db="csd" onclick="selectDatabase('csd')">CSD</button>
+            <button class="db-chip" data-db="materialsproject" onclick="selectDatabase('materialsproject')">Materials Project</button>
+            <button class="db-chip" data-db="nomad" onclick="selectDatabase('nomad')">NOMAD</button>
+          </div>
+          <div class="db-search-bar enhanced">
+            <select class="ps-sel" id="dbSelect" onchange="updateDatabaseUI()">
+              <option value="pubchem">PubChem</option>
+              <option value="chembl">ChEMBL</option>
+              <option value="chemspider">ChemSpider</option>
+              <option value="zinc">ZINC</option>
+              <option value="rcsb">Protein Data Bank</option>
+              <option value="csd">Cambridge Structural Database</option>
+              <option value="materialsproject">Materials Project</option>
+              <option value="nomad">NOMAD</option>
+            </select>
+            <div class="db-search-main">
+              <input class="search-input" id="dbSearchInput" type="text" placeholder="aspirin, glucose, caffeine, CID…" onkeydown="if(event.key==='Enter')handleDatabaseSearch()">
+              <div class="db-search-examples" id="dbSearchExamples">Examples: aspirin · glucose · caffeine · CID 2244</div>
+            </div>
+            <button class="btn" id="dbSearchBtn" onclick="handleDatabaseSearch()">Search</button>
+            <button class="btn" onclick="searchResearchDatabases()">All</button>
           </div>
           <div class="progress-wrap" id="searchProgress"><div class="progress-fill" id="searchFill"></div></div>
+          <div class="db-actions">
+            <button class="btn" id="dbLoad3dBtn" onclick="loadSelectedDatabaseIntoViewer()">Load 3D</button>
+            <button class="btn" onclick="openSelectedDatabaseSearch()">Open selected search</button>
+            <button class="btn" onclick="openSelectedDatabaseHomepage()">Open selected home</button>
+          </div>
+          <div class="db-grid" id="dbGridCards">
+            <button class="db-card" data-db="pubchem" onclick="selectDatabase('pubchem')">
+              <span class="db-card-title">PubChem</span>
+              <span class="db-card-meta">Chemical &amp; molecular · small molecules · direct 3D load</span>
+            </button>
+            <button class="db-card" data-db="chembl" onclick="selectDatabase('chembl')">
+              <span class="db-card-title">ChEMBL</span>
+              <span class="db-card-meta">Chemical &amp; molecular · bioactivity · targets</span>
+            </button>
+            <button class="db-card" data-db="chemspider" onclick="selectDatabase('chemspider')">
+              <span class="db-card-title">ChemSpider</span>
+              <span class="db-card-meta">Chemical &amp; molecular · identifiers · synonyms</span>
+            </button>
+            <button class="db-card" data-db="zinc" onclick="selectDatabase('zinc')">
+              <span class="db-card-title">ZINC</span>
+              <span class="db-card-meta">Chemical &amp; molecular · screening ligands</span>
+            </button>
+            <button class="db-card" data-db="rcsb" onclick="selectDatabase('rcsb')">
+              <span class="db-card-title">Protein Data Bank</span>
+              <span class="db-card-meta">Structural / 3D · biomolecular structures · direct import</span>
+            </button>
+            <button class="db-card" data-db="csd" onclick="selectDatabase('csd')">
+              <span class="db-card-title">CSD</span>
+              <span class="db-card-meta">Structural / 3D · crystal structures</span>
+            </button>
+            <button class="db-card" data-db="materialsproject" onclick="selectDatabase('materialsproject')">
+              <span class="db-card-title">Materials Project</span>
+              <span class="db-card-meta">Quantum / materials · computed materials and molecules</span>
+            </button>
+            <button class="db-card" data-db="nomad" onclick="selectDatabase('nomad')">
+              <span class="db-card-title">NOMAD</span>
+              <span class="db-card-meta">Quantum / materials · FAIR materials data</span>
+            </button>
+          </div>
+          <div class="db-results" id="dbResults">Select a source, search it directly, or use All to inspect Chemical &amp; Molecular, Structural / 3D, and Quantum / Materials resources in one place.</div>
         </div>
       </div>
-
       <div class="section">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-title">Quick Load</div>
@@ -705,7 +845,7 @@ textarea.raw-editor {
           <div class="stat-label" style="margin-bottom:6px;">Visibility</div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;">
             <label class="ps-check-row"><input type="checkbox" id="chkHBonds"   checked onchange="showHBonds=this.checked;render()"> H-bonds <span style="font-size:9px;color:var(--text-muted);margin-left:4px;">cyan dotted</span></label>
-            <label class="ps-check-row"><input type="checkbox" id="chkIonic"   checked onchange="showIonicBonds=this.checked;render()"> Ionic <span style="font-size:9px;color:var(--text-muted);margin-left:4px;">gold dash</span></label>
+            <label class="ps-check-row"><input type="checkbox" id="chkIonic"    checked onchange="showIonicBonds=this.checked;render()"> Ionic <span style="font-size:9px;color:var(--text-muted);margin-left:4px;">gold dash</span></label>
             <label class="ps-check-row"><input type="checkbox" id="chkVdw"            onchange="showVdwBonds=this.checked;render()"> vdW contacts <span style="font-size:9px;color:var(--text-muted);margin-left:4px;">faint</span></label>
           </div>
 
@@ -808,7 +948,7 @@ textarea.raw-editor {
         <div class="empty-hex-inner">⬡</div>
       </div>
       <div class="empty-title">No Molecule Loaded</div>
-      <div class="empty-sub">Drop a file · use Quick Load · or search PubChem</div>
+      <div class="empty-sub">Drop a file · use Quick Load · or search a scientific database</div>
     </div>
 
     <div class="hud" id="hud">
@@ -885,7 +1025,16 @@ textarea.raw-editor {
       </select>
       <button class="btn btn-sm" onclick="toggleEditor()">✕</button>
     </div>
-    <textarea class="raw-editor" id="rawEditor" placeholder="Paste molecular data here…
+    <div class="editor-tools" id="editorTools">
+      <button class="btn btn-sm" onclick="editorValidate()" title="Validate current editor contents">✓ Validate</button>
+      <button class="btn btn-sm" onclick="editorPrettify()" title="Normalize whitespace and structure">⟲ Prettify</button>
+      <button class="btn btn-sm" onclick="editorConvertFormat()" title="Convert editor text to selected format">⇄ Convert</button>
+      <button class="btn btn-sm" onclick="editorUndo()" title="Undo editor change">↩ Undo</button>
+      <button class="btn btn-sm" onclick="editorRedo()" title="Redo editor change">↪ Redo</button>
+      <button class="btn btn-sm" onclick="editorCopy()" title="Copy editor text">📋 Copy</button>
+      <button class="btn btn-sm active-soft" onclick="editorDownload()" title="Download current editor text">⬇ Save Text</button>
+    </div>
+    <textarea class="raw-editor" id="rawEditor" spellcheck="false" placeholder="Paste molecular data here…
 
 XYZ format:
   Line 1: atom count
@@ -898,6 +1047,15 @@ Water
 O  0.000  0.000  0.117
 H  0.000  0.757 -0.468
 H  0.000 -0.757 -0.468"></textarea>
+    <div class="editor-meta" id="editorMeta">
+      <span class="editor-chip" id="editorDirtyChip">Clean</span>
+      <span class="editor-chip" id="editorValidityChip">Unchecked</span>
+      <span class="editor-chip" id="editorFmtChip">XYZ</span>
+      <span class="editor-chip" id="editorLineChip">0 lines</span>
+      <span class="editor-chip" id="editorCharChip">0 chars</span>
+      <span class="editor-chip" id="editorAtomChip">0 atoms</span>
+      <span class="editor-chip" id="editorBondChip">0 bonds</span>
+    </div>
     <div class="editor-footer">
       <button class="btn active" onclick="parseFromEditor()" style="flex:1;">▶ Parse &amp; Render</button>
       <button class="btn" onclick="loadEditorFromMolecule()">← 3D→Text</button>
@@ -1326,6 +1484,8 @@ function loadMolecule(name, mol) {
   const mb=document.getElementById('moleculeName');
   mb.textContent=name;mb.classList.add('loaded');
   updateStats();updateLegend();updateCanvasInfo();render();
+  if(document.getElementById('editorPanel') && !document.getElementById('editorPanel').classList.contains('hidden')){ try{ loadEditorFromMolecule(); }catch(_){} }
+  saveAppState();
   notify(`Loaded "${name}" — ${mol.atoms.length} atoms, ${mol.bonds.length} bonds`,'success');
 }
 function handleFileLoad(evt) {
@@ -1370,6 +1530,479 @@ async function searchPubChem() {
     }
     throw new Error('No 3D conformer available');
   } catch(err){prog.style.display='none';fill.style.width='0%';notify(err.message,'error');}
+}
+
+
+
+function getDatabaseCatalog(){
+  return {
+    pubchem:{label:'PubChem', category:'Chemical & molecular', home:'https://pubchem.ncbi.nlm.nih.gov/', search:q=>`https://pubchem.ncbi.nlm.nih.gov/#query=${encodeURIComponent(q)}`, placeholder:'aspirin, glucose, caffeine, CID…', load3d:true, examples:'aspirin · glucose · caffeine · CID 2244'},
+    chembl:{label:'ChEMBL', category:'Chemical & molecular', home:'https://www.ebi.ac.uk/chembl/', search:q=>`https://www.ebi.ac.uk/chembl/g/#search_results/all/query=${encodeURIComponent(q)}`, placeholder:'bioactive molecule, CHEMBL ID, target…', examples:'CHEMBL25 · imatinib · EGFR inhibitor'},
+    chemspider:{label:'ChemSpider', category:'Chemical & molecular', home:'https://www.chemspider.com/', search:q=>`https://www.chemspider.com/Search.aspx?q=${encodeURIComponent(q)}`, placeholder:'compound name, InChIKey, formula…', examples:'benzaldehyde · C7H6O · InChIKey'},
+    zinc:{label:'ZINC', category:'Chemical & molecular', home:'https://zinc.docking.org/', search:q=>`https://zinc.docking.org/substances/search/?q=${encodeURIComponent(q)}`, placeholder:'ligand, vendor code, SMILES…', examples:'ZINC00000001 · ligand name · SMILES'},
+    rcsb:{label:'Protein Data Bank', category:'Structural / 3D', home:'https://www.rcsb.org/', search:q=>`https://www.rcsb.org/search?query=${encodeURIComponent(q)}`, placeholder:'PDB ID, protein, ligand, structure title…', load3d:true, examples:'1CRN · hemoglobin · kinase ligand'},
+    csd:{label:'Cambridge Structural Database', category:'Structural / 3D', home:'https://www.ccdc.cam.ac.uk/structures/', search:q=>`https://www.ccdc.cam.ac.uk/structures/Search?text=${encodeURIComponent(q)}`, placeholder:'refcode, crystal structure, ligand…', examples:'ABEBUF · crystal refcode · ligand'},
+    materialsproject:{label:'Materials Project', category:'Quantum / materials', home:'https://next-gen.materialsproject.org/', search:q=>`https://next-gen.materialsproject.org/materials?formula=${encodeURIComponent(q)}`, placeholder:'formula, composition, material ID…', examples:'SiO2 · mp-149 · perovskite'},
+    nomad:{label:'NOMAD', category:'Quantum / materials', home:'https://nomad-lab.eu/prod/rae/gui/search', search:q=>`https://nomad-lab.eu/prod/rae/gui/search?query=${encodeURIComponent(q)}`, placeholder:'formula, workflow, material, property…', examples:'GaN · band gap · workflow'}
+  };
+}
+function getSelectedDatabase(){
+  return document.getElementById('dbSelect')?.value || 'pubchem';
+}
+function getDatabaseQuery(){
+  const q=(document.getElementById('dbSearchInput')?.value || molecule?.name || '').trim();
+  return q;
+}
+function dbEsc(s){return String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]||m));}
+function openExternal(url){window.open(url,'_blank','noopener,noreferrer');}
+function selectDatabase(db){
+  const sel=document.getElementById('dbSelect');
+  if(sel) sel.value=db;
+  updateDatabaseUI();
+}
+function toggleDatabasePanel(ev){
+  if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+  const sec=document.getElementById('searchSection');
+  const sb=document.getElementById('sidebar');
+  if(!sec || !sb) return;
+  const btn=document.getElementById('dbExpandBtn');
+  if(!sec.classList.contains('search-expanded')){
+    sec.classList.add('search-expanded');
+    sb.classList.add('expanded');
+    sb.classList.remove('super-expanded');
+    if(btn) btn.textContent = '⤢ Wider';
+  } else if(!sb.classList.contains('super-expanded')){
+    sec.classList.add('search-expanded');
+    sb.classList.add('expanded','super-expanded');
+    if(btn) btn.textContent = '⤡ Compact';
+  } else {
+    sec.classList.remove('search-expanded');
+    sb.classList.remove('expanded','super-expanded');
+    if(btn) btn.textContent = '⤢ Expand';
+  }
+  setTimeout(resizeCanvas, 280);
+  saveAppState();
+}
+function updateDatabaseUI(){
+  const db=getSelectedDatabase();
+  const meta=getDatabaseCatalog()[db] || getDatabaseCatalog().pubchem;
+  const input=document.getElementById('dbSearchInput');
+  const hint=document.getElementById('dbSearchHint');
+  const examples=document.getElementById('dbSearchExamples');
+  if(input) input.placeholder=meta.placeholder;
+  if(hint) hint.textContent = meta.load3d ? `${meta.label} supports direct in-viewer loading from this panel.` : `${meta.label} uses a tuned search handoff from this panel.`;
+  if(examples) examples.textContent = `Examples: ${meta.examples || 'aspirin · glucose · caffeine · CID 2244'}`;
+  const loadBtn=document.getElementById('dbLoad3dBtn');
+  if(loadBtn){
+    loadBtn.disabled=!meta.load3d;
+    loadBtn.style.opacity=meta.load3d?'1':'0.45';
+    loadBtn.textContent = meta.load3d ? (db==='rcsb' ? 'Load structure' : 'Load 3D') : 'Load unavailable';
+    loadBtn.title=meta.load3d ? `Load from ${meta.label} into viewer` : `${meta.label} does not provide direct in-viewer import here`;
+  }
+  document.querySelectorAll('#dbGridCards .db-card').forEach(card=>{
+    const active = card.dataset.db===db;
+    card.classList.toggle('active', active);
+    card.style.outline = active ? '2px solid var(--accent)' : 'none';
+  });
+  document.querySelectorAll('#dbChipRow .db-chip').forEach(chip=>{
+    chip.classList.toggle('active', chip.dataset.db===db);
+  });
+}
+function openDatabaseHomepage(db){
+  const meta=getDatabaseCatalog()[db] || getDatabaseCatalog().pubchem;
+  openExternal(meta.home);
+}
+function openSelectedDatabaseHomepage(){ openDatabaseHomepage(getSelectedDatabase()); }
+function getDatabaseSearchUrl(db,q){
+  const meta=getDatabaseCatalog()[db] || getDatabaseCatalog().pubchem;
+  return meta.search(q);
+}
+function searchInDatabase(db){
+  const q=getDatabaseQuery();
+  if(!q)return notify('Enter a database query','error');
+  openExternal(getDatabaseSearchUrl(db,q));
+}
+function openSelectedDatabaseSearch(){ searchInDatabase(getSelectedDatabase()); }
+function handleDatabaseSearch(){
+  const db=getSelectedDatabase();
+  if(db==='pubchem') return searchPubChem();
+  if(db==='rcsb') return searchPDB();
+  return openSelectedDatabaseSearch();
+}
+function loadSelectedDatabaseIntoViewer(){
+  const db=getSelectedDatabase();
+  if(db==='pubchem') return searchPubChem();
+  if(db==='rcsb') return searchPDB();
+  notify('Direct 3D import is currently supported for PubChem and Protein Data Bank only','info');
+}
+async function searchPubChem() {
+  const q=getDatabaseQuery();
+  if(!q)return notify('Enter a compound name','error');
+  const prog=document.getElementById('searchProgress'), fill=document.getElementById('searchFill');
+  prog.style.display='block'; fill.style.width='20%';
+  try {
+    const cidRes=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(q)}/cids/JSON`);
+    if(!cidRes.ok)throw new Error('Compound not found in PubChem');
+    const cidData=await cidRes.json();
+    const cid=cidData.IdentifierList.CID[0];
+    fill.style.width='50%';
+    const xyzRes=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/record/JSON?record_type=3d`);
+    fill.style.width='80%';
+    if(xyzRes.ok){
+      const xyzData=await xyzRes.json();
+      const atoms3d=xyzData.PC_Compounds?.[0]?.coords?.[0]?.conformers?.[0];
+      const atomsList=xyzData.PC_Compounds?.[0]?.atoms;
+      const bonds3d=xyzData.PC_Compounds?.[0]?.bonds;
+      if(atoms3d&&atomsList){
+        const EN={1:'H',2:'He',3:'Li',4:'Be',5:'B',6:'C',7:'N',8:'O',9:'F',10:'Ne',11:'Na',12:'Mg',13:'Al',14:'Si',15:'P',16:'S',17:'Cl',18:'Ar',19:'K',20:'Ca',26:'Fe',27:'Co',28:'Ni',29:'Cu',30:'Zn',35:'Br',53:'I',79:'Au',78:'Pt'};
+        const xs=atoms3d.x,ys=atoms3d.y,zs=atoms3d.z||xs.map(()=>0);
+        const atoms=atomsList.element.map((en,i)=>({symbol:EN[en]||'C',x:xs[i],y:ys[i],z:zs[i],idx:i}));
+        let bonds=[];
+        if(bonds3d){const a1=bonds3d.aid1,a2=bonds3d.aid2,ord=bonds3d.order||[];for(let i=0;i<a1.length;i++)bonds.push({a:a1[i]-1,b:a2[i]-1,order:ord[i]||1});}
+        if(!bonds.length)bonds=autoDetectBonds(atoms);
+        fill.style.width='100%';
+        setTimeout(()=>{prog.style.display='none';fill.style.width='0%';},500);
+        loadMolecule(q.charAt(0).toUpperCase()+q.slice(1),{atoms,bonds});return;
+      }
+    }
+    throw new Error('No 3D conformer available in PubChem');
+  } catch(err){prog.style.display='none';fill.style.width='0%';notify(err.message,'error');}
+}
+async function searchPDB(){
+  const q=getDatabaseQuery();
+  if(!q)return notify('Enter a PDB ID or structure keyword','error');
+  const prog=document.getElementById('searchProgress'), fill=document.getElementById('searchFill');
+  prog.style.display='block'; fill.style.width='18%';
+  try{
+    let pdbId='';
+    if(/^[A-Za-z0-9]{4}$/.test(q.trim())){
+      pdbId=q.trim().toUpperCase();
+      fill.style.width='45%';
+    }else{
+      const pdbQuery={query:{type:'terminal',service:'text',parameters:{attribute:'rcsb_entry_container_identifiers.entry_id',operator:'exact_match',value:q.toUpperCase()}},return_type:'entry',request_options:{pager:{start:0,rows:1}}};
+      let pdbRes=await fetch('https://search.rcsb.org/rcsbsearch/v2/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pdbQuery)});
+      if(!pdbRes.ok){
+        const fallback={query:{type:'terminal',service:'text',parameters:{attribute:'struct.title',operator:'contains_phrase',value:q}},return_type:'entry',request_options:{pager:{start:0,rows:1}}};
+        pdbRes=await fetch('https://search.rcsb.org/rcsbsearch/v2/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(fallback)});
+      }
+      const data=await pdbRes.json();
+      pdbId=data?.result_set?.[0]?.identifier || '';
+      fill.style.width='55%';
+    }
+    if(!pdbId) throw new Error('No Protein Data Bank structure matched that query');
+    const pdbFile=await fetch(`https://files.rcsb.org/download/${encodeURIComponent(pdbId)}.pdb`);
+    if(!pdbFile.ok) throw new Error('PDB file download failed');
+    fill.style.width='90%';
+    const pdbText=await pdbFile.text();
+    const parsed=parsePDB(pdbText);
+    if(!parsed?.atoms?.length) throw new Error('Could not parse the PDB structure');
+    fill.style.width='100%';
+    setTimeout(()=>{prog.style.display='none';fill.style.width='0%';},500);
+    loadMolecule(pdbId, parsed);
+  }catch(err){prog.style.display='none';fill.style.width='0%';notify(err.message,'error');}
+}
+async function searchResearchDatabases(){
+  const q=getDatabaseQuery();
+  if(!q)return notify('Enter a compound, target, ligand, structure, or formula keyword','error');
+  setDbResults('Inspecting Chemical &amp; Molecular, Structural / 3D, and Quantum / Materials sources…');
+  const sections=[];
+  const addSection=(title,badge,body,links)=>sections.push(`<div class="db-result-item"><div class="db-result-top"><div><div class="db-result-title">${title}</div><div>${body}</div></div><span class="db-badge">${badge}</span></div><div class="db-result-links">${links}</div></div>`);
+  try{
+    const cidRes=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(q)}/cids/JSON`);
+    if(cidRes.ok){
+      const cidData=await cidRes.json();
+      const cid=cidData?.IdentifierList?.CID?.[0];
+      if(cid){
+        let formula='';
+        try{
+          const propRes=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/property/MolecularFormula,MolecularWeight,IUPACName/JSON`);
+          if(propRes.ok){
+            const props=(await propRes.json())?.PropertyTable?.Properties?.[0]||{};
+            formula=[props.IUPACName, props.MolecularFormula, props.MolecularWeight?`MW ${Number(props.MolecularWeight).toFixed(2)}`:''].filter(Boolean).map(dbEsc).join(' · ');
+          }
+        }catch(_){ }
+        addSection(`PubChem match for ${dbEsc(q)}`,'Chemical & molecular',formula || `CID ${cid}`,
+          `<a class="db-link" href="https://pubchem.ncbi.nlm.nih.gov/compound/${cid}" target="_blank" rel="noopener noreferrer">Open record</a><a class="db-link" href="javascript:selectDatabase('pubchem');searchPubChem()">Load 3D</a><a class="db-link" href="${getDatabaseSearchUrl('pubchem',q)}" target="_blank" rel="noopener noreferrer">More results</a>`);
+      }
+    }
+  }catch(_){ }
+  try{
+    const chemblRes=await fetch(`https://www.ebi.ac.uk/chembl/api/data/molecule/search.json?q=${encodeURIComponent(q)}`);
+    if(chemblRes.ok){
+      const data=await chemblRes.json();
+      const hit=data?.molecules?.[0];
+      if(hit){
+        const chemblId=hit.molecule_chembl_id||'ChEMBL';
+        const pref=hit.pref_name || hit.molecule_synonyms?.[0]?.molecule_synonym || q;
+        const info=[hit.molecule_properties?.full_molformula, chemblId].filter(Boolean).map(dbEsc).join(' · ');
+        addSection(dbEsc(pref),'Chemical & molecular',info,
+          `<a class="db-link" href="https://www.ebi.ac.uk/chembl/explore/compound/${encodeURIComponent(chemblId)}" target="_blank" rel="noopener noreferrer">Open record</a><a class="db-link" href="${getDatabaseSearchUrl('chembl',q)}" target="_blank" rel="noopener noreferrer">More results</a>`);
+      }
+    }
+  }catch(_){ }
+  addSection(`ChemSpider search for ${dbEsc(q)}`,'Chemical & molecular','Royal Society of Chemistry index for names, identifiers, and linked sources.',
+    `<a class="db-link" href="${getDatabaseSearchUrl('chemspider',q)}" target="_blank" rel="noopener noreferrer">Open ChemSpider</a>`);
+  addSection(`ZINC search for ${dbEsc(q)}`,'Chemical & molecular','Useful for purchasable ligands and screening libraries, because every workflow apparently needs one more database.',
+    `<a class="db-link" href="${getDatabaseSearchUrl('zinc',q)}" target="_blank" rel="noopener noreferrer">Open ZINC</a>`);
+  try{
+    const pdbQuery={query:{type:'terminal',service:'text',parameters:{attribute:'struct.title',operator:'contains_phrase',value:q}},return_type:'entry',request_options:{pager:{start:0,rows:1}}};
+    const pdbRes=await fetch('https://search.rcsb.org/rcsbsearch/v2/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pdbQuery)});
+    if(pdbRes.ok){
+      const data=await pdbRes.json();
+      const hit=data?.result_set?.[0];
+      if(hit?.identifier){
+        const id=hit.identifier;
+        addSection(`Protein Data Bank match for ${dbEsc(q)}`,'Structural / 3D',`${dbEsc(id)} · macromolecular or ligand-associated structure`,
+          `<a class="db-link" href="https://www.rcsb.org/structure/${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">Open structure</a><a class="db-link" href="javascript:selectDatabase('rcsb');document.getElementById('dbSearchInput').value='${dbEsc(id)}';searchPDB()">Load into viewer</a><a class="db-link" href="${getDatabaseSearchUrl('rcsb',q)}" target="_blank" rel="noopener noreferrer">More results</a>`);
+      }
+    }
+  }catch(_){ }
+  addSection(`Cambridge Structural Database search for ${dbEsc(q)}`,'Structural / 3D','Small-molecule and crystal-structure exploration.',
+    `<a class="db-link" href="${getDatabaseSearchUrl('csd',q)}" target="_blank" rel="noopener noreferrer">Open CSD</a>`);
+  addSection(`Materials Project search for ${dbEsc(q)}`,'Quantum / materials','Computed materials and molecules by composition, chemistry, and property.',
+    `<a class="db-link" href="${getDatabaseSearchUrl('materialsproject',q)}" target="_blank" rel="noopener noreferrer">Open Materials Project</a><a class="db-link" href="https://next-gen.materialsproject.org/molecules" target="_blank" rel="noopener noreferrer">Molecules Explorer</a>`);
+  addSection(`NOMAD search for ${dbEsc(q)}`,'Quantum / materials','FAIR materials-science repository and archive.',
+    `<a class="db-link" href="${getDatabaseSearchUrl('nomad',q)}" target="_blank" rel="noopener noreferrer">Open NOMAD</a>`);
+  setDbResults(sections.join(''));
+  notify('Database coverage updated across all major categories','success');
+}
+
+function computeProjectedBounds(width, height, localZoom, localPanX, localPanY, orthographic){
+  if(!molecule||!molecule.atoms?.length)return null;
+  const W=width, H=height;
+  const cx=W/2, cy=H/2;
+  const scale=molecule.scale*localZoom;
+  const M=mat3Mul(mat3RotY(rotY),mat3RotX(rotX));
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  const atomScale=parseFloat(document.getElementById('atomScale').value||'1');
+  molecule.atoms.forEach(a=>{
+    const p=mat3Vec(M,[a.x,a.y,a.z]);
+    const z=p[2]*scale;
+    const d=orthographic ? 1 : (500/(500+z+400));
+    let baseR; const el=getElement(a.symbol);
+    if(viewMode==='spacefill') baseR=el.r*90*atomScale*d;
+    else if(viewMode==='wireframe'||viewMode==='stick') baseR=0;
+    else if(viewMode==='cartoon') baseR=(el.symbol==='C'?6:4)*atomScale*d;
+    else baseR=el.r*40*atomScale*d;
+    const sx=cx + p[0]*scale*d + localPanX;
+    const sy=cy - p[1]*scale*d + localPanY;
+    minX=Math.min(minX,sx-baseR); maxX=Math.max(maxX,sx+baseR);
+    minY=Math.min(minY,sy-baseR); maxY=Math.max(maxY,sy+baseR);
+  });
+  return {minX,maxX,minY,maxY,width:maxX-minX,height:maxY-minY,cx:(minX+maxX)/2,cy:(minY+maxY)/2};
+}
+function computeCompactView(targetCanvas, pad, overlayH, scaleBarH, attribH, legendW, orthographic){
+  const exportW=targetCanvas.width, exportH=targetCanvas.height;
+  const rect={
+    x:pad,
+    y:pad+overlayH,
+    w:Math.max(80,exportW-pad*2-legendW),
+    h:Math.max(80,exportH-pad*2-overlayH-scaleBarH-attribH)
+  };
+  if(!molecule||!molecule.atoms?.length) return {zoom:Math.max(0.05, zoom||1), panX:0, panY:0, rect};
+
+  let z=Math.max(0.08, zoom||1);
+  let px=0, py=0;
+  const fitSlack=0.90;
+
+  for(let i=0;i<10;i++){
+    let b=computeProjectedBounds(exportW, exportH, z, 0, 0, orthographic);
+    if(!b || !isFinite(b.width) || !isFinite(b.height) || b.width<=0 || b.height<=0) break;
+    const fit=Math.min(rect.w/Math.max(1,b.width), rect.h/Math.max(1,b.height));
+    z*=Math.max(0.08, fit*fitSlack);
+    b=computeProjectedBounds(exportW, exportH, z, 0, 0, orthographic);
+    if(!b) break;
+    px=(rect.x + rect.w/2) - b.cx;
+    py=(rect.y + rect.h/2) - b.cy;
+    b=computeProjectedBounds(exportW, exportH, z, px, py, orthographic);
+    if(!b) break;
+    const overflowX=Math.max(0, rect.x-b.minX, b.maxX-(rect.x+rect.w));
+    const overflowY=Math.max(0, rect.y-b.minY, b.maxY-(rect.y+rect.h));
+    if(overflowX<0.75 && overflowY<0.75) break;
+    const rescue=Math.min(rect.w/Math.max(1,b.width), rect.h/Math.max(1,b.height))*0.985;
+    z*=Math.max(0.08, rescue);
+  }
+
+  let finalBounds=computeProjectedBounds(exportW, exportH, z, px, py, orthographic);
+  if(finalBounds){
+    px += (rect.x + rect.w/2) - finalBounds.cx;
+    py += (rect.y + rect.h/2) - finalBounds.cy;
+    finalBounds=computeProjectedBounds(exportW, exportH, z, px, py, orthographic);
+    if(finalBounds){
+      const rescue=Math.min(rect.w/Math.max(1,finalBounds.width), rect.h/Math.max(1,finalBounds.height))*0.975;
+      if(rescue<1){
+        z*=Math.max(0.08, rescue);
+        finalBounds=computeProjectedBounds(exportW, exportH, z, 0, 0, orthographic);
+        if(finalBounds){
+          px=(rect.x + rect.w/2) - finalBounds.cx;
+          py=(rect.y + rect.h/2) - finalBounds.cy;
+        }
+      }
+    }
+  }
+
+  return {zoom:z, panX:px, panY:py, rect};
+}
+function applyExportPreset(preset){
+  const set=(id,val,prop='value')=>{const el=document.getElementById(id); if(!el)return; el[prop]=val;};
+  if(preset==='journal'){
+    set('ps-resolution','nature'); set('ps-dpi','600'); set('ps-format','png'); set('ps-bg','white'); set('ps-border','none');
+    set('ps-padding','20'); document.getElementById('ps-padval').textContent='20px';
+    document.getElementById('ps-title').checked=true; document.getElementById('ps-formula').checked=true; document.getElementById('ps-legend').checked=false;
+    document.getElementById('ps-scale').checked=true; document.getElementById('ps-attrib').checked=false; document.getElementById('ps-compact').checked=true;
+    document.getElementById('ps-ortho').checked=true; document.getElementById('ps-journal').checked=true;
+  }else if(preset==='presentation'){
+    set('ps-resolution','2x'); set('ps-dpi','300'); set('ps-format','png'); set('ps-bg','current'); set('ps-border','thin'); set('ps-padding','24');
+    document.getElementById('ps-padval').textContent='24px';
+    document.getElementById('ps-title').checked=true; document.getElementById('ps-formula').checked=true; document.getElementById('ps-legend').checked=true;
+    document.getElementById('ps-scale').checked=true; document.getElementById('ps-attrib').checked=false; document.getElementById('ps-compact').checked=true; document.getElementById('ps-ortho').checked=false; document.getElementById('ps-journal').checked=false;
+  }else if(preset==='dark'){
+    set('ps-resolution','4x'); set('ps-dpi','300'); set('ps-format','png'); set('ps-bg','black'); set('ps-border','accent'); set('ps-padding','28');
+    document.getElementById('ps-padval').textContent='28px';
+    document.getElementById('ps-title').checked=true; document.getElementById('ps-formula').checked=true; document.getElementById('ps-legend').checked=true;
+    document.getElementById('ps-scale').checked=true; document.getElementById('ps-attrib').checked=false; document.getElementById('ps-compact').checked=true; document.getElementById('ps-ortho').checked=false; document.getElementById('ps-journal').checked=false;
+  }else if(preset==='minimal'){
+    set('ps-resolution','sq'); set('ps-dpi','600'); set('ps-format','png'); set('ps-bg','transparent'); set('ps-border','none'); set('ps-padding','8');
+    document.getElementById('ps-padval').textContent='8px';
+    document.getElementById('ps-title').checked=false; document.getElementById('ps-formula').checked=false; document.getElementById('ps-legend').checked=false;
+    document.getElementById('ps-scale').checked=false; document.getElementById('ps-attrib').checked=false; document.getElementById('ps-compact').checked=true; document.getElementById('ps-ortho').checked=true; document.getElementById('ps-journal').checked=false;
+  }
+  updatePubShotPreview();
+}
+function applyJournalPreset(){
+  const chk=document.getElementById('ps-journal');
+  if(chk?.checked) applyExportPreset('journal');
+}
+function projectForSvg(atom, W, H, exportState, orthographic){
+  const M=mat3Mul(mat3RotY(rotY),mat3RotX(rotX));
+  const _dpr=1;
+  const scale=molecule.scale*exportState.zoom*_dpr;
+  const p=mat3Vec(M,[atom.x,atom.y,atom.z]);
+  const z=p[2]*scale;
+  const d=orthographic ? 1 : (500/(500+z+400));
+  return {sx:W/2 + p[0]*scale*d + exportState.panX, sy:H/2 - p[1]*scale*d + exportState.panY, d, z, p};
+}
+function getSvgAtomRadius(atom, projectedPoint, atomScale){
+  const el=getElement(atom.symbol);
+  if(viewMode==='spacefill') return el.r*90*atomScale*projectedPoint.d;
+  if(viewMode==='wireframe'||viewMode==='stick') return 0;
+  if(viewMode==='cartoon') return (el.symbol==='C'?6:4)*atomScale*projectedPoint.d;
+  return el.r*40*atomScale*projectedPoint.d;
+}
+function computeSvgGeometryBounds(exportState,cfg,W,H){
+  if(!molecule?.atoms?.length) return null;
+  const atomScale=parseFloat(document.getElementById('atomScale').value||'1');
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  molecule.bonds.forEach(bond=>{
+    const ai=molecule.atoms[bond.a], aj=molecule.atoms[bond.b];
+    if(!ai||!aj) return;
+    const pi=projectForSvg(ai,W,H,exportState,cfg.orthographic), pj=projectForSvg(aj,W,H,exportState,cfg.orthographic);
+    const dx=pj.sx-pi.sx, dy=pj.sy-pi.sy, len=Math.hypot(dx,dy)||1;
+    const nx=-dy/len, ny=dx/len;
+    const bw=Math.max(1,parseFloat(document.getElementById('bondWidth').value||'2'));
+    const spread=(bond.order||1)>=3 ? 5 : (bond.order||1)===2 ? 3 : 0;
+    const pad=bw/2 + spread;
+    [pi,pj].forEach(pt=>{
+      minX=Math.min(minX, pt.sx-pad-nx*spread, pt.sx-pad+nx*spread);
+      maxX=Math.max(maxX, pt.sx+pad-nx*spread, pt.sx+pad+nx*spread);
+      minY=Math.min(minY, pt.sy-pad-ny*spread, pt.sy-pad+ny*spread);
+      maxY=Math.max(maxY, pt.sy+pad-ny*spread, pt.sy+pad+ny*spread);
+    });
+  });
+  molecule.atoms.forEach(atom=>{
+    const p=projectForSvg(atom,W,H,exportState,cfg.orthographic);
+    const r=getSvgAtomRadius(atom,p,atomScale);
+    minX=Math.min(minX,p.sx-r); maxX=Math.max(maxX,p.sx+r);
+    minY=Math.min(minY,p.sy-r); maxY=Math.max(maxY,p.sy+r);
+  });
+  if(!isFinite(minX)||!isFinite(maxX)||!isFinite(minY)||!isFinite(maxY)) return null;
+  return {minX,maxX,minY,maxY,width:maxX-minX,height:maxY-minY,cx:(minX+maxX)/2,cy:(minY+maxY)/2};
+}
+
+function buildPublicationSvg(cfg){
+  if(!molecule)return '';
+  const dims=getOutputDims(cfg.resolution);
+  const W=dims.w, H=dims.h, pad=cfg.padding;
+  const overlayH=(cfg.showTitle||cfg.showFormula)?64:0;
+  const legendW=0;
+  const scaleBarH=cfg.showScale?36:0;
+  const attribH=cfg.showAttrib?28:0;
+  let exportState = cfg.compact ? computeCompactView({width:W,height:H}, pad, overlayH, scaleBarH, attribH, legendW, cfg.orthographic) : {zoom:zoom, panX:panX, panY:panY, rect:{x:pad,y:pad+overlayH,w:W-pad*2-legendW,h:H-pad*2-overlayH-scaleBarH-attribH}};
+  const targetRect=exportState.rect || {x:pad,y:pad+overlayH,w:W-pad*2-legendW,h:H-pad*2-overlayH-scaleBarH-attribH};
+  let preciseBounds=computeSvgGeometryBounds(exportState,cfg,W,H);
+  if(preciseBounds && preciseBounds.width>0 && preciseBounds.height>0){
+    const fit=Math.min(targetRect.w/Math.max(1,preciseBounds.width), targetRect.h/Math.max(1,preciseBounds.height))*0.965;
+    if(isFinite(fit) && fit>0 && Math.abs(1-fit)>0.015){
+      exportState={...exportState, zoom:Math.max(0.02, exportState.zoom*fit)};
+      preciseBounds=computeSvgGeometryBounds(exportState,cfg,W,H);
+    }
+    if(preciseBounds){
+      exportState={...exportState, panX:exportState.panX + (targetRect.x+targetRect.w/2 - preciseBounds.cx), panY:exportState.panY + (targetRect.y+targetRect.h/2 - preciseBounds.cy)};
+      preciseBounds=computeSvgGeometryBounds(exportState,cfg,W,H);
+      if(preciseBounds){
+        const rescue=Math.min(targetRect.w/Math.max(1,preciseBounds.width), targetRect.h/Math.max(1,preciseBounds.height))*0.985;
+        if(isFinite(rescue) && rescue>0 && rescue<1){
+          exportState={...exportState, zoom:Math.max(0.02, exportState.zoom*rescue)};
+          preciseBounds=computeSvgGeometryBounds(exportState,cfg,W,H);
+          if(preciseBounds){
+            exportState={...exportState, panX:exportState.panX + (targetRect.x+targetRect.w/2 - preciseBounds.cx), panY:exportState.panY + (targetRect.y+targetRect.h/2 - preciseBounds.cy)};
+          }
+        }
+      }
+    }
+  }
+  const bg = cfg.bgOverride==='transparent' ? 'none' : (cfg.bgOverride==='cream' ? '#f5f0e8' : cfg.bgOverride==='black' ? '#000000' : '#ffffff');
+  const counts={}; molecule.atoms.forEach(a=>{const s=a.symbol.charAt(0).toUpperCase()+a.symbol.slice(1).toLowerCase(); counts[s]=(counts[s]||0)+1;});
+  const ord=['C','H',...Object.keys(counts).filter(e=>e!=='C'&&e!=='H').sort()];
+  const formula=ord.filter(e=>counts[e]).map(e=>e+(counts[e]>1?counts[e]:'')).join('');
+  const M=mat3Mul(mat3RotY(rotY),mat3RotX(rotX));
+  molecule.atoms.forEach(a=>{a.__svgp=mat3Vec(M,[a.x,a.y,a.z]);});
+  const sortedAtoms=[...molecule.atoms].sort((a,b)=>a.__svgp[2]-b.__svgp[2]);
+  const lines=[];
+  lines.push(`<?xml version="1.0" encoding="UTF-8"?>`);
+  lines.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`);
+  lines.push(`<rect width="100%" height="100%" fill="${bg}"${bg==='none'?' opacity="0"':''}/>`);
+  if(cfg.showTitle) lines.push(`<text x="${pad}" y="${pad+24}" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#1a2840">${dbEsc(cfg.titleText)}</text>`);
+  if(cfg.showFormula) lines.push(`<text x="${pad}" y="${pad+50}" font-family="monospace" font-size="14" fill="#0ea5e9">${dbEsc(formula)}</text>`);
+  const atomScale=parseFloat(document.getElementById('atomScale').value||'1');
+  molecule.bonds.forEach(bond=>{
+    const ai=molecule.atoms[bond.a], aj=molecule.atoms[bond.b]; if(!ai||!aj) return;
+    const pi=projectForSvg(ai,W,H,exportState,cfg.orthographic), pj=projectForSvg(aj,W,H,exportState,cfg.orthographic);
+    const dx=pj.sx-pi.sx, dy=pj.sy-pi.sy, len=Math.hypot(dx,dy); if(len<0.5)return;
+    const nx=-dy/len, ny=dx/len; const bw=Math.max(1,parseFloat(document.getElementById('bondWidth').value||'2'));
+    const col='#5c6f89';
+    const draw=(ox,oy, sw, dash='')=>lines.push(`<line x1="${(pi.sx+ox).toFixed(2)}" y1="${(pi.sy+oy).toFixed(2)}" x2="${(pj.sx+ox).toFixed(2)}" y2="${(pj.sy+oy).toFixed(2)}" stroke="${col}" stroke-width="${sw}" stroke-linecap="round"${dash?` stroke-dasharray="${dash}"`:''}/>`);
+    if((bond.order||1)===2){ draw(-nx*3,-ny*3,bw); draw(nx*3,ny*3,bw); }
+    else if((bond.order||1)>=3){ draw(0,0,bw); draw(-nx*5,-ny*5,bw*0.8); draw(nx*5,ny*5,bw*0.8); }
+    else draw(0,0,bw);
+  });
+  sortedAtoms.forEach(a=>{
+    const p=projectForSvg(a,W,H,exportState,cfg.orthographic);
+    const el=getElement(a.symbol);
+    let r=getSvgAtomRadius(a,p,atomScale);
+    if(r<=0.5) return;
+    lines.push(`<circle cx="${p.sx.toFixed(2)}" cy="${p.sy.toFixed(2)}" r="${r.toFixed(2)}" fill="${getAtomDisplayColor(a)}" stroke="rgba(0,0,0,0.18)" stroke-width="0.6"/>`);
+  });
+  if(cfg.showScale){
+    const barX=pad+16, barY=H-attribH-18, barW=80;
+    lines.push(`<rect x="${barX}" y="${barY}" width="${barW}" height="2" fill="#8aa0bc"/>`);
+    lines.push(`<rect x="${barX}" y="${barY-4}" width="2" height="10" fill="#8aa0bc"/>`);
+    lines.push(`<rect x="${barX+barW-2}" y="${barY-4}" width="2" height="10" fill="#8aa0bc"/>`);
+  }
+  lines.push(`</svg>`);
+  return lines.join('');
+}
+function exportSVG(){
+  if(!molecule)return notify('No molecule loaded','error');
+  const cfg=getPubShotSettings();
+  const svg=buildPublicationSvg(cfg);
+  download(svg,`${(molecule?.name||'molecule').replace(/\s+/g,'_')}_pub.svg`,'image/svg+xml');
+  notify('Saved vector SVG export','success');
+}
+function copySVGToClipboard(){
+  if(!molecule)return notify('No molecule loaded','error');
+  const svg=buildPublicationSvg(getPubShotSettings());
+  navigator.clipboard.writeText(svg).then(()=>notify('SVG copied to clipboard','success')).catch(()=>notify('Clipboard copy failed','error'));
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1425,7 +2058,7 @@ function mat3RotX(a){const c=Math.cos(a),s=Math.sin(a);return[[1,0,0],[0,c,-s],[
 function mat3RotY(a){const c=Math.cos(a),s=Math.sin(a);return[[c,0,s],[0,1,0],[-s,0,c]];}
 function mat3Mul(A,B){return A.map((row,i)=>B[0].map((_,j)=>row.reduce((sum,_,k)=>sum+A[i][k]*B[k][j],0)));}
 function mat3Vec(M,v){return M.map(row=>row[0]*v[0]+row[1]*v[1]+row[2]*v[2]);}
-function project(atom,cx,cy,scale){const p=atom._proj,fov=500,z=p[2]*scale,d=fov/(fov+z+400);return{sx:cx+p[0]*scale*d+panX,sy:cy-p[1]*scale*d+panY,d,z};}
+function project(atom,cx,cy,scale){const p=atom._proj,fov=500,z=p[2]*scale,d=window._pubshotOrthographic?1:(fov/(fov+z+400));return{sx:cx+p[0]*scale*d+panX,sy:cy-p[1]*scale*d+panY,d,z};}
 function hexAlpha(hex,alpha){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${alpha})`;}
 function getLightParams(){
   switch(lightingMode){
@@ -1570,6 +2203,7 @@ function toggleAutoRotate(){
     render();
   }
   updateRotPanel();
+  saveAppState();
 }
 
 // ── Rotation panel helpers ───────────────────────────────────
@@ -1579,16 +2213,19 @@ function setRotMode(mode){
   document.querySelectorAll('.rotmode-btn').forEach(b=>b.classList.toggle('active',b.dataset.m===mode));
   updateRotPanel();
   if(autoRotate) notify('Rotation: '+mode,'info');
+  saveAppState();
 }
 
 function setRotTilt(deg){
   rotTiltAngle=deg*Math.PI/180;
   document.getElementById('rotTiltVal').textContent=deg+'°';
+  saveAppState();
 }
 
 function setRotEasing(on){
   rotEasing=on;
   document.getElementById('btnRotEase').classList.toggle('active',on);
+  saveAppState();
 }
 
 function updateRotPanel(){
@@ -1603,24 +2240,28 @@ function nudgeRotation(axis, sign){
   if(axis==='y') rotY+=step;
   if(axis==='z'){rotX+=step*0.4;rotY+=step*0.7;}
   if(!autoRotate)render();
+  saveAppState();
 }
 function toggleLabels(){
   showLabels=!showLabels;
   document.getElementById('btnLabels').classList.toggle('active',showLabels);
   document.getElementById('hudLabels').style.display=showLabels?'flex':'none';
   document.getElementById('hud').style.display=(autoRotate||showLabels)?'flex':'none';render();
+  saveAppState();
 }
 function toggleInfo(){
   showInfo=!showInfo;
   document.getElementById('btnInfo').classList.toggle('active',showInfo);
   document.getElementById('canvasInfo').classList.toggle('visible',showInfo);
   if(showInfo)updateCanvasInfo();
+  saveAppState();
 }
 function centerMolecule(){panX=0;panY=0;render();}
 function setViewMode(mode){
   viewMode=mode;
   ['ballstick','spacefill','wireframe','stick','cartoon'].forEach(m=>document.getElementById('mode-'+m)?.classList.toggle('active',m===mode));
   render();
+  saveAppState();
 }
 function updateDisplay(){
   const ids=['atomScale','bondWidth','depthFog','glowAmt','rotSpeed'];
@@ -1631,10 +2272,12 @@ function updateDisplay(){
 function setBg(bg){
   document.getElementById('canvasArea').setAttribute('data-bg',bg);
   document.querySelectorAll('.bg-swatch').forEach(s=>s.classList.toggle('active',s.dataset.bg===bg));
+  saveAppState();
 }
 function setLighting(mode){
   lightingMode=mode;
   document.querySelectorAll('.light-btn').forEach(b=>b.classList.toggle('active',b.dataset.l===mode));render();
+  saveAppState();
 }
 
 // ─── Bond Style ───────────────────────────────────────────
@@ -1645,6 +2288,7 @@ function setBondStyleMode(mode){
     if(el)el.classList.toggle('active',m===mode);
   });
   render();
+  saveAppState();
 }
 
 // ─── Manual bond assignment ───────────────────────────────
@@ -1704,11 +2348,14 @@ function drawBondLegends(){
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t==='dark'?'':t);
   document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active',d.dataset.t===t));
+  saveAppState();
 }
 function toggleSidebar(){
   const sb=document.getElementById('sidebar'),tog=document.getElementById('sidebarToggle');
-  sb.classList.toggle('collapsed');tog.textContent=sb.classList.contains('collapsed')?'›':'‹';
+  sb.classList.toggle('collapsed');
+  tog.textContent=sb.classList.contains('collapsed')?'›':'‹';
   setTimeout(resizeCanvas,280);
+  saveAppState();
 }
 function toggleEditor(){document.getElementById('editorPanel').classList.toggle('hidden');setTimeout(resizeCanvas,280);}
 function toggleSection(head){head.closest('.section').classList.toggle('collapsed');}
@@ -1718,13 +2365,11 @@ function toggleSection(head){head.closest('.section').classList.toggle('collapse
 // ═══════════════════════════════════════════════════════════
 function exportXYZ(){
   if(!molecule)return notify('No molecule loaded','error');
-  let out=`${molecule.atoms.length}\n${molecule.name||'Molecule'}\n`;
-  molecule.atoms.forEach(a=>{out+=`${a.symbol.padEnd(4)} ${a.x.toFixed(6).padStart(12)} ${a.y.toFixed(6).padStart(12)} ${a.z.toFixed(6).padStart(12)}\n`;});
-  download(out,(molecule.name||'molecule')+'.xyz','text/plain');
+  download(formatXYZFromMol(molecule),(molecule.name||'molecule')+'.xyz','text/plain');
 }
 function exportJSON(){
   if(!molecule)return notify('No molecule loaded','error');
-  download(JSON.stringify({name:molecule.name,atoms:molecule.atoms.map(a=>({symbol:a.symbol,x:a.x,y:a.y,z:a.z})),bonds:molecule.bonds.map(b=>[b.a,b.b,b.order])},null,2),(molecule.name||'molecule')+'.json','application/json');
+  download(formatJSONFromMol(molecule),(molecule.name||'molecule')+'.json','application/json');
 }
 function download(content,filename,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=filename;a.click();}
 function screenshot(){
@@ -1737,6 +2382,7 @@ function screenshot(){
 // ═══════════════════════════════════════════════════════════
 function openPubShotModal(){
   document.getElementById('pubshotModal').style.display='flex';
+  applyJournalPreset();
   updatePubShotPreview();
 }
 function closePubShotModal(){
@@ -1756,6 +2402,9 @@ function getPubShotSettings(){
     showAttrib: document.getElementById('ps-attrib').checked,
     borderStyle:document.getElementById('ps-border').value,
     padding:    parseInt(document.getElementById('ps-padding').value),
+    compact:    document.getElementById('ps-compact').checked,
+    orthographic: document.getElementById('ps-ortho').checked,
+    journal:    document.getElementById('ps-journal').checked,
     titleText:  document.getElementById('ps-titletext').value || (molecule?.name||'Molecule'),
     dpi:        parseInt(document.getElementById('ps-dpi').value),
   };
@@ -1873,7 +2522,7 @@ function renderPubShot(cfg, scaleFactor=1){
   // Render molecule to temporary canvas at molW x molH
   const tmpC=document.createElement('canvas');
   tmpC.width=molW; tmpC.height=molH;
-  renderMoleculeToCanvas(tmpC, scaleFactor, isLightBg);
+  renderMoleculeToCanvas(tmpC, scaleFactor, isLightBg, {compact:cfg.compact, orthographic:cfg.orthographic, pad, overlayH, scaleBarH, attribH, legendW});
   ox.drawImage(tmpC, molX, molY, molW, molH);
 
   // — Title / Formula overlay —
@@ -1981,45 +2630,46 @@ function roundRect(ctx, x, y, w, h, r){
   ctx.closePath();
 }
 
-function renderMoleculeToCanvas(targetCanvas, scaleFactor, isLightBg){
-  // Re-render molecule onto an offscreen canvas with transparent BG.
-  // try/finally guarantees all globals are restored even if _renderFull throws,
-  // so buttons are never broken by a failed export render.
-
+function renderMoleculeToCanvas(targetCanvas, scaleFactor, isLightBg, exportCfg={}){
   const prevCanvas = canvas;
   const prevCtx    = ctx;
   const prevZoom   = zoom;
   const prevPanX   = panX;
   const prevPanY   = panY;
   const prevDPR    = window.devicePixelRatio;
+  const prevOrtho  = window._pubshotOrthographic;
 
   try {
-    // _renderFull uses: scale = molecule.scale * zoom * devicePixelRatio
-    // The live canvas is physically prevDPR x its CSS size; offscreen canvas has no CSS scaling.
-    // So override devicePixelRatio=1 and scale zoom to match the logical pixel ratio instead.
     const liveLogicalW = prevCanvas.width / prevDPR;
     const scaleRatio   = targetCanvas.width / liveLogicalW;
 
     canvas           = targetCanvas;
     ctx              = targetCanvas.getContext('2d');
-    window._pubDPR = 1;
-    zoom             = prevZoom * scaleRatio;
-    panX             = prevPanX * scaleRatio;
-    panY             = prevPanY * scaleRatio;
-
+    window._pubDPR   = 1;
     window._pubshotLightBg = !!isLightBg;
+    window._pubshotOrthographic = !!exportCfg.orthographic;
+
+    if(exportCfg.compact){
+      const fit = computeCompactView({width:targetCanvas.width,height:targetCanvas.height}, 0, 0, 0, 0, 0, !!exportCfg.orthographic);
+      zoom = fit.zoom; panX = fit.panX; panY = fit.panY;
+    } else {
+      zoom = prevZoom * scaleRatio;
+      panX = prevPanX * scaleRatio;
+      panY = prevPanY * scaleRatio;
+    }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     _renderFull();
 
   } finally {
     window._pubshotLightBg = false;
+    window._pubshotOrthographic = prevOrtho;
     canvas           = prevCanvas;
     ctx              = prevCtx;
     zoom             = prevZoom;
     panX             = prevPanX;
     panY             = prevPanY;
-    window._pubDPR = null;
+    window._pubDPR   = null;
   }
 }
 
@@ -2054,18 +2704,271 @@ function pubshotCopyClipboard(){
 // ═══════════════════════════════════════════════════════════
 // EDITOR
 // ═══════════════════════════════════════════════════════════
+
+const EDITOR_DRAFT_KEY='mogadoclab_editor_draft_v2';
+const APP_STATE_KEY='mogadoclab_state_v2';
+const editorState={history:[],future:[],lastValue:'',dirty:false,lastParsedHash:'',isApplying:false};
+
+function formatXYZFromMol(mol){
+  let out=`${mol.atoms.length}\n${mol.name||'Molecule'}\n`;
+  mol.atoms.forEach(a=>{out+=`${a.symbol.padEnd(4)} ${a.x.toFixed(6).padStart(12)} ${a.y.toFixed(6).padStart(12)} ${a.z.toFixed(6).padStart(12)}\n`;});
+  return out;
+}
+function formatJSONFromMol(mol){
+  return JSON.stringify({
+    name: mol.name||'Molecule',
+    atoms: mol.atoms.map(a=>({symbol:a.symbol,x:+a.x.toFixed(6),y:+a.y.toFixed(6),z:+a.z.toFixed(6)})),
+    bonds: mol.bonds.map(b=>({a:b.a,b:b.b,order:b.order??1,type:b.type||'covalent'}))
+  },null,2);
+}
+function formatMOLFromMol(mol){
+  const name=(mol.name||'Molecule').slice(0,80);
+  const nA=Math.min(mol.atoms.length,999), nB=Math.min(mol.bonds.length,999);
+  let out=`${name}\nMOGADOCLab\nGenerated by PI-grade editor\n${String(nA).padStart(3,' ')}${String(nB).padStart(3,' ')}  0  0  0  0            999 V2000\n`;
+  mol.atoms.slice(0,999).forEach(a=>{
+    out+=`${a.x.toFixed(4).padStart(10)}${a.y.toFixed(4).padStart(10)}${a.z.toFixed(4).padStart(10)} ${a.symbol.padEnd(3)} 0  0  0  0  0  0  0  0  0  0  0  0\n`;
+  });
+  mol.bonds.slice(0,999).forEach(b=>{
+    const order=(b.order===1.5?4:Math.max(1,Math.min(3,Math.round(b.order||1))));
+    out+=`${String((b.a||0)+1).padStart(3,' ')}${String((b.b||0)+1).padStart(3,' ')}${String(order).padStart(3,' ')}  0  0  0  0\n`;
+  });
+  out+='M  END\n';
+  return out;
+}
+function formatMolTo(fmt,mol){
+  if(fmt==='json') return formatJSONFromMol(mol);
+  if(fmt==='mol') return formatMOLFromMol(mol);
+  return formatXYZFromMol(mol);
+}
+function getEditorEl(){ return document.getElementById('rawEditor'); }
+function getEditorFormat(){ return document.getElementById('editorFormat').value; }
+function editorHash(txt){ return `${txt.length}:${txt.slice(0,120)}`; }
+function editorSetValue(text,{pushHistory=false,markDirty=true}={}){
+  const el=getEditorEl();
+  if(pushHistory && !editorState.isApplying && el.value!==text){
+    editorState.history.push(el.value);
+    if(editorState.history.length>100) editorState.history.shift();
+    editorState.future.length=0;
+  }
+  editorState.isApplying=true;
+  el.value=text;
+  editorState.isApplying=false;
+  editorState.lastValue=text;
+  if(markDirty!==null) editorState.dirty=!!markDirty;
+  refreshEditorMeta();
+  saveEditorDraft();
+}
+function refreshEditorMeta(extra={}){
+  const el=getEditorEl(), val=el.value||'', lines=val?val.split('\n').length:0;
+  document.getElementById('editorFmtChip').textContent=getEditorFormat().toUpperCase();
+  document.getElementById('editorLineChip').textContent=`${lines} line${lines===1?'':'s'}`;
+  document.getElementById('editorCharChip').textContent=`${val.length} chars`;
+  const dirty=document.getElementById('editorDirtyChip');
+  dirty.textContent=editorState.dirty?'Unsaved':'Clean';
+  dirty.className='editor-chip'+(editorState.dirty?' dirty':'');
+  if(extra.validity){
+    const vc=document.getElementById('editorValidityChip');
+    vc.textContent=extra.validity.text;
+    vc.className='editor-chip '+extra.validity.cls;
+  }
+  if(extra.counts){
+    document.getElementById('editorAtomChip').textContent=`${extra.counts.atoms} atoms`;
+    document.getElementById('editorBondChip').textContent=`${extra.counts.bonds} bonds`;
+  }
+}
+function editorValidate({quiet=false}={}){
+  const text=getEditorEl().value.trim(), fmt=getEditorFormat();
+  if(!text){
+    refreshEditorMeta({validity:{text:'Empty',cls:'bad'},counts:{atoms:0,bonds:0}});
+    if(!quiet) notify('Editor is empty','error');
+    return null;
+  }
+  try{
+    const mol=parseMolecule('editor.'+fmt,text);
+    refreshEditorMeta({validity:{text:'Valid',cls:'good'},counts:{atoms:mol.atoms.length,bonds:mol.bonds.length}});
+    if(!quiet) notify(`Validated ${mol.atoms.length} atoms and ${mol.bonds.length} bonds`,'success');
+    return mol;
+  }catch(e){
+    refreshEditorMeta({validity:{text:'Invalid',cls:'bad'},counts:{atoms:0,bonds:0}});
+    if(!quiet) notify('Validation failed: '+e.message,'error');
+    return null;
+  }
+}
 function parseFromEditor(){
-  const text=document.getElementById('rawEditor').value.trim(),fmt=document.getElementById('editorFormat').value;
-  if(!text)return notify('Editor is empty','error');
-  try{loadMolecule('From editor',parseMolecule('editor.'+fmt,text));}catch(e){notify('Parse error: '+e.message,'error');}
+  const mol=editorValidate({quiet:true});
+  if(!mol) return notify('Parse error: invalid editor content','error');
+  loadMolecule('From editor',mol);
+  editorState.dirty=false;
+  editorState.lastParsedHash=editorHash(getEditorEl().value);
+  refreshEditorMeta({validity:{text:'Rendered',cls:'good'},counts:{atoms:mol.atoms.length,bonds:mol.bonds.length}});
+  saveEditorDraft();
+  notify(`Rendered ${mol.atoms.length} atoms from ${getEditorFormat().toUpperCase()} editor`,'success');
 }
 function loadEditorFromMolecule(){
   if(!molecule)return notify('No molecule loaded','error');
-  let out=`${molecule.atoms.length}\n${molecule.name||'Molecule'}\n`;
-  molecule.atoms.forEach(a=>{out+=`${a.symbol.padEnd(4)} ${a.x.toFixed(6).padStart(12)} ${a.y.toFixed(6).padStart(12)} ${a.z.toFixed(6).padStart(12)}\n`;});
-  document.getElementById('rawEditor').value=out;document.getElementById('editorFormat').value='xyz';
+  const fmt=getEditorFormat();
+  editorSetValue(formatMolTo(fmt,molecule),{pushHistory:true,markDirty:false});
+  editorState.lastParsedHash=editorHash(getEditorEl().value);
+  editorValidate({quiet:true});
+  notify(`Loaded current molecule into ${fmt.toUpperCase()} editor`,'success');
 }
-
+function editorUndo(){
+  if(!editorState.history.length) return notify('Nothing to undo','error');
+  const el=getEditorEl();
+  editorState.future.push(el.value);
+  const prev=editorState.history.pop();
+  editorSetValue(prev,{pushHistory:false,markDirty:true});
+}
+function editorRedo(){
+  if(!editorState.future.length) return notify('Nothing to redo','error');
+  const el=getEditorEl();
+  editorState.history.push(el.value);
+  const next=editorState.future.pop();
+  editorSetValue(next,{pushHistory:false,markDirty:true});
+}
+function editorPrettify(){
+  const mol=editorValidate({quiet:true});
+  if(!mol) return notify('Cannot prettify invalid content','error');
+  const pretty=formatMolTo(getEditorFormat(),{...mol,name:molecule?.name||'Molecule'});
+  editorSetValue(pretty,{pushHistory:true,markDirty:true});
+  editorValidate({quiet:true});
+  notify('Editor content normalized','success');
+}
+function editorConvertFormat(){
+  const mol=editorValidate({quiet:true}) || molecule;
+  if(!mol) return notify('Nothing valid to convert','error');
+  const fmt=getEditorFormat();
+  editorSetValue(formatMolTo(fmt,{...mol,name:mol.name||molecule?.name||'Molecule'}),{pushHistory:true,markDirty:true});
+  editorValidate({quiet:true});
+  notify(`Converted editor to ${fmt.toUpperCase()}`,'success');
+}
+function editorCopy(){
+  const val=getEditorEl().value;
+  if(!val.trim()) return notify('Editor is empty','error');
+  navigator.clipboard.writeText(val).then(()=>notify('Editor text copied','success')).catch(()=>notify('Clipboard copy failed','error'));
+}
+function editorDownload(){
+  const val=getEditorEl().value;
+  if(!val.trim()) return notify('Editor is empty','error');
+  const fmt=getEditorFormat(), mime=fmt==='json'?'application/json':'text/plain';
+  download(val,`${(molecule?.name||'molecule_editor').replace(/\s+/g,'_')}.${fmt}`,mime);
+  notify(`Saved ${fmt.toUpperCase()} editor text`,'success');
+}
+function saveEditorDraft(){
+  try{
+    const payload={text:getEditorEl().value,format:getEditorFormat(),dirty:editorState.dirty,lastParsedHash:editorState.lastParsedHash};
+    localStorage.setItem(EDITOR_DRAFT_KEY,JSON.stringify(payload));
+  }catch(_){}
+}
+function restoreEditorDraft(){
+  try{
+    const raw=localStorage.getItem(EDITOR_DRAFT_KEY);
+    if(!raw) return false;
+    const draft=JSON.parse(raw);
+    if(draft.format) document.getElementById('editorFormat').value=draft.format;
+    if(typeof draft.text==='string' && draft.text.trim()){
+      editorSetValue(draft.text,{pushHistory:false,markDirty:!!draft.dirty});
+      editorState.lastParsedHash=draft.lastParsedHash||'';
+      editorValidate({quiet:true});
+      return true;
+    }
+  }catch(_){}
+  return false;
+}
+function saveAppState(){
+  try{
+    const state={
+      theme: document.documentElement.getAttribute('data-theme')||'dark',
+      viewMode, lightingMode, colorScheme, rotMode, rotEasing,
+      rotTilt: Math.round((rotTiltAngle||0)*180/Math.PI),
+      autoRotate, showLabels, showInfo,
+      bg: document.getElementById('canvasArea').getAttribute('data-bg')||'grid',
+      atomScale: document.getElementById('atomScale').value,
+      bondWidth: document.getElementById('bondWidth').value,
+      depthFog: document.getElementById('depthFog').value,
+      glowAmt: document.getElementById('glowAmt').value,
+      rotSpeed: document.getElementById('rotSpeed').value,
+      sidebarCollapsed: document.getElementById('sidebar').classList.contains('collapsed'),
+      sidebarExpanded: document.getElementById('sidebar').classList.contains('expanded'),
+      sidebarSuperExpanded: document.getElementById('sidebar').classList.contains('super-expanded'),
+      searchExpanded: document.getElementById('searchSection')?.classList.contains('search-expanded') || false,
+      editorOpen: !document.getElementById('editorPanel').classList.contains('hidden'),
+      molecule: molecule?{
+        name:molecule.name||'Molecule',
+        atoms:molecule.atoms.map(a=>({symbol:a.symbol,x:a.x,y:a.y,z:a.z,idx:a.idx})),
+        bonds:molecule.bonds.map(b=>({a:b.a,b:b.b,order:b.order,type:b.type}))
+      }:null
+    };
+    localStorage.setItem(APP_STATE_KEY,JSON.stringify(state));
+  }catch(_){}
+}
+function restoreAppState(){
+  try{
+    const raw=localStorage.getItem(APP_STATE_KEY);
+    if(!raw) return false;
+    const s=JSON.parse(raw);
+    if(s.theme) setTheme(s.theme==='dark'?'dark':s.theme);
+    if(s.bg) setBg(s.bg);
+    if(s.viewMode) setViewMode(s.viewMode);
+    if(s.lightingMode) setLighting(s.lightingMode);
+    if(s.colorScheme) setColorScheme(s.colorScheme);
+    if(s.rotMode) setRotMode(s.rotMode);
+    if(typeof s.rotEasing==='boolean') setRotEasing(s.rotEasing);
+    if(typeof s.rotTilt==='number') { document.getElementById('rotTilt').value=s.rotTilt; setRotTilt(s.rotTilt); }
+    [['atomScale',s.atomScale],['bondWidth',s.bondWidth],['depthFog',s.depthFog],['glowAmt',s.glowAmt],['rotSpeed',s.rotSpeed]].forEach(([id,v])=>{ if(v!=null) document.getElementById(id).value=v; });
+    updateDisplay();
+    if(s.sidebarCollapsed) document.getElementById('sidebar').classList.add('collapsed');
+    if(s.sidebarExpanded) document.getElementById('sidebar').classList.add('expanded');
+    if(s.sidebarSuperExpanded) document.getElementById('sidebar').classList.add('super-expanded');
+    if(s.searchExpanded) document.getElementById('searchSection')?.classList.add('search-expanded');
+    const dbExpandBtn=document.getElementById('dbExpandBtn');
+    if(dbExpandBtn){
+      const sidebarEl=document.getElementById('sidebar');
+      if(sidebarEl?.classList.contains('super-expanded')) dbExpandBtn.textContent='⤡ Compact';
+      else if(document.getElementById('searchSection')?.classList.contains('search-expanded')) dbExpandBtn.textContent='⤢ Wider';
+      else dbExpandBtn.textContent='⤢ Expand';
+    }
+    document.getElementById('sidebarToggle').textContent=document.getElementById('sidebar').classList.contains('collapsed')?'›':'‹';
+    if(s.editorOpen) document.getElementById('editorPanel').classList.remove('hidden');
+    if(s.molecule?.atoms?.length) loadMolecule(s.molecule.name||'Recovered Molecule',{atoms:s.molecule.atoms,bonds:s.molecule.bonds||[]});
+    if(s.autoRotate && !autoRotate) toggleAutoRotate();
+    if(s.showLabels && !showLabels) toggleLabels();
+    if(s.showInfo && !showInfo) toggleInfo();
+    return true;
+  }catch(_){
+    return false;
+  }
+}
+function initEditorRegime(){
+  const ed=getEditorEl(), fmt=document.getElementById('editorFormat');
+  ed.addEventListener('input',()=>{
+    if(editorState.isApplying) return;
+    if(ed.value!==editorState.lastValue){
+      editorState.history.push(editorState.lastValue);
+      if(editorState.history.length>100) editorState.history.shift();
+      editorState.future.length=0;
+      editorState.lastValue=ed.value;
+    }
+    editorState.dirty=editorHash(ed.value)!==editorState.lastParsedHash;
+    refreshEditorMeta();
+    saveEditorDraft();
+  });
+  ed.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){ parseFromEditor(); e.preventDefault(); }
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){ editorDownload(); e.preventDefault(); }
+    if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==='z'){ editorUndo(); e.preventDefault(); }
+    if(((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y')||((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key.toLowerCase()==='z')){ editorRedo(); e.preventDefault(); }
+  });
+  fmt.addEventListener('change',()=>{
+    refreshEditorMeta();
+    if(ed.value.trim()) editorConvertFormat();
+    saveEditorDraft();
+  });
+  restoreEditorDraft();
+  if(!ed.value.trim() && molecule) loadEditorFromMolecule();
+  else refreshEditorMeta();
+  window.addEventListener('beforeunload',()=>{ saveEditorDraft(); saveAppState(); });
+}
 // ─── DRAG & DROP ──────────────────────────────────────────
 const fileDrop=document.getElementById('fileDrop');
 fileDrop.addEventListener('dragover',e=>{e.preventDefault();fileDrop.classList.add('drag-over');});
@@ -2094,6 +2997,7 @@ function clearMolecule(){
   ['statMW','statFormula'].forEach(id=>document.getElementById(id).textContent='—');
   document.getElementById('atomLegend').innerHTML='<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:var(--text-muted);">Load a molecule to see elements</div>';
   render();
+  saveAppState();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2185,6 +3089,7 @@ function setColorScheme(scheme){
     if(el)el.classList.toggle('active',s===scheme);
   });
   render();
+  saveAppState();
 }
 function getAtomDisplayColor(atom){
   if(colorScheme==='chain') return RAINBOW_COLORS[atom.idx%RAINBOW_COLORS.length];
@@ -2478,8 +3383,10 @@ function _renderFull(){
 
 // ─── INIT ─────────────────────────────────────────────────
 resizeCanvas();
-loadDemo('caffeine');
 drawBondLegends();
+const _restoredState = restoreAppState();
+if(!_restoredState) loadDemo('caffeine');
+initEditorRegime();
 
 // ═══════════════════════════════════════════════════════════
 // DRAW MOLECULE ENGINE
@@ -3342,7 +4249,7 @@ function dmSendToViewer(){
 }
 
 // Init draw modal element list on page load
-window.addEventListener('DOMContentLoaded',()=>{ /* lazy init */ });
+window.addEventListener('DOMContentLoaded',()=>{ try{updateDatabaseUI();}catch(_){} /* lazy init */ });
 
 </script>
 
@@ -3599,15 +4506,19 @@ input.ps-text:focus { border-color:var(--accent); }
 
 /* ─── LEFT PANEL ─── */
 .dm-left {
-  width:234px; flex-shrink:0;
+  width:234px; min-width:234px; flex-shrink:0;
   border-right:1px solid var(--border);
-  display:flex; flex-direction:column; overflow:hidden;
+  display:flex; flex-direction:column; overflow:auto;
   background:var(--surface);
 }
+.dm-left.expanded { width:380px; min-width:380px; }
+.dm-left::-webkit-scrollbar { height:10px; width:10px; }
+.dm-left::-webkit-scrollbar-thumb { background:var(--border2); border-radius:8px; }
 
 .dm-section {
   padding:12px 14px;
   border-bottom:1px solid var(--border);
+  overflow-x:auto;
 }
 .dm-section-title {
   font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:2.5px;
@@ -3845,13 +4756,10 @@ input.ps-text:focus { border-color:var(--accent); }
 }
 
 /* ─── CANVAS CONTEXT TOOLBAR ─── */
-.dm-canvas-toolbar {
-  position:absolute; top:12px; left:50%; transform:translateX(-50%);
-  z-index:5; display:flex; gap:3px;
-  background:rgba(8,12,18,0.88); border:1px solid var(--border2);
-  backdrop-filter:blur(12px); border-radius:10px; padding:4px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.4);
-}
+.dm-canvas-toolbar { display:none; }
+.dm-quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:6px; min-width:260px; }
+.dm-quick-actions .dm-ctx-btn { justify-content:center; }
+.dm-quick-actions .dm-ctx-btn.primary { grid-column:1/-1; }
 .dm-ctx-btn {
   background:transparent; border:1px solid transparent;
   color:var(--text-dim); font-family:'JetBrains Mono',monospace;
@@ -3963,8 +4871,24 @@ input.ps-text:focus { border-color:var(--accent); }
           </div>
           <div class="ps-row">
             <label>Padding</label>
-            <input type="range" min="0" max="80" step="4" value="32" id="ps-padding" oninput="document.getElementById('ps-padval').textContent=this.value+'px';updatePubShotPreview()" style="flex:1">
-            <span class="slider-val" id="ps-padval">32px</span>
+            <input type="range" min="0" max="80" step="4" value="24" id="ps-padding" oninput="document.getElementById('ps-padval').textContent=this.value+'px';updatePubShotPreview()" style="flex:1">
+            <span class="slider-val" id="ps-padval">24px</span>
+          </div>
+          <label class="ps-check-row"><input type="checkbox" id="ps-compact" checked onchange="updatePubShotPreview()"> Compact framing</label>
+          <label class="ps-check-row"><input type="checkbox" id="ps-ortho" checked onchange="updatePubShotPreview()"> Orthographic export</label>
+          <label class="ps-check-row"><input type="checkbox" id="ps-journal" checked onchange="applyJournalPreset();updatePubShotPreview()"> Journal-ready preset</label>
+          <div class="ps-row">
+            <label>Preset</label>
+            <select class="ps-sel" id="ps-preset" onchange="applyExportPreset(this.value)">
+              <option value="journal" selected>Journal compact</option>
+              <option value="presentation">Presentation clean</option>
+              <option value="dark">Dark showcase</option>
+              <option value="minimal">Minimal transparent</option>
+            </select>
+          </div>
+          <div class="ps-row" style="gap:6px;justify-content:flex-start;">
+            <button class="btn" onclick="exportSVG()">↓ SVG</button>
+            <button class="btn" onclick="copySVGToClipboard()">⧉ SVG</button>
           </div>
         </div>
 
@@ -4049,6 +4973,7 @@ input.ps-text:focus { border-color:var(--accent); }
         <span class="dm-pill" id="dmFormulaPill">—</span>
       </div>
       <div style="width:1px;height:24px;background:var(--border);margin:0 6px;"></div>
+      <button class="btn btn-sm" onclick="toggleDrawSidebar()" title="Expand or compact the draw tools panel">⇔ Tools</button>
       <button class="btn btn-sm" onclick="dmUndo()" title="Undo (Ctrl+Z)">↩ Undo</button>
       <button class="btn btn-sm danger" onclick="dmClearAll()" title="Clear canvas">✕ Clear</button>
       <button class="btn" onclick="dmSendToViewer()" style="background:linear-gradient(135deg,#7c3aed,#9333ea);border-color:transparent;color:#fff;font-weight:600;box-shadow:0 4px 16px rgba(124,58,237,0.45);">▶ Send to 3D</button>
@@ -4131,6 +5056,16 @@ input.ps-text:focus { border-color:var(--accent); }
           </div>
         </div>
 
+        <div class="dm-section">
+          <div class="dm-section-title">Quick Actions</div>
+          <div class="dm-quick-actions">
+            <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmZoomFit()" title="Fit all atoms to view">⊞ Fit</button>
+            <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmAddHydrogens()" title="Auto-fill H by valence">H Auto-H</button>
+            <button class="dm-ctx-btn" onclick="event.stopPropagation(); dmOptimize()" title="Force-directed layout">⟳ Optimize</button>
+            <button class="dm-ctx-btn primary" onclick="event.stopPropagation(); dmSendToViewer()">▶ View 3D</button>
+          </div>
+        </div>
+
         <!-- CONTEXT INFO -->
         <div class="dm-info" id="dmInfo">
           <b>Add Atom</b> mode<br>
@@ -4143,13 +5078,6 @@ input.ps-text:focus { border-color:var(--accent); }
       <!-- CANVAS AREA -->
       <div class="dm-canvas-wrap" id="dmCanvasWrap">
         <canvas id="drawCanvas"></canvas>
-
-        <!-- Top centre toolbar on canvas -->
-        <div class="dm-canvas-toolbar">
-          <button class="dm-ctx-btn" onclick="dmZoomFit()" title="Fit all atoms to view">⊞ Fit</button>
-          <button class="dm-ctx-btn" onclick="dmAddHydrogens()" title="Auto-fill H by valence">H Auto-H</button>
-          <button class="dm-ctx-btn" onclick="dmOptimize()" title="Force-directed layout">⟳ Optimize</button>
-          <div style="width:1px;height:14px;background:var(--border2);margin:0 2px;"></div>
           <button class="dm-ctx-btn primary" onclick="dmSendToViewer()">▶ View 3D</button>
         </div>
 
