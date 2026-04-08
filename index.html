@@ -574,6 +574,79 @@ textarea.raw-editor {
 @media (max-width: 1100px){.db-search-bar.enhanced,.search-section.search-expanded .db-search-bar.enhanced{grid-template-columns:1fr;}.db-grid{grid-template-columns:1fr;}.db-search-bar.enhanced .btn,.db-search-bar.enhanced select{width:100%;}}
 @media (max-width: 700px){.db-search-toolbar{flex-direction:column;align-items:flex-start;}.db-actions{flex-direction:column;}.db-actions .btn{width:100%;}}
 
+/* ─── LOADING SPINNER ────────────────────────────────── */
+@keyframes spinnerRotate { to { transform: rotate(360deg); } }
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.loading-spinner {
+  display:inline-block; width:14px; height:14px;
+  border:2px solid var(--border2); border-top-color:var(--accent);
+  border-radius:50%; animation:spinnerRotate 0.7s linear infinite; flex-shrink:0;
+}
+.loading-shimmer {
+  background:linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%);
+  background-size:200% 100%; animation:shimmer 1.5s ease infinite;
+}
+.btn.loading { pointer-events:none; opacity:0.7; }
+.btn.loading::after {
+  content:''; display:inline-block; width:10px; height:10px; margin-left:6px;
+  border:1.5px solid currentColor; border-top-color:transparent;
+  border-radius:50%; animation:spinnerRotate 0.6s linear infinite;
+}
+
+/* ─── SMOOTH PANEL TRANSITIONS ──────────────────────── */
+.sidebar { transition: width 0.3s cubic-bezier(0.4,0,0.2,1); }
+.editor-panel { transition: width 0.3s cubic-bezier(0.4,0,0.2,1); }
+.section-body { transition: max-height 0.25s ease, opacity 0.2s ease; overflow:hidden; }
+.section.collapsed .section-body { max-height:0 !important; opacity:0; }
+
+/* ─── NOTIFICATION IMPROVEMENTS ─────────────────────── */
+#notification { transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease; }
+#notification:not(.show) { opacity:0; pointer-events:none; }
+
+/* ─── TOOLBAR HOVER EFFECTS ─────────────────────────── */
+.toolbar .btn:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+.toolbar .btn { transition: all 0.15s cubic-bezier(0.4,0,0.2,1); }
+
+/* ─── KEYBOARD SHORTCUT HELP OVERLAY ────────────────── */
+#shortcutOverlay {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(4,8,14,0.92); backdrop-filter:blur(12px);
+  align-items:center; justify-content:center;
+}
+#shortcutOverlay.visible { display:flex; }
+.shortcut-dialog {
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:14px; padding:24px 32px; max-width:520px; width:90vw;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+.shortcut-dialog h2 {
+  font-family:'Playfair Display',serif; font-size:18px; color:var(--accent);
+  margin-bottom:16px; display:flex; align-items:center; gap:10px;
+}
+.shortcut-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; }
+.shortcut-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:5px 0; font-size:12px; color:var(--text-dim);
+}
+.shortcut-row kbd {
+  background:var(--bg); border:1px solid var(--border2); padding:3px 8px;
+  border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:10px;
+  color:var(--accent); min-width:40px; text-align:center;
+}
+
+/* ─── CANVAS LOADING OVERLAY ────────────────────────── */
+#canvasLoading {
+  position:absolute; inset:0; display:none;
+  background:rgba(8,12,18,0.7); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center; flex-direction:column; gap:12px;
+  z-index:15; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim);
+}
+#canvasLoading.visible { display:flex; }
+#canvasLoading .loading-spinner { width:28px; height:28px; border-width:3px; }
+
 @media (max-width: 1180px){
   .dm-left{width:220px;min-width:220px;max-width:280px;}
   .dm-left.expanded{width:300px;min-width:300px;max-width:320px;}
@@ -590,6 +663,295 @@ textarea.raw-editor {
   .dm-left.collapsed{max-height:0;border-right:none;border-bottom:none;}
   .dm-right{max-height:32vh;border-top:1px solid var(--border);}
   .dm-template-grid{max-height:min(28vh,320px);}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TRAJECTORY PLAYER
+   ═══════════════════════════════════════════════════════════ */
+.traj-player {
+  position: absolute;
+  bottom: 10px; left: 50%; transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 16px 8px;
+  min-width: 420px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  backdrop-filter: blur(12px);
+  z-index: 90;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  transition: opacity 0.3s, transform 0.3s;
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+}
+.traj-player.visible {
+  display: flex;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  animation: trajSlideUp 0.35s ease-out;
+}
+@keyframes trajSlideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.traj-player-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.traj-player-main {
+  gap: 6px;
+}
+.traj-player-controls {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.traj-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.traj-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.traj-play-btn {
+  min-width: 34px;
+  text-align: center;
+  font-size: 14px;
+  padding: 4px 10px;
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.traj-play-btn:hover {
+  filter: brightness(1.2);
+}
+.traj-opt-btn {
+  font-size: 11px;
+  opacity: 0.5;
+}
+.traj-opt-btn.active {
+  opacity: 1;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.traj-export-btn {
+  font-size: 11px;
+  border-color: var(--accent2);
+  color: var(--accent2);
+}
+.traj-export-btn:hover {
+  background: var(--accent2);
+  color: #fff;
+}
+.traj-close-btn {
+  margin-left: auto;
+  font-size: 13px;
+  opacity: 0.5;
+  padding: 2px 7px;
+}
+.traj-close-btn:hover {
+  opacity: 1;
+  background: #e74c3c;
+  border-color: #e74c3c;
+  color: #fff;
+}
+.traj-slider {
+  flex: 1;
+  min-width: 120px;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+.traj-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 6px rgba(99,179,237,0.5);
+  cursor: grab;
+}
+.traj-slider::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+}
+.traj-frame-count {
+  font-size: 11px;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  min-width: 70px;
+  text-align: right;
+  white-space: nowrap;
+}
+.traj-speed-group, .traj-toggle-group, .traj-export-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.traj-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.traj-speed-slider {
+  width: 60px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.traj-speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent2);
+  cursor: pointer;
+}
+.traj-speed-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  min-width: 38px;
+}
+.traj-comment-row {
+  font-size: 10px;
+  color: var(--text-muted);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-height: 0;
+}
+.traj-comment-row:empty { display: none; }
+
+/* ── GIF Export Modal ──────────────────────────────────────── */
+.traj-export-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.traj-export-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  width: 420px;
+  max-width: 92vw;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+.traj-export-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+}
+.traj-export-close {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.traj-export-close:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.traj-export-body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.traj-export-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+  align-items: center;
+}
+.traj-export-grid label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.traj-export-grid input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  width: 100%;
+}
+.traj-export-hint {
+  font-size: 10px;
+  color: var(--text-dim);
+  line-height: 1.4;
+  padding: 6px 10px;
+  background: var(--surface2);
+  border-radius: 6px;
+}
+.traj-export-progress-wrap {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.traj-export-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width 0.15s;
+}
+.traj-export-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  min-height: 16px;
+}
+.traj-export-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+/* ── Responsive adjustments for trajectory player ────────── */
+@media (max-width: 600px) {
+  .traj-player { min-width: 0; width: 96vw; padding: 8px 10px 6px; }
+  .traj-player-controls { gap: 6px; }
+  .traj-speed-group { display: none; }
+  .traj-export-card { width: 96vw; }
 }
 
 </style>
@@ -612,15 +974,16 @@ textarea.raw-editor {
       <div class="theme-dot"        data-t="neon"   onclick="setTheme('neon')"   title="Neon"></div>
       <div class="theme-dot"        data-t="forest" onclick="setTheme('forest')" title="Forest"></div>
     </div>
-    <button class="btn" onclick="toggleEditor()">≡ Editor</button>
-    <button class="btn" onclick="exportXYZ()">↓ .xyz</button>
-    <button class="btn" onclick="exportJSON()">↓ .json</button>
-    <button class="btn danger" onclick="clearMolecule()">✕</button>
+    <button class="btn" onclick="toggleShortcutHelp()" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">?</button>
+    <button class="btn" onclick="toggleEditor()" aria-label="Toggle raw editor">≡ Editor</button>
+    <button class="btn" onclick="exportXYZ()" aria-label="Export as XYZ">↓ .xyz</button>
+    <button class="btn" onclick="exportJSON()" aria-label="Export as JSON">↓ .json</button>
+    <button class="btn danger" onclick="clearMolecule()" aria-label="Clear molecule">✕</button>
   </div>
 </header>
 
 <div class="app-body">
-  <div class="sidebar" id="sidebar">
+  <aside class="sidebar" id="sidebar" aria-label="Viewer controls and settings">
     <div class="sidebar-scroll">
 
       <div class="section">
@@ -745,6 +1108,7 @@ textarea.raw-editor {
             <button class="demo-btn" onclick="loadDemo('aspirin')">💊 Aspirin <span class="df">C₉H₈O₄</span></button>
             <button class="demo-btn" onclick="loadDemo('glucose')">🍬 Glucose <span class="df">C₆H₁₂O₆</span></button>
             <button class="demo-btn" onclick="loadDemo('alanine')">🧬 Alanine <span class="df">C₃H₇NO₂</span></button>
+            <button class="demo-btn" onclick="loadDemoTrajectory()" style="border-color:var(--accent2);color:var(--accent2);" title="Load a multi-frame water vibration trajectory to test the animation player">🎬 Trajectory Demo <span class="df">H₂O vibration</span></button>
           </div>
         </div>
       </div>
@@ -970,12 +1334,12 @@ textarea.raw-editor {
       </div>
 
     </div>
-  </div>
+  </aside>
 
   <!-- CANVAS -->
-  <div class="canvas-wrap" id="canvasArea" data-bg="grid">
-    <div class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle sidebar">‹</div>
-    <canvas id="molCanvas"></canvas>
+  <main class="canvas-wrap" id="canvasArea" data-bg="grid" role="main" aria-label="3D molecular visualization">
+    <div class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle sidebar" role="button" aria-label="Toggle sidebar" tabindex="0">‹</div>
+    <canvas id="molCanvas" aria-label="Molecular structure canvas"></canvas>
 
     <div class="empty-state" id="emptyState">
       <div class="empty-hex">
@@ -983,7 +1347,7 @@ textarea.raw-editor {
         <div class="empty-hex-inner">⬡</div>
       </div>
       <div class="empty-title">No Structure Loaded</div>
-      <div class="empty-sub">Drop a structure file, paste raw output, use Quick Load, or query a scientific database</div>
+      <div class="empty-sub">Drop a structure file, paste raw output, use Quick Load, or query a scientific database.<br><span style="color:var(--text-muted);font-size:10px;margin-top:6px;display:inline-block;">Press <kbd style="background:var(--surface2);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:9px;color:var(--accent);">?</kbd> for keyboard shortcuts</span></div>
     </div>
 
     <div class="hud" id="hud">
@@ -992,13 +1356,13 @@ textarea.raw-editor {
     </div>
     <div class="canvas-info" id="canvasInfo"></div>
 
-    <div class="toolbar">
-      <button class="btn btn-sm" onclick="resetView()" title="Reset (R)">⟳ Reset</button>
-      <button class="btn btn-sm" id="btnRotate" onclick="toggleAutoRotate()" title="Rotate (Space)">⟲ Rotate</button>
-      <button class="btn btn-sm" id="btnLabels" onclick="toggleLabels()" title="Labels (L)">A Labels</button>
-      <button class="btn btn-sm" id="btnInfo"   onclick="toggleInfo()" title="Info (I)">ℹ Info</button>
-      <button class="btn btn-sm" onclick="centerMolecule()" title="Center">⊕ Center</button>
-      <button class="btn btn-sm" onclick="screenshot()" title="Screenshot (S)">📷</button>
+    <div class="toolbar" role="toolbar" aria-label="Molecule viewer controls">
+      <button class="btn btn-sm" onclick="resetView()" title="Reset (R)" aria-label="Reset view">⟳ Reset</button>
+      <button class="btn btn-sm" id="btnRotate" onclick="toggleAutoRotate()" title="Rotate (Space)" aria-label="Toggle auto-rotation">⟲ Rotate</button>
+      <button class="btn btn-sm" id="btnLabels" onclick="toggleLabels()" title="Labels (L)" aria-label="Toggle atom labels">A Labels</button>
+      <button class="btn btn-sm" id="btnInfo"   onclick="toggleInfo()" title="Info (I)" aria-label="Toggle info overlay">ℹ Info</button>
+      <button class="btn btn-sm" onclick="centerMolecule()" title="Center" aria-label="Center molecule">⊕ Center</button>
+      <button class="btn btn-sm" onclick="screenshot()" title="Screenshot (S)" aria-label="Take screenshot">📷</button>
       <div style="width:1px;height:14px;background:var(--border2);margin:0 2px;flex-shrink:0;"></div>
       <button class="btn btn-sm" id="btnMeasureDist"  onclick="startMeasure('distance')"  title="Bond Length (2 atoms)">📏 Length</button>
       <button class="btn btn-sm" id="btnMeasureAngle" onclick="startMeasure('angle')"     title="Bond Angle (3 atoms)">📐 Angle</button>
@@ -1047,6 +1411,74 @@ textarea.raw-editor {
 
     <!-- SNAPSHOT STRIP -->
     <div id="snapshotStrip"></div>
+
+    <!-- TRAJECTORY PLAYER BAR -->
+    <div id="trajectoryPlayer" class="traj-player">
+      <div class="traj-player-row traj-player-main">
+        <button class="traj-btn" id="trajPrevBtn" onclick="trajPrev()" title="Previous frame (←)">⏮</button>
+        <button class="traj-btn traj-play-btn" id="trajPlayBtn" onclick="trajTogglePlay()" title="Play (Space)">▶</button>
+        <button class="traj-btn" id="trajNextBtn" onclick="trajNext()" title="Next frame (→)">⏭</button>
+        <input type="range" id="trajSlider" class="traj-slider" min="0" max="1" value="0"
+               oninput="trajGoToFrame(parseInt(this.value))" title="Scrub frames">
+        <span class="traj-frame-count" id="trajFrameCount">1 / 1</span>
+      </div>
+      <div class="traj-player-row traj-player-controls">
+        <div class="traj-speed-group">
+          <label class="traj-label">Speed</label>
+          <input type="range" id="trajSpeedSlider" class="traj-speed-slider" min="1" max="30" value="5"
+                 oninput="trajSetSpeed(this.value)">
+          <span class="traj-speed-label" id="trajSpeedLabel">5 fps</span>
+        </div>
+        <div class="traj-toggle-group">
+          <button class="traj-btn traj-opt-btn active" id="trajLoopBtn" onclick="trajToggleLoop()" title="Loop playback">🔁 Loop</button>
+          <button class="traj-btn traj-opt-btn" id="trajBounceBtn" onclick="trajToggleBounce()" title="Bounce (ping-pong)">🔀 Bounce</button>
+        </div>
+        <div class="traj-export-group">
+          <button class="traj-btn traj-export-btn" onclick="exportTrajectoryGIF()" title="Export animation as GIF">🎬 GIF</button>
+          <button class="traj-btn traj-export-btn" onclick="exportTrajectoryFramePNG()" title="Export current frame as PNG">📷 PNG</button>
+        </div>
+        <button class="traj-btn traj-close-btn" onclick="trajStop(); clearTrajectory();" title="Close trajectory">✕</button>
+      </div>
+      <div class="traj-comment-row" id="trajComment"></div>
+    </div>
+  </main>
+
+  <!-- GIF EXPORT MODAL -->
+  <div id="trajExportModal" class="traj-export-modal" style="display:none;">
+    <div class="traj-export-card">
+      <div class="traj-export-header">
+        <span>Export Trajectory GIF</span>
+        <span class="traj-export-close" onclick="closeTrajExportModal()">✕</span>
+      </div>
+      <div class="traj-export-body">
+        <div class="traj-export-grid">
+          <label>Width (px)</label>
+          <input type="number" id="gifWidth" value="600" min="100" max="2000" step="50">
+          <label>Height (px)</label>
+          <input type="number" id="gifHeight" value="450" min="100" max="2000" step="50">
+          <label>Frame rate</label>
+          <input type="number" id="gifFps" value="5" min="1" max="30">
+          <label>Start frame</label>
+          <input type="number" id="gifStartFrame" value="1" min="1">
+          <label>End frame</label>
+          <input type="number" id="gifEndFrame" value="1">
+          <label>Frame step</label>
+          <input type="number" id="gifFrameStep" value="1" min="1" max="100">
+        </div>
+        <div class="traj-export-hint">
+          Tip: Increase frame step to skip frames and reduce file size. A step of 2 renders every other frame.
+        </div>
+        <div class="traj-export-progress-wrap">
+          <div class="traj-export-progress-bar" id="trajExportProgress" style="width:0%"></div>
+        </div>
+        <div class="traj-export-label" id="trajExportLabel"></div>
+        <div class="traj-export-actions">
+          <button class="btn btn-sm" onclick="closeTrajExportModal()">Cancel</button>
+          <button class="btn btn-sm" style="background:var(--accent);color:#fff;border-color:var(--accent);" onclick="updateGifFrameRange(); doExportGIF();">Export GIF</button>
+          <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="exportTrajectoryFramePNG()">Save Current Frame PNG</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- RAW EDITOR -->
@@ -1111,6 +1543,38 @@ H  0.000 -0.757 -0.468"></textarea>
       <button class="btn" onclick="loadEditorFromMolecule()">← 3D→Text</button>
     </div>
   </div>
+</div>
+
+<!-- KEYBOARD SHORTCUT OVERLAY -->
+<div id="shortcutOverlay" onclick="if(event.target===this)toggleShortcutHelp()">
+  <div class="shortcut-dialog">
+    <h2><span style="font-size:22px;">⌨</span> Keyboard Shortcuts</h2>
+    <div class="shortcut-grid">
+      <div class="shortcut-row"><span>Rotate view</span><kbd>Drag</kbd></div>
+      <div class="shortcut-row"><span>Zoom</span><kbd>Scroll</kbd></div>
+      <div class="shortcut-row"><span>Pan</span><kbd>Right drag</kbd></div>
+      <div class="shortcut-row"><span>Reset view</span><kbd>R</kbd></div>
+      <div class="shortcut-row"><span>Auto-rotate</span><kbd>Space</kbd></div>
+      <div class="shortcut-row"><span>Nudge X/Y</span><kbd>Arrows</kbd></div>
+      <div class="shortcut-row"><span>Toggle labels</span><kbd>L</kbd></div>
+      <div class="shortcut-row"><span>Screenshot</span><kbd>S</kbd></div>
+      <div class="shortcut-row"><span>Info overlay</span><kbd>I</kbd></div>
+      <div class="shortcut-row"><span>Atom list</span><kbd>A</kbd></div>
+      <div class="shortcut-row"><span>Snapshot</span><kbd>P</kbd></div>
+      <div class="shortcut-row"><span>Show this help</span><kbd>?</kbd></div>
+      <div class="shortcut-row"><span>Cancel / Exit</span><kbd>Esc</kbd></div>
+      <div class="shortcut-row"><span>Editor: Parse</span><kbd>Ctrl+Enter</kbd></div>
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <button class="btn" onclick="toggleShortcutHelp()" style="padding:8px 20px;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- CANVAS LOADING OVERLAY -->
+<div id="canvasLoading">
+  <div class="loading-spinner"></div>
+  <span id="canvasLoadingText">Loading structure...</span>
 </div>
 
 <div id="notification"><span id="notifIcon" style="font-size:14px;"></span><span id="notifMsg"></span></div>
@@ -1369,6 +1833,10 @@ function importElementColors(e){
 // ═══════════════════════════════════════════════════════════
 let molecule=null, viewMode='ballstick', autoRotate=false, showLabels=false, showInfo=false;
 let rotX=0.4, rotY=0, zoom=1, panX=0, panY=0, rotSpeedVal=0.3, lightingMode='standard';
+// ── Trajectory / multi-frame state ─────────────────────────
+let trajectoryFrames=[], trajCurrentFrame=0, trajPlaying=false, trajPlayTimer=null;
+let trajFPS=5, trajLoop=true, trajBounce=false, trajDirection=1;
+let trajName='', trajGlobalScale=null;
 // ── Rotation state ──────────────────────────────────────────
 let rotAxisX=0, rotAxisY=1, rotAxisZ=0;   // current rotation axis (unit-ish)
 // Bond display
@@ -1396,12 +1864,14 @@ function renderImportDetails(meta){
   el.innerHTML=`<strong>${src}</strong> · ${fmt}\nFile: ${name}\nStatus: ${conf}${extra.length?' · '+extra.join(' · '):''}`;
 }
 
+let _resizeTimer=null;
+function resizeCanvasDebounced(){clearTimeout(_resizeTimer);_resizeTimer=setTimeout(resizeCanvas,60);}
 function resizeCanvas() {
   const a=document.getElementById('canvasArea');
   canvas.width=a.clientWidth*devicePixelRatio; canvas.height=a.clientHeight*devicePixelRatio;
   canvas.style.width=a.clientWidth+'px'; canvas.style.height=a.clientHeight+'px'; render();
 }
-window.addEventListener('resize',resizeCanvas);
+window.addEventListener('resize',resizeCanvasDebounced);
 
 // ═══════════════════════════════════════════════════════════
 // PARSERS
@@ -1528,6 +1998,45 @@ function parseXYZ(text, meta={}) {
     if(p.length>=4) atoms.push(makeAtom(p[0],p[1],p[2],p[3],atoms.length));
   }
   return finalizeMolecule(atoms,[],{format:'xyz',source:'XYZ',...meta});
+}
+
+function parseMultiFrameXYZ(text, meta={}) {
+  const lines = text.trim().split(/\r?\n/);
+  const frames = [];
+  let i = 0;
+  while (i < lines.length) {
+    const nLine = (lines[i] || '').trim();
+    if (!nLine) { i++; continue; }
+    const n = parseInt(nLine);
+    if (!Number.isFinite(n) || n <= 0) { i++; continue; }
+    if (i + 1 + n >= lines.length && frames.length > 0) break; // incomplete trailing frame
+    const comment = (lines[i + 1] || '').trim();
+    const atoms = [];
+    for (let j = i + 2; j < i + 2 + n && j < lines.length; j++) {
+      const p = lines[j].trim().split(/\s+/);
+      if (p.length >= 4) atoms.push(makeAtom(p[0], p[1], p[2], p[3], atoms.length));
+    }
+    if (atoms.length > 0) {
+      frames.push(finalizeMolecule(atoms, [], {
+        format: 'xyz', source: 'Multi-frame XYZ',
+        frameIndex: frames.length, comment, ...meta
+      }));
+    }
+    i += 2 + n;
+  }
+  return frames;
+}
+
+function countXYZFrames(text) {
+  const lines = text.trim().split(/\r?\n/);
+  let count = 0, i = 0;
+  while (i < lines.length) {
+    const n = parseInt((lines[i] || '').trim());
+    if (!Number.isFinite(n) || n <= 0) { i++; continue; }
+    count++;
+    i += 2 + n;
+  }
+  return count;
 }
 function parseMOL(text, meta={}) {
   const lines=text.split(/\r?\n/), c=(lines[3]||'').trim().split(/\s+/);
@@ -1930,6 +2439,7 @@ function parseMolecule(name,text) {
 // ═══════════════════════════════════════════════════════════
 function loadMolecule(name, mol) {
   if(!mol?.atoms?.length) throw new Error('No atoms were parsed from the input');
+  hideCanvasLoading();
   let cx=0,cy=0,cz=0;
   mol.atoms.forEach(a=>{cx+=a.x;cy+=a.y;cz+=a.z;});
   cx/=mol.atoms.length;cy/=mol.atoms.length;cz/=mol.atoms.length;
@@ -1950,48 +2460,575 @@ function loadMolecule(name, mol) {
 function handleFileLoad(evt) {
   const file=evt.target.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=e=>{try{const mol=parseMolecule(file.name,e.target.result);loadMolecule(file.name.replace(/\.[^.]+$/,''),mol);}catch(err){notify('Import failed: '+err.message,'error');}};
+  reader.onload=e=>{
+    try {
+      const text = e.target.result;
+      const baseName = file.name.replace(/\.[^.]+$/,'');
+      const fmt = detectFormat(file.name, text);
+      // Check for multi-frame XYZ
+      if (fmt === 'xyz' && countXYZFrames(text) > 1) {
+        const frames = parseMultiFrameXYZ(text, {inputName: file.name, importedAt: new Date().toISOString()});
+        if (frames.length > 1) {
+          loadTrajectory(baseName, frames);
+          return;
+        }
+      }
+      const mol = parseMolecule(file.name, text);
+      loadMolecule(baseName, mol);
+    } catch(err) {
+      notify('Import failed: '+err.message,'error');
+    }
+  };
   reader.readAsText(file);
 }
 
 // ═══════════════════════════════════════════════════════════
-// PUBCHEM
+// TRAJECTORY / MULTI-FRAME PLAYBACK
 // ═══════════════════════════════════════════════════════════
-async function searchPubChem() {
-  const q=document.getElementById('pubchemInput').value.trim();
-  if(!q)return notify('Enter a compound name','error');
-  const prog=document.getElementById('searchProgress'), fill=document.getElementById('searchFill');
-  prog.style.display='block'; fill.style.width='20%';
-  try {
-    const cidRes=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(q)}/cids/JSON`);
-    if(!cidRes.ok)throw new Error('Compound not found');
-    const cidData=await cidRes.json();
-    const cid=cidData.IdentifierList.CID[0];
-    fill.style.width='50%';
-    const xyzRes=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/record/JSON?record_type=3d`);
-    fill.style.width='80%';
-    if(xyzRes.ok){
-      const xyzData=await xyzRes.json();
-      const atoms3d=xyzData.PC_Compounds?.[0]?.coords?.[0]?.conformers?.[0];
-      const atomsList=xyzData.PC_Compounds?.[0]?.atoms;
-      const bonds3d=xyzData.PC_Compounds?.[0]?.bonds;
-      if(atoms3d&&atomsList){
-        const EN={1:'H',2:'He',3:'Li',4:'Be',5:'B',6:'C',7:'N',8:'O',9:'F',10:'Ne',11:'Na',12:'Mg',13:'Al',14:'Si',15:'P',16:'S',17:'Cl',18:'Ar',19:'K',20:'Ca',26:'Fe',27:'Co',28:'Ni',29:'Cu',30:'Zn',35:'Br',53:'I',79:'Au',78:'Pt'};
-        const xs=atoms3d.x,ys=atoms3d.y,zs=atoms3d.z||xs.map(()=>0);
-        const atoms=atomsList.element.map((en,i)=>({symbol:EN[en]||'C',x:xs[i],y:ys[i],z:zs[i],idx:i}));
-        let bonds=[];
-        if(bonds3d){const a1=bonds3d.aid1,a2=bonds3d.aid2,ord=bonds3d.order||[];for(let i=0;i<a1.length;i++)bonds.push({a:a1[i]-1,b:a2[i]-1,order:ord[i]||1});}
-        if(!bonds.length)bonds=autoDetectBonds(atoms);
-        fill.style.width='100%';
-        setTimeout(()=>{prog.style.display='none';fill.style.width='0%';},500);
-        loadMolecule(q.charAt(0).toUpperCase()+q.slice(1),{atoms,bonds});return;
+function loadTrajectory(name, frames) {
+  if (!frames || frames.length === 0) return notify('No frames found', 'error');
+  trajStop();
+  trajectoryFrames = frames;
+  trajCurrentFrame = 0;
+  trajName = name;
+  trajDirection = 1;
+  // Compute a unified scale from all frames so zooming stays consistent
+  let globalMaxR = 0;
+  frames.forEach(f => {
+    let cx=0,cy=0,cz=0;
+    f.atoms.forEach(a=>{cx+=a.x;cy+=a.y;cz+=a.z;});
+    cx/=f.atoms.length;cy/=f.atoms.length;cz/=f.atoms.length;
+    f.atoms.forEach(a=>{a.x-=cx;a.y-=cy;a.z-=cz;});
+    let maxR=0;
+    f.atoms.forEach(a=>{const r=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z);if(r>maxR)maxR=r;});
+    if(maxR>globalMaxR) globalMaxR=maxR;
+  });
+  trajGlobalScale = globalMaxR>0 ? 120/globalMaxR : 60;
+  frames.forEach(f => { f.scale = trajGlobalScale; f.name = name; });
+  // Load first frame
+  trajGoToFrame(0);
+  showTrajectoryPlayer();
+  notify(`Loaded trajectory "${name}" — ${frames.length} frames, ${frames[0].atoms.length} atoms/frame`, 'success');
+}
+
+function trajGoToFrame(idx) {
+  if (!trajectoryFrames.length) return;
+  idx = Math.max(0, Math.min(idx, trajectoryFrames.length - 1));
+  trajCurrentFrame = idx;
+  const frame = trajectoryFrames[idx];
+  frame.scale = trajGlobalScale || frame.scale;
+  frame.name = trajName;
+  molecule = frame;
+  lastImportMeta = {...(frame.meta||{}), source: frame.meta?.source||'Multi-frame XYZ',
+    format:'xyz', frameInfo: `Frame ${idx+1} / ${trajectoryFrames.length}`,
+    comment: frame.meta?.comment || ''};
+  document.getElementById('emptyState').style.display = 'none';
+  const mb = document.getElementById('moleculeName');
+  mb.textContent = `${trajName} [${idx+1}/${trajectoryFrames.length}]`;
+  mb.classList.add('loaded');
+  updateStats(); updateLegend(); updateCanvasInfo(); render();
+  renderImportDetails(lastImportMeta);
+  // Update player UI
+  const slider = document.getElementById('trajSlider');
+  if (slider) { slider.max = trajectoryFrames.length - 1; slider.value = idx; }
+  const counter = document.getElementById('trajFrameCount');
+  if (counter) counter.textContent = `${idx+1} / ${trajectoryFrames.length}`;
+  const comment = document.getElementById('trajComment');
+  if (comment) comment.textContent = frame.meta?.comment || '';
+}
+
+function trajNext() {
+  if (!trajectoryFrames.length) return;
+  if (trajBounce) {
+    const next = trajCurrentFrame + trajDirection;
+    if (next >= trajectoryFrames.length) { trajDirection = -1; }
+    else if (next < 0) { trajDirection = 1; }
+    trajGoToFrame(trajCurrentFrame + trajDirection);
+  } else {
+    let next = trajCurrentFrame + 1;
+    if (next >= trajectoryFrames.length) {
+      if (trajLoop) next = 0; else { trajStop(); return; }
+    }
+    trajGoToFrame(next);
+  }
+}
+
+function trajPrev() {
+  if (!trajectoryFrames.length) return;
+  let prev = trajCurrentFrame - 1;
+  if (prev < 0) prev = trajLoop ? trajectoryFrames.length - 1 : 0;
+  trajGoToFrame(prev);
+}
+
+function trajPlay() {
+  if (!trajectoryFrames.length) return;
+  if (trajPlaying) return;
+  trajPlaying = true;
+  trajDirection = 1;
+  const btn = document.getElementById('trajPlayBtn');
+  if (btn) { btn.textContent = '⏸'; btn.title = 'Pause'; }
+  trajPlayTimer = setInterval(() => trajNext(), 1000 / trajFPS);
+}
+
+function trajPause() {
+  trajPlaying = false;
+  if (trajPlayTimer) { clearInterval(trajPlayTimer); trajPlayTimer = null; }
+  const btn = document.getElementById('trajPlayBtn');
+  if (btn) { btn.textContent = '▶'; btn.title = 'Play'; }
+}
+
+function trajTogglePlay() {
+  if (trajPlaying) trajPause(); else trajPlay();
+}
+
+function trajStop() {
+  trajPause();
+  const player = document.getElementById('trajectoryPlayer');
+  if (player) player.classList.remove('visible');
+}
+
+function trajSetSpeed(fps) {
+  trajFPS = Math.max(1, Math.min(60, parseInt(fps) || 5));
+  const lbl = document.getElementById('trajSpeedLabel');
+  if (lbl) lbl.textContent = trajFPS + ' fps';
+  if (trajPlaying) {
+    clearInterval(trajPlayTimer);
+    trajPlayTimer = setInterval(() => trajNext(), 1000 / trajFPS);
+  }
+}
+
+function trajToggleLoop() {
+  trajLoop = !trajLoop;
+  const btn = document.getElementById('trajLoopBtn');
+  if (btn) btn.classList.toggle('active', trajLoop);
+}
+
+function trajToggleBounce() {
+  trajBounce = !trajBounce;
+  const btn = document.getElementById('trajBounceBtn');
+  if (btn) btn.classList.toggle('active', trajBounce);
+  if (trajBounce) trajDirection = 1;
+}
+
+function showTrajectoryPlayer() {
+  const player = document.getElementById('trajectoryPlayer');
+  if (!player) return;
+  player.classList.add('visible');
+  const slider = document.getElementById('trajSlider');
+  if (slider) { slider.max = trajectoryFrames.length - 1; slider.value = 0; }
+  const counter = document.getElementById('trajFrameCount');
+  if (counter) counter.textContent = `1 / ${trajectoryFrames.length}`;
+  const spdSlider = document.getElementById('trajSpeedSlider');
+  if (spdSlider) spdSlider.value = trajFPS;
+  const lbl = document.getElementById('trajSpeedLabel');
+  if (lbl) lbl.textContent = trajFPS + ' fps';
+}
+
+function clearTrajectory() {
+  trajStop();
+  trajectoryFrames = [];
+  trajCurrentFrame = 0;
+  trajGlobalScale = null;
+  trajName = '';
+}
+
+// ── Trajectory Export: GIF ──────────────────────────────────
+// Lightweight GIF encoder (LZW-based, no external dependency)
+function GIFEncoder(width, height) {
+  const pages = [];
+  const delays = [];
+  let transparent = null;
+  let repeat = 0;
+
+  function addFrame(imageData, delay=100) {
+    const pixels = imageData.data;
+    // Build color table from frame (max 256 colors via median-cut quantization)
+    const {indexed, palette} = quantizeFrame(pixels, width, height);
+    pages.push({indexed, palette, delay: Math.round(delay/10)});
+  }
+
+  function quantizeFrame(pixels, w, h) {
+    // Simple popularity quantization: pick top 255 colors + 1 transparent
+    const colorMap = new Map();
+    const n = w * h;
+    for (let i = 0; i < n; i++) {
+      const r = pixels[i*4], g = pixels[i*4+1], b = pixels[i*4+2];
+      // Reduce to 5-bit per channel for grouping
+      const key = ((r>>3)<<10) | ((g>>3)<<5) | (b>>3);
+      const entry = colorMap.get(key);
+      if (entry) { entry.count++; entry.r+=r; entry.g+=g; entry.b+=b; }
+      else colorMap.set(key, {count:1, r, g, b});
+    }
+    const sorted = [...colorMap.values()].sort((a,b) => b.count - a.count).slice(0, 256);
+    const palette = new Uint8Array(256 * 3);
+    sorted.forEach((c, i) => {
+      palette[i*3]   = Math.round(c.r / c.count);
+      palette[i*3+1] = Math.round(c.g / c.count);
+      palette[i*3+2] = Math.round(c.b / c.count);
+    });
+    // Map pixels to palette indices
+    const indexed = new Uint8Array(n);
+    for (let i = 0; i < n; i++) {
+      const r = pixels[i*4], g = pixels[i*4+1], b = pixels[i*4+2];
+      let bestIdx = 0, bestDist = Infinity;
+      const len = Math.min(sorted.length, 256);
+      for (let j = 0; j < len; j++) {
+        const dr = r - palette[j*3], dg = g - palette[j*3+1], db = b - palette[j*3+2];
+        const d = dr*dr + dg*dg + db*db;
+        if (d < bestDist) { bestDist = d; bestIdx = j; }
+      }
+      indexed[i] = bestIdx;
+    }
+    return {indexed, palette};
+  }
+
+  function lzwEncode(indexed, colorDepth) {
+    const clearCode = 1 << colorDepth;
+    const eoiCode = clearCode + 1;
+    let codeSize = colorDepth + 1;
+    let nextCode = eoiCode + 1;
+    const maxCode = 4095;
+    const table = new Map();
+    const output = [];
+    let buffer = 0, bufBits = 0;
+
+    function emit(code) {
+      buffer |= (code << bufBits);
+      bufBits += codeSize;
+      while (bufBits >= 8) {
+        output.push(buffer & 0xFF);
+        buffer >>= 8;
+        bufBits -= 8;
       }
     }
-    throw new Error('No 3D conformer available');
-  } catch(err){prog.style.display='none';fill.style.width='0%';notify(err.message,'error');}
+
+    // Initialize table
+    for (let i = 0; i < clearCode; i++) table.set(String(i), i);
+    emit(clearCode);
+
+    let prefix = String(indexed[0]);
+    for (let i = 1; i < indexed.length; i++) {
+      const c = String(indexed[i]);
+      const key = prefix + ',' + c;
+      if (table.has(key)) {
+        prefix = key;
+      } else {
+        emit(table.get(prefix));
+        if (nextCode <= maxCode) {
+          table.set(key, nextCode++);
+          if (nextCode > (1 << codeSize) && codeSize < 12) codeSize++;
+        } else {
+          emit(clearCode);
+          table.clear();
+          for (let j = 0; j < clearCode; j++) table.set(String(j), j);
+          nextCode = eoiCode + 1;
+          codeSize = colorDepth + 1;
+        }
+        prefix = c;
+      }
+    }
+    emit(table.get(prefix));
+    emit(eoiCode);
+    if (bufBits > 0) output.push(buffer & 0xFF);
+    return new Uint8Array(output);
+  }
+
+  function toBlob() {
+    const buf = [];
+    // GIF Header
+    buf.push(0x47,0x49,0x46,0x38,0x39,0x61); // GIF89a
+    // Logical Screen Descriptor
+    buf.push(width&0xFF,(width>>8)&0xFF, height&0xFF,(height>>8)&0xFF);
+    buf.push(0x70, 0x00, 0x00); // no GCT, 8-bit color depth, bg=0, aspect=0
+    // Netscape extension for looping
+    buf.push(0x21,0xFF,0x0B);
+    const ns = 'NETSCAPE2.0';
+    for(let i=0;i<ns.length;i++) buf.push(ns.charCodeAt(i));
+    buf.push(0x03, 0x01, repeat&0xFF, (repeat>>8)&0xFF, 0x00);
+
+    for (const page of pages) {
+      const {indexed, palette, delay} = page;
+      const palSize = 256;
+      const colorDepth = 8;
+      // Graphic Control Extension
+      buf.push(0x21,0xF9,0x04, 0x00, delay&0xFF,(delay>>8)&0xFF, 0x00, 0x00);
+      // Image Descriptor with local color table
+      buf.push(0x2C, 0,0,0,0, width&0xFF,(width>>8)&0xFF, height&0xFF,(height>>8)&0xFF);
+      buf.push(0x87); // local color table, 256 entries
+      // Local Color Table
+      for(let i=0;i<palSize*3;i++) buf.push(palette[i]);
+      // LZW data
+      const minCode = colorDepth;
+      buf.push(minCode);
+      const lzw = lzwEncode(indexed, minCode);
+      // Sub-blocks
+      let offset=0;
+      while(offset<lzw.length){
+        const chunk = Math.min(255, lzw.length-offset);
+        buf.push(chunk);
+        for(let i=0;i<chunk;i++) buf.push(lzw[offset+i]);
+        offset+=chunk;
+      }
+      buf.push(0x00); // block terminator
+    }
+    buf.push(0x3B); // Trailer
+    return new Blob([new Uint8Array(buf)], {type:'image/gif'});
+  }
+
+  return {addFrame, toBlob};
+}
+
+async function exportTrajectoryGIF() {
+  if (trajectoryFrames.length < 2) return notify('Need multi-frame trajectory for GIF export', 'error');
+  const modal = document.getElementById('trajExportModal');
+  // Pre-fill frame range
+  const endEl = document.getElementById('gifEndFrame');
+  if (endEl) endEl.value = trajectoryFrames.length;
+  const startEl = document.getElementById('gifStartFrame');
+  if (startEl) startEl.value = 1;
+  const fpsEl = document.getElementById('gifFps');
+  if (fpsEl) fpsEl.value = trajFPS;
+  const progBar = document.getElementById('trajExportProgress');
+  if (progBar) progBar.style.width = '0%';
+  const progLabel = document.getElementById('trajExportLabel');
+  if (progLabel) progLabel.textContent = '';
+  if (modal) modal.style.display = 'flex';
+}
+
+async function doExportGIF() {
+  if (trajectoryFrames.length < 2) return;
+  const modal = document.getElementById('trajExportModal');
+  const progBar = document.getElementById('trajExportProgress');
+  const progLabel = document.getElementById('trajExportLabel');
+  const gifWidth = parseInt(document.getElementById('gifWidth')?.value) || 600;
+  const gifHeight = parseInt(document.getElementById('gifHeight')?.value) || 450;
+  const gifFps = parseInt(document.getElementById('gifFps')?.value) || trajFPS;
+  const startFrame = parseInt(document.getElementById('gifStartFrame')?.value) || 1;
+  const endFrame = parseInt(document.getElementById('gifEndFrame')?.value) || trajectoryFrames.length;
+  const frameStep = parseInt(document.getElementById('gifFrameStep')?.value) || 1;
+  const delay = Math.round(1000 / gifFps);
+
+  // Create offscreen canvas
+  const offCanvas = document.createElement('canvas');
+  offCanvas.width = gifWidth; offCanvas.height = gifHeight;
+  const offCtx = offCanvas.getContext('2d');
+
+  const encoder = GIFEncoder(gifWidth, gifHeight);
+  const savedMol = molecule;
+  const savedFrame = trajCurrentFrame;
+
+  const framesToRender = [];
+  for (let i = startFrame - 1; i < endFrame && i < trajectoryFrames.length; i += frameStep) {
+    framesToRender.push(i);
+  }
+
+  if (progBar) { progBar.style.width = '0%'; }
+  if (progLabel) progLabel.textContent = `Rendering frame 0 / ${framesToRender.length}...`;
+
+  for (let fi = 0; fi < framesToRender.length; fi++) {
+    const idx = framesToRender[fi];
+    const frame = trajectoryFrames[idx];
+    frame.scale = trajGlobalScale || frame.scale;
+    molecule = frame;
+    // Render to offscreen canvas
+    renderToCanvas(offCtx, gifWidth, gifHeight);
+    const imageData = offCtx.getImageData(0, 0, gifWidth, gifHeight);
+    encoder.addFrame(imageData, delay);
+    if (progBar) progBar.style.width = ((fi+1)/framesToRender.length*100) + '%';
+    if (progLabel) progLabel.textContent = `Rendering frame ${fi+1} / ${framesToRender.length}...`;
+    // Yield to UI
+    await new Promise(r => setTimeout(r, 0));
+  }
+
+  // Restore state
+  molecule = savedMol;
+  trajGoToFrame(savedFrame);
+
+  if (progLabel) progLabel.textContent = 'Encoding GIF...';
+  await new Promise(r => setTimeout(r, 10));
+
+  const blob = encoder.toBlob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${trajName||'trajectory'}_animation.gif`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  if (modal) modal.style.display = 'none';
+  notify(`GIF exported — ${framesToRender.length} frames, ${(blob.size/1024).toFixed(0)} KB`, 'success');
+}
+
+function renderToCanvas(ctx, w, h) {
+  // Render current molecule state to a given canvas context at given dimensions
+  const _dpr = 1; // for export, no DPR scaling
+  window._pubDPR = _dpr;
+  const origCanvas = canvas;
+  const origCtx = window._ctx || ctx;
+  // Temporarily swap canvas reference
+  const tmpCanvas = document.createElement('canvas');
+  tmpCanvas.width = w; tmpCanvas.height = h;
+  const tmpCtx = tmpCanvas.getContext('2d');
+  const savedCanvasRef = canvas;
+  // We need to render using the existing render pipeline
+  // Draw background
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0a0e1a';
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, w, h);
+
+  if (!molecule || !molecule.atoms.length) { delete window._pubDPR; return; }
+
+  const cx = w/2, cy = h/2, scale = molecule.scale * zoom * _dpr;
+  const M = mat3Mul(mat3RotY(rotY), mat3RotX(rotX));
+  molecule.atoms.forEach(a => { a._proj = mat3Vec(M, [a.x, a.y, a.z]); });
+  let maxZ = 0;
+  molecule.atoms.forEach(a => { if(Math.abs(a._proj[2])>maxZ) maxZ = Math.abs(a._proj[2]); });
+
+  const atomScale = parseFloat(document.getElementById('atomScale')?.value || 1);
+  const bWidth = parseFloat(document.getElementById('bondWidth')?.value || 2) * _dpr;
+  const fog = parseFloat(document.getElementById('depthFog')?.value || 0.3);
+  const glow = parseFloat(document.getElementById('glowAmt')?.value || 0.4);
+  const sorted = [...molecule.atoms].sort((a,b) => a._proj[2] - b._proj[2]);
+
+  // Draw bonds
+  molecule.bonds.forEach(bond => {
+    const a1 = molecule.atoms[bond.a], a2 = molecule.atoms[bond.b];
+    if (!a1?._proj || !a2?._proj) return;
+    const x1 = cx + (a1._proj[0] + panX) * scale;
+    const y1 = cy + (a1._proj[1] + panY) * scale;
+    const x2 = cx + (a2._proj[0] + panX) * scale;
+    const y2 = cy + (a2._proj[1] + panY) * scale;
+    const avgZ = (a1._proj[2] + a2._proj[2]) / 2;
+    const fogF = maxZ > 0 ? 1 - fog * (avgZ / maxZ) * 0.5 : 1;
+    ctx.globalAlpha = Math.max(0.15, fogF);
+    const el1 = getElement(a1.symbol), el2 = getElement(a2.symbol);
+    const mx = (x1+x2)/2, my = (y1+y2)/2;
+    ctx.lineWidth = bWidth * (bond.order >= 2 ? 0.7 : 1);
+    ctx.strokeStyle = el1.color; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(mx,my); ctx.stroke();
+    ctx.strokeStyle = el2.color; ctx.beginPath(); ctx.moveTo(mx,my); ctx.lineTo(x2,y2); ctx.stroke();
+    if (bond.order >= 2) {
+      const dx=y2-y1, dy=x1-x2, len=Math.sqrt(dx*dx+dy*dy)||1;
+      const off = 2.5 * _dpr;
+      const ox=dx/len*off, oy=dy/len*off;
+      ctx.strokeStyle = el1.color; ctx.beginPath(); ctx.moveTo(x1+ox,y1+oy); ctx.lineTo(mx+ox,my+oy); ctx.stroke();
+      ctx.strokeStyle = el2.color; ctx.beginPath(); ctx.moveTo(mx+ox,my+oy); ctx.lineTo(x2+ox,y2+oy); ctx.stroke();
+    }
+  });
+
+  // Draw atoms
+  sorted.forEach(a => {
+    const el = getElement(a.symbol);
+    const sx = cx + (a._proj[0] + panX) * scale;
+    const sy = cy + (a._proj[1] + panY) * scale;
+    const fogF = maxZ > 0 ? 1 - fog * (a._proj[2] / maxZ) * 0.5 : 1;
+    const r = (el.radius || 1) * atomScale * scale * 0.015;
+    ctx.globalAlpha = Math.max(0.2, fogF);
+    if (glow > 0) {
+      ctx.shadowColor = el.color; ctx.shadowBlur = r * glow * 2;
+    }
+    ctx.fillStyle = el.color;
+    ctx.beginPath(); ctx.arc(sx, sy, Math.max(1.5, r), 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+  ctx.globalAlpha = 1;
+  delete window._pubDPR;
+}
+
+function exportTrajectoryFramePNG() {
+  if (!molecule) return notify('No structure loaded', 'error');
+  const offCanvas = document.createElement('canvas');
+  const w = parseInt(document.getElementById('gifWidth')?.value) || canvas.width;
+  const h = parseInt(document.getElementById('gifHeight')?.value) || canvas.height;
+  offCanvas.width = w; offCanvas.height = h;
+  const offCtx = offCanvas.getContext('2d');
+  renderToCanvas(offCtx, w, h);
+  offCanvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${trajName||molecule?.name||'molecule'}_frame${trajCurrentFrame+1}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+    notify('PNG frame exported', 'success');
+  }, 'image/png');
+}
+
+function closeTrajExportModal() {
+  const modal = document.getElementById('trajExportModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function updateGifFrameRange() {
+  const el = document.getElementById('gifEndFrame');
+  if (el && !el._userSet) el.value = trajectoryFrames.length;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DEMO MOLECULES (Quick Load)
+// ═══════════════════════════════════════════════════════════
+const DEMO_MOLECULES = {
+  caffeine: `24\nCaffeine C8H10N4O2\nC   3.2460   0.7010   0.0000\nC   1.9540   1.4240   0.0000\nC   0.6920   0.6420   0.0000\nN   0.7820  -0.7480   0.0000\nC   2.0780  -1.0930   0.0000\nN   3.1220  -0.1310   0.0000\nN   1.8200   2.7620   0.0000\nC   0.4620   3.0420   0.0000\nN  -0.3170   1.9320   0.0000\nO   4.3410   1.2240   0.0000\nO   2.4140  -2.2280   0.0000\nC   2.8980   3.7460   0.0000\nC  -0.1730  -1.7180   0.0000\nC   4.4810  -0.5250   0.0000\nH   0.0760   4.0270   0.0000\nH  -1.3530   1.8730   0.0000\nH   2.5400   4.7510   0.0000\nH   3.5240   3.6600   0.9000\nH   3.5240   3.6600  -0.9000\nH  -1.1850  -1.3480   0.0000\nH   0.0130  -2.5250   0.8890\nH   0.0130  -2.5250  -0.8890\nH   5.0780   0.3620   0.0000\nH   4.8390  -1.3260   0.0000`,
+  water: `3\nWater H2O\nO   0.0000   0.0000   0.1173\nH   0.0000   0.7572  -0.4692\nH   0.0000  -0.7572  -0.4692`,
+  benzene: `12\nBenzene C6H6\nC   1.2124   0.7000   0.0000\nC   1.2124  -0.7000   0.0000\nC   0.0000  -1.4000   0.0000\nC  -1.2124  -0.7000   0.0000\nC  -1.2124   0.7000   0.0000\nC   0.0000   1.4000   0.0000\nH   2.1560   1.2450   0.0000\nH   2.1560  -1.2450   0.0000\nH   0.0000  -2.4900   0.0000\nH  -2.1560  -1.2450   0.0000\nH  -2.1560   1.2450   0.0000\nH   0.0000   2.4900   0.0000`,
+  ethanol: `9\nEthanol C2H5OH\nC  -0.7526   0.0205  -0.2080\nC   0.7526   0.0276   0.0473\nO   1.2424  -0.0022   1.3828\nH  -1.1699   0.9075   0.2792\nH  -1.1723  -0.8593   0.2954\nH  -1.0463   0.0128  -1.2617\nH   1.1699   0.9149  -0.4414\nH   1.1549  -0.8494  -0.4639\nH   2.1966   0.0008   1.4494`,
+  aspirin: `21\nAspirin C9H8O4\nC   0.0000   1.4030   0.0000\nC   1.2135   0.7015   0.0000\nC   1.2135  -0.7015   0.0000\nC   0.0000  -1.4030   0.0000\nC  -1.2135  -0.7015   0.0000\nC  -1.2135   0.7015   0.0000\nC   2.4753   1.4200   0.0000\nO   2.4406   2.6490   0.0000\nO   3.5988   0.8380   0.0000\nO  -1.2050  -1.3910   1.2100\nC  -1.2050  -2.5980   1.5900\nO  -1.2050  -3.5000   0.7900\nC  -1.2050  -2.8480   3.0800\nH   0.0000   2.4930   0.0000\nH   2.1580  -1.2450   0.0000\nH   0.0000  -2.4930   0.0000\nH  -2.1580   1.2450   0.0000\nH   3.4000   2.8600   0.0000\nH  -2.0940  -2.4430   3.5630\nH  -0.3160  -2.4430   3.5630\nH  -1.2050  -3.9340   3.2110`,
+  glucose: `24\nGlucose C6H12O6\nC   0.5170   1.4250   0.4890\nC  -0.2060   0.1140   0.1620\nC   0.6870  -1.0900   0.5420\nC   2.1290  -0.8230   0.0930\nC   2.7730   0.4640   0.6040\nO   1.8960   1.5490   0.2350\nC  -1.5860   0.0270   0.8160\nO   0.2350  -2.3100  -0.0530\nO   2.8670  -1.9550   0.5040\nO   4.0510   0.6240   0.0130\nO  -2.3770  -0.9700   0.1640\nH   0.0820   2.2700  -0.0680\nH  -0.3200   0.0540  -0.9310\nH   0.6780  -1.1980   1.6350\nH   2.1170  -0.7360  -1.0010\nH   2.8690   0.3640   1.6960\nH   0.4800   1.5010   1.5840\nH  -1.4960  -0.2730   1.8620\nH  -2.0810   1.0000   0.7670\nH  -0.7020  -2.3280   0.1540\nH   3.7910  -1.7430   0.3200\nH   4.5480  -0.1680   0.2760\nH  -3.2680  -0.9440   0.5230\nH  -2.4840  -0.6480  -0.7370`,
+  alanine: `13\nAlanine C3H7NO2\nN  -0.9660   0.4930   1.2110\nC   0.0000   0.0000   0.2240\nC   1.4200   0.4310   0.6080\nO   1.7700   1.1310   1.5480\nO   2.2610  -0.0950  -0.2750\nC  -0.3620   0.5970  -1.1350\nH  -0.6670   0.0680   2.0770\nH  -0.9120   1.5010   1.3250\nH   0.0460  -1.0960   0.1720\nH   3.1460   0.2280  -0.0360\nH   0.3570   0.2640  -1.8960\nH  -1.3520   0.2510  -1.4470\nH  -0.3770   1.6850  -1.0770`
+};
+
+function loadDemo(name) {
+  const xyzText = DEMO_MOLECULES[name];
+  if (!xyzText) return notify(`Demo molecule "${name}" not found`, 'error');
+  try {
+    const mol = parseXYZ(xyzText, {source: 'Built-in demo', format: 'xyz', inputName: name + '.xyz', confidence: 'reference geometry'});
+    const displayName = name.charAt(0).toUpperCase() + name.slice(1);
+    loadMolecule(displayName, mol);
+  } catch (err) {
+    notify('Failed to load demo: ' + err.message, 'error');
+  }
+}
+
+function loadDemoTrajectory() {
+  // Generate a water molecule vibration trajectory (20 frames)
+  // Symmetric stretch + bend mode animation
+  const nFrames = 20;
+  const xyzParts = [];
+  for (let f = 0; f < nFrames; f++) {
+    const t = f / nFrames * 2 * Math.PI;
+    // O-H bond length oscillation (0.96 ± 0.08 Å)
+    const stretch = 0.08 * Math.sin(t);
+    const bondLen = 0.96 + stretch;
+    // H-O-H angle oscillation (104.5 ± 8°)
+    const angleDeg = 104.5 + 8 * Math.sin(t * 2);
+    const angleRad = angleDeg * Math.PI / 180;
+    const halfAngle = angleRad / 2;
+    // Oxygen at origin
+    const ox = 0, oy = 0, oz = 0;
+    // H1 and H2 symmetric about y-axis
+    const h1x = bondLen * Math.sin(halfAngle);
+    const h1y = bondLen * Math.cos(halfAngle);
+    const h2x = -bondLen * Math.sin(halfAngle);
+    const h2y = bondLen * Math.cos(halfAngle);
+    // Small z-oscillation for 3D effect
+    const zw = 0.05 * Math.sin(t * 3);
+    xyzParts.push(`3\nWater vibration frame ${f+1} — angle=${angleDeg.toFixed(1)} bondLen=${bondLen.toFixed(3)}\nO   ${ox.toFixed(4)}   ${oy.toFixed(4)}   ${oz.toFixed(4)}\nH   ${h1x.toFixed(4)}   ${h1y.toFixed(4)}   ${zw.toFixed(4)}\nH   ${h2x.toFixed(4)}   ${h2y.toFixed(4)}   ${(-zw).toFixed(4)}`);
+  }
+  const multiXyz = xyzParts.join('\n');
+  try {
+    const frames = parseMultiFrameXYZ(multiXyz, {source: 'Built-in demo trajectory', format: 'xyz', inputName: 'water_vibration.xyz'});
+    if (frames.length > 1) {
+      loadTrajectory('Water Vibration', frames);
+    }
+  } catch (err) {
+    notify('Failed to load demo trajectory: ' + err.message, 'error');
+  }
 }
 
 
+
+function setDbResults(html){
+  const el=document.getElementById('dbResults');
+  if(el) el.innerHTML=html;
+}
 
 function getDatabaseCatalog(){
   return {
@@ -2464,19 +3501,7 @@ function copySVGToClipboard(){
   navigator.clipboard.writeText(svg).then(()=>notify('SVG copied to clipboard','success')).catch(()=>notify('Clipboard copy failed','error'));
 }
 
-// ═══════════════════════════════════════════════════════════
-// DEMOS
-// ═══════════════════════════════════════════════════════════
-const DEMOS={
-  caffeine:{name:'Caffeine',xyz:`24\nCaffeine\nN  1.58080  0.70270 -0.22790\nC  1.70620 -0.73740 -0.21260\nN  0.53400 -1.56710 -0.35030\nC  0.32310  1.36000  0.02740\nC -0.81230  0.45530  0.08170\nC -0.69670 -0.93220 -0.06620\nN -2.18860  0.69900  0.27830\nC -2.85120 -0.52050  0.25320\nN -1.95370 -1.51880  0.04260\nO  2.81360 -1.25580 -0.16930\nO  0.28490  2.57440  0.15910\nC  2.72310  1.58980 -0.41940\nC  0.72970 -3.00390 -0.58490\nC -2.90900  1.95870  0.51880\nH -3.92380 -0.65580  0.40740\nH  3.09060  2.00060  0.53600\nH  2.40870  2.42870 -1.05430\nH  3.54140  1.05260 -0.91680\nH  1.15780 -3.48490  0.31290\nH -0.24520 -3.44490 -0.82580\nH  1.40800 -3.15570 -1.44290\nH -2.48310  2.42430  1.42490\nH -3.97400  1.76180  0.71070\nH -2.82280  2.64650 -0.33960`},
-  water:{name:'Water',xyz:`3\nWater\nO  0.000  0.000  0.117\nH  0.000  0.757 -0.468\nH  0.000 -0.757 -0.468`},
-  benzene:{name:'Benzene',xyz:`12\nBenzene\nC  1.2124  0.0000  0.0000\nC  0.6062  1.0500  0.0000\nC -0.6062  1.0500  0.0000\nC -1.2124  0.0000  0.0000\nC -0.6062 -1.0500  0.0000\nC  0.6062 -1.0500  0.0000\nH  2.1560  0.0000  0.0000\nH  1.0780  1.8672  0.0000\nH -1.0780  1.8672  0.0000\nH -2.1560  0.0000  0.0000\nH -1.0780 -1.8672  0.0000\nH  1.0780 -1.8672  0.0000`},
-  ethanol:{name:'Ethanol',xyz:`9\nEthanol\nC  1.1879 -0.3660  0.0000\nC  0.0000  0.5526  0.0000\nO -1.1867 -0.2472  0.0000\nH -1.9237  0.3850  0.0000\nH  2.0985  0.2302  0.0000\nH  1.1184 -1.0093  0.8869\nH  1.1184 -1.0093 -0.8869\nH  0.0000  1.2048  0.8894\nH  0.0000  1.2048 -0.8894`},
-  aspirin:{name:'Aspirin',xyz:`21\nAspirin\nC  0.0000  0.0000  0.0000\nC  1.3880  0.0000  0.0000\nC  2.0820  1.2020  0.0000\nC  1.3880  2.4040  0.0000\nC  0.0000  2.4040  0.0000\nC -0.6940  1.2020  0.0000\nO -2.0640  1.2020  0.0000\nC -2.7380  2.3640  0.0000\nO -2.0640  3.4320  0.0000\nO  3.4620  1.2020  0.0000\nC  4.1020  0.0780  0.0000\nO  3.5360 -1.0040  0.0000\nC  5.5760  0.0780  0.0000\nH -0.5200 -0.9480  0.0000\nH  1.9080 -0.9480  0.0000\nH  1.9080  3.3520  0.0000\nH -0.5200  3.3520  0.0000\nH -3.8180  2.3640  0.0000\nH  6.0040  1.0820  0.0000\nH  6.0040 -0.4500  0.5940\nH  6.0040 -0.4500 -0.5940`},
-  glucose:{name:'Glucose',xyz:`24\nGlucose\nC  0.0000  0.0000  0.0000\nC  0.0000  1.5400  0.0000\nC  1.2700  2.3100  0.0000\nC  2.5400  1.5400  0.0000\nC  2.5400  0.0000  0.0000\nC  3.8100  0.7700  0.0000\nO  1.2700  3.6800  0.0000\nO  2.5400  2.9800  0.0000\nO -1.2700  2.0700  0.0000\nO  0.0000 -1.2700  0.0000\nO  3.8100  2.1400  0.0000\nO  5.0800  0.1400  0.0000\nH  1.0500  0.4000  0.0000\nH -1.0500  0.4000  0.0000\nH  1.2700  1.8900  1.0000\nH  3.5900  2.0300  0.0000\nH  3.5400 -0.4800  0.0000\nH  1.5500 -0.4200  0.0000\nH  2.0600  4.0700  0.0000\nH -1.9200  1.4000  0.0000\nH  0.7200 -1.7300  0.0000\nH  4.8200  2.6200  0.0000\nH  5.8500  0.7000  0.0000\nH  4.1700  1.3300  1.0400`},
-  alanine:{name:'Alanine',xyz:`13\nL-Alanine\nC  1.0940 -0.0980  0.0000\nN  0.0000  0.8440  0.0000\nC  2.4860  0.5180  0.0000\nC  1.0310 -1.5530  0.0000\nO  3.4920 -0.2650  0.0000\nO  2.5950  1.7390  0.0000\nH  1.0000  1.7490  0.0000\nH -0.5060  0.7680  0.8290\nH -0.5060  0.7680 -0.8290\nH  0.5350 -1.9160  0.8900\nH  0.5350 -1.9160 -0.8900\nH  2.0620 -2.0490  0.0000\nH  4.3420  0.2350  0.0000`},
-};
-function loadDemo(name){const d=DEMOS[name];loadMolecule(d.name,parseXYZ(d.xyz));}
+// (Demo molecules defined earlier with DEMO_MOLECULES + loadDemo)
 
 // ═══════════════════════════════════════════════════════════
 // STATS & LEGEND
@@ -2628,8 +3653,34 @@ function handleHover(e) {
   } else {tooltip.style.display='none';}
 }
 
+// ─── Shortcut help overlay ────────────────────────────────
+function toggleShortcutHelp(){
+  const el=document.getElementById('shortcutOverlay');
+  if(el) el.classList.toggle('visible');
+}
+// ─── Canvas loading overlay ──────────────────────────────
+function showCanvasLoading(msg){
+  const el=document.getElementById('canvasLoading');
+  const txt=document.getElementById('canvasLoadingText');
+  if(txt) txt.textContent=msg||'Loading structure...';
+  if(el) el.classList.add('visible');
+}
+function hideCanvasLoading(){
+  const el=document.getElementById('canvasLoading');
+  if(el) el.classList.remove('visible');
+}
+
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT')return;
+  if(e.key==='?'||e.key==='/'){toggleShortcutHelp();e.preventDefault();return;}
+  // Trajectory controls when active
+  if(trajectoryFrames.length > 1){
+    if(e.key==='ArrowLeft') {trajPrev();e.preventDefault();return;}
+    if(e.key==='ArrowRight'){trajNext();e.preventDefault();return;}
+    if(e.key===' '){trajTogglePlay();e.preventDefault();return;}
+    if(e.key==='Home'){trajGoToFrame(0);e.preventDefault();return;}
+    if(e.key==='End'){trajGoToFrame(trajectoryFrames.length-1);e.preventDefault();return;}
+  }
   if(e.key==='r'||e.key==='R')resetView();
   if(e.key===' '){toggleAutoRotate();e.preventDefault();}
   if(e.key==='l'||e.key==='L')toggleLabels();
@@ -2637,12 +3688,16 @@ document.addEventListener('keydown',e=>{
   if(e.key==='i'||e.key==='I')toggleInfo();
   if(e.key==='a'||e.key==='A')toggleAtomList();
   if(e.key==='p'||e.key==='P')takeSnapshot();
-  // Arrow keys nudge rotation when not in input
   if(e.key==='ArrowLeft') {nudgeRotation('y',-1);e.preventDefault();}
   if(e.key==='ArrowRight'){nudgeRotation('y', 1);e.preventDefault();}
   if(e.key==='ArrowUp')   {nudgeRotation('x',-1);e.preventDefault();}
   if(e.key==='ArrowDown') {nudgeRotation('x', 1);e.preventDefault();}
-  if(e.key==='Escape'){if(measureMode)stopMeasure();else if(focusedAtoms)clearFocus();}
+  if(e.key==='Escape'){
+    const shortcutEl=document.getElementById('shortcutOverlay');
+    if(shortcutEl&&shortcutEl.classList.contains('visible')){toggleShortcutHelp();return;}
+    if(trajectoryFrames.length>1){trajStop();clearTrajectory();return;}
+    if(measureMode)stopMeasure();else if(focusedAtoms)clearFocus();
+  }
 });
 
 // ═══════════════════════════════════════════════════════════
@@ -3116,6 +4171,19 @@ function roundRect(ctx, x, y, w, h, r){
   ctx.closePath();
 }
 
+function computeCompactView(canvasDims, pad, overlayH, scaleBarH, attribH, legendW, orthographic){
+  if(!molecule||!molecule.atoms.length) return {zoom:1,panX:0,panY:0};
+  const W=canvasDims.width, H=canvasDims.height;
+  let maxR=0;
+  molecule.atoms.forEach(a=>{const r=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z);if(r>maxR)maxR=r;});
+  if(maxR<0.01) maxR=1;
+  const availW=W-pad*2-legendW;
+  const availH=H-pad*2-overlayH-scaleBarH-attribH;
+  const fitScale=Math.min(availW,availH)*0.38/maxR;
+  const baseScale=molecule.scale||60;
+  return {zoom:fitScale/baseScale, panX:0, panY:0};
+}
+
 function renderMoleculeToCanvas(targetCanvas, scaleFactor, isLightBg, exportCfg={}){
   const prevCanvas = canvas;
   const prevCtx    = ctx;
@@ -3185,6 +4253,93 @@ function pubshotCopyClipboard(){
   oc.toBlob(blob=>{
     navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(()=>notify('Copied to clipboard!','success')).catch(()=>notify('Clipboard copy failed — try download','error'));
   },'image/png');
+}
+
+// ═══════════════════════════════════════════════════════════
+// JOURNAL / EXPORT PRESETS
+// ═══════════════════════════════════════════════════════════
+function applyJournalPreset(){
+  const j=document.getElementById('ps-journal');
+  if(!j||!j.checked) return;
+  document.getElementById('ps-bg').value='white';
+  document.getElementById('ps-border').value='thin';
+  document.getElementById('ps-padding').value='32';
+  document.getElementById('ps-compact').checked=true;
+  document.getElementById('ps-ortho').checked=true;
+  document.getElementById('ps-title').checked=true;
+  document.getElementById('ps-formula').checked=true;
+  document.getElementById('ps-legend').checked=true;
+  document.getElementById('ps-scale').checked=true;
+  document.getElementById('ps-attrib').checked=false;
+  document.getElementById('ps-padval').textContent='32px';
+}
+function applyExportPreset(preset){
+  const sets={
+    journal:    {bg:'white',border:'thin',padding:32,compact:true,ortho:true,title:true,formula:true,legend:true,scale:true,attrib:false},
+    presentation:{bg:'black',border:'accent',padding:40,compact:true,ortho:false,title:true,formula:true,legend:false,scale:false,attrib:true},
+    dark:       {bg:'current',border:'accent',padding:24,compact:false,ortho:false,title:true,formula:true,legend:true,scale:true,attrib:true},
+    minimal:    {bg:'transparent',border:'none',padding:8,compact:true,ortho:true,title:false,formula:false,legend:false,scale:false,attrib:false}
+  };
+  const s=sets[preset]; if(!s) return;
+  document.getElementById('ps-bg').value=s.bg;
+  document.getElementById('ps-border').value=s.border;
+  document.getElementById('ps-padding').value=s.padding;
+  document.getElementById('ps-padval').textContent=s.padding+'px';
+  document.getElementById('ps-compact').checked=s.compact;
+  document.getElementById('ps-ortho').checked=s.ortho;
+  document.getElementById('ps-title').checked=s.title;
+  document.getElementById('ps-formula').checked=s.formula;
+  document.getElementById('ps-legend').checked=s.legend;
+  document.getElementById('ps-scale').checked=s.scale;
+  document.getElementById('ps-attrib').checked=s.attrib;
+  document.getElementById('ps-journal').checked=preset==='journal';
+  updatePubShotPreview();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SVG EXPORT
+// ═══════════════════════════════════════════════════════════
+function generateSVG(){
+  if(!molecule||!molecule.atoms.length) return null;
+  const W=800, H=600, cx=W/2, cy=H/2, scale=molecule.scale*zoom;
+  const M=mat3Mul(mat3RotY(rotY),mat3RotX(rotX));
+  molecule.atoms.forEach(a=>{a._proj=mat3Vec(M,[a.x,a.y,a.z]);});
+  let maxZ=0; molecule.atoms.forEach(a=>{if(Math.abs(a._proj[2])>maxZ)maxZ=Math.abs(a._proj[2]);});
+  const atomScale=parseFloat(document.getElementById('atomScale').value);
+  const sorted=[...molecule.atoms].sort((a,b)=>a._proj[2]-b._proj[2]);
+  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="background:#fff">\n`;
+  svg+=`<defs><filter id="glow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>\n`;
+  // Bonds
+  molecule.bonds.forEach(bond=>{
+    const ai=molecule.atoms[bond.a],aj=molecule.atoms[bond.b]; if(!ai||!aj)return;
+    const fov=500;
+    const di=fov/(fov+ai._proj[2]*scale+400), dj=fov/(fov+aj._proj[2]*scale+400);
+    const x1=cx+ai._proj[0]*scale*di, y1=cy-ai._proj[1]*scale*di;
+    const x2=cx+aj._proj[0]*scale*dj, y2=cy-aj._proj[1]*scale*dj;
+    svg+=`  <line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#667" stroke-width="2" stroke-linecap="round"/>\n`;
+  });
+  // Atoms
+  sorted.forEach(a=>{
+    const el=getElement(a.symbol);
+    const fov=500, d=fov/(fov+a._proj[2]*scale+400);
+    const sx=cx+a._proj[0]*scale*d, sy=cy-a._proj[1]*scale*d;
+    const r=Math.max(4,el.r*30*atomScale*d);
+    svg+=`  <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="${r.toFixed(1)}" fill="${getAtomDisplayColor(a)}" stroke="#fff" stroke-width="0.5" filter="url(#glow)"/>\n`;
+    if(r>6) svg+=`  <text x="${sx.toFixed(1)}" y="${(sy+r*0.32).toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="${Math.max(8,r*0.7).toFixed(0)}" font-weight="bold" fill="#fff">${a.symbol}</text>\n`;
+  });
+  svg+=`</svg>`;
+  return svg;
+}
+function exportSVG(){
+  if(!molecule) return notify('No structure loaded','error');
+  const svg=generateSVG(); if(!svg) return;
+  download(svg,(molecule.name||'molecule')+'.svg','image/svg+xml');
+  notify('SVG exported','success');
+}
+function copySVGToClipboard(){
+  if(!molecule) return notify('No structure loaded','error');
+  const svg=generateSVG(); if(!svg) return;
+  navigator.clipboard.writeText(svg).then(()=>notify('SVG copied to clipboard','success')).catch(()=>notify('Clipboard copy failed','error'));
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3461,10 +4616,26 @@ function initEditorRegime(){
 const fileDrop=document.getElementById('fileDrop');
 fileDrop.addEventListener('dragover',e=>{e.preventDefault();fileDrop.classList.add('drag-over');});
 fileDrop.addEventListener('dragleave',()=>fileDrop.classList.remove('drag-over'));
-fileDrop.addEventListener('drop',e=>{e.preventDefault();fileDrop.classList.remove('drag-over');const file=e.dataTransfer.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{loadMolecule(file.name.replace(/\.[^.]+$/,''),parseMolecule(file.name,ev.target.result));}catch(err){notify('Import failed: '+err.message,'error');}};reader.readAsText(file);});
+function handleDroppedFile(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const text=ev.target.result, baseName=file.name.replace(/\.[^.]+$/,'');
+      const fmt=detectFormat(file.name,text);
+      if(fmt==='xyz'&&countXYZFrames(text)>1){
+        const frames=parseMultiFrameXYZ(text,{inputName:file.name,importedAt:new Date().toISOString()});
+        if(frames.length>1){loadTrajectory(baseName,frames);return;}
+      }
+      loadMolecule(baseName,parseMolecule(file.name,text));
+    }catch(err){notify('Import failed: '+err.message,'error');}
+  };
+  reader.readAsText(file);
+}
+fileDrop.addEventListener('drop',e=>{e.preventDefault();fileDrop.classList.remove('drag-over');handleDroppedFile(e.dataTransfer.files[0]);});
 const canvasArea=document.getElementById('canvasArea');
 canvasArea.addEventListener('dragover',e=>e.preventDefault());
-canvasArea.addEventListener('drop',e=>{e.preventDefault();const file=e.dataTransfer.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{loadMolecule(file.name.replace(/\.[^.]+$/,''),parseMolecule(file.name,ev.target.result));}catch(err){notify('Import failed: '+err.message,'error');}};reader.readAsText(file);});
+canvasArea.addEventListener('drop',e=>{e.preventDefault();handleDroppedFile(e.dataTransfer.files[0]);});
 
 // ─── NOTIFICATIONS ─────────────────────────────────────────
 let notifTimer=null;
@@ -6428,6 +7599,41 @@ textarea:focus-visible,
   .btn{padding:6px 10px;}
   .section{border-radius:14px;}
 }
+/* ─── RESPONSIVE: TABLET ─────────────────────────────── */
+@media (max-width: 768px){
+  header { height:auto; min-height:var(--header-h); flex-wrap:wrap; padding:8px 10px; gap:6px; }
+  .logo { font-size:14px; }
+  .logo sub { display:none; }
+  .mol-title-wrap { order:2; width:100%; }
+  .mol-badge { max-width:100%; font-size:10px; }
+  .header-right { order:1; margin-left:auto; }
+  .header-right .btn { padding:5px 8px; font-size:9px; }
+  #premiumStatusRail { display:none !important; }
+  .sidebar { position:fixed; left:0; top:0; bottom:0; z-index:50;
+    width:min(280px,85vw) !important; box-shadow:8px 0 30px rgba(0,0,0,0.5); }
+  .sidebar.collapsed { width:0 !important; box-shadow:none; }
+  .sidebar.expanded, .sidebar.super-expanded { width:min(320px,90vw) !important; }
+  .toolbar { flex-wrap:wrap; max-width:calc(100vw - 28px); gap:2px; padding:4px; border-radius:8px; }
+  .toolbar .btn { padding:4px 6px; font-size:9px; }
+  .editor-panel { position:fixed; right:0; top:0; bottom:0; z-index:50; width:min(320px,90vw);
+    box-shadow:-8px 0 30px rgba(0,0,0,0.5); }
+  .editor-panel.hidden { width:0; }
+  .shortcut-dialog { max-width:90vw; padding:16px 18px; }
+  .shortcut-grid { grid-template-columns:1fr; }
+  .ps-body { flex-direction:column; }
+  .ps-controls { width:100%; max-height:40vh; border-right:none; border-bottom:1px solid var(--border); }
+}
+/* ─── RESPONSIVE: PHONE ──────────────────────────────── */
+@media (max-width: 480px){
+  .logo-icon { display:none; }
+  .header-right .btn:not(:first-child):not(:last-child) { display:none; }
+  .toolbar { bottom:8px; left:8px; right:8px; transform:none; }
+  .toolbar .btn span { display:none; }
+  .hud { top:8px; right:8px; }
+  .canvas-info { top:8px; left:8px; font-size:9px; }
+  #atomListPanel { width:calc(100vw - 24px); right:12px; }
+  #measurePanel { min-width:auto; width:calc(100vw - 28px); }
+}
 </style>
 
 
@@ -6503,8 +7709,17 @@ textarea:focus-visible,
       notify(`Importing ${file.name}…`,'info');
       const text = await readTextFile(file);
       if(!text.trim()) throw new Error('The file is empty');
-      const mol = parseMolecule(file.name, text);
       const title = sanitizeFilename(stripExtension(file.name), 'Imported Molecule');
+      // Detect multi-frame XYZ trajectory
+      const fmt = detectFormat(file.name, text);
+      if (fmt === 'xyz' && countXYZFrames(text) > 1) {
+        const frames = parseMultiFrameXYZ(text, {inputName: file.name, importedAt: new Date().toISOString()});
+        if (frames.length > 1) {
+          loadTrajectory(title, frames);
+          return;
+        }
+      }
+      const mol = parseMolecule(file.name, text);
       loadMolecule(title, mol);
     }catch(err){
       notify('Import failed: ' + niceError(err), 'error');
