@@ -1,0 +1,97 @@
+/* ═══════════════════════════════════════════════════════
+   Theme Variables & Color System — MOGADOCLab Quantum Structure Studio
+   Refined palette with enhanced depth & glass effects
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Core palette ─────────────────────────────────── */
+  --bg:         #07111a;
+  --bg2:        #0b1621;
+  --surface:    #101b27;
+  --surface2:   #162332;
+  --surface3:   #1c2b3d;
+  --border:     #24384d;
+  --border2:    #314b65;
+  --accent:     #5cc8ff;
+  --accent2:    #78e6d6;
+  --accent3:    #ff9b52;
+  --glow:       rgba(92,200,255,0.10);
+  --glow-strong:rgba(92,200,255,0.18);
+  --text:       #edf3fa;
+  --text-dim:   #9fb3c8;
+  --text-muted: #5b728b;
+  --green:      #39c6a0;
+  --red:        #ef6b6b;
+  --yellow:     #f2b45a;
+  --bond-color: rgba(176,198,220,0.56);
+  --grid-line:  rgba(46,68,92,0.30);
+  --scene-core: rgba(92,200,255,0.06);
+  --scene-edge: rgba(120,230,214,0.07);
+  --scene-vignette: rgba(4,8,13,0.72);
+
+  /* ── Layout ───────────────────────────────────────── */
+  --sidebar-w:  260px;
+  --header-h:   54px;
+  --radius:     10px;
+  --radius-lg:  16px;
+  --radius-xl:  22px;
+
+  /* ── Glass & depth ────────────────────────────────── */
+  --glass-bg:   rgba(16,27,39,0.84);
+  --glass-blur: 18px;
+  --shadow-sm:  0 8px 18px rgba(0,0,0,0.16);
+  --shadow-md:  0 18px 40px rgba(0,0,0,0.24);
+  --shadow-lg:  0 26px 64px rgba(0,0,0,0.34);
+  --shadow-glow:0 0 20px var(--glow);
+
+  /* ── Transitions ──────────────────────────────────── */
+  --ease-out:   cubic-bezier(0.16,1,0.3,1);
+  --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+  --duration:   0.2s;
+  --duration-lg:0.35s;
+}
+
+/* ── Arctic (Light) Theme ───────────────────────────── */
+[data-theme="arctic"] {
+  --bg:#eef3f8; --bg2:#e6ecf3; --surface:#fbfdff; --surface2:#f2f6fa; --surface3:#e7edf4;
+  --border:#ced8e4; --border2:#b9c7d7; --accent:#0b6fcf; --accent2:#1f9d8b; --accent3:#d97a2b;
+  --glow:rgba(11,111,207,0.06); --glow-strong:rgba(11,111,207,0.12);
+  --text:#13253a; --text-dim:#52677d; --text-muted:#8094aa;
+  --green:#059669; --red:#dc2626; --yellow:#d97706;
+  --bond-color:rgba(77,116,160,0.46); --grid-line:rgba(183,197,214,0.38);
+  --glass-bg:rgba(252,254,255,0.88);
+  --scene-core: rgba(11,111,207,0.04);
+  --scene-edge: rgba(31,157,139,0.04);
+  --scene-vignette: rgba(215,223,232,0.58);
+  --shadow-sm:0 4px 10px rgba(19,37,58,0.05);
+  --shadow-md:0 12px 28px rgba(19,37,58,0.08);
+  --shadow-lg:0 18px 42px rgba(19,37,58,0.12);
+}
+
+/* ── Neon Theme ─────────────────────────────────────── */
+[data-theme="neon"] {
+  --bg:#04000f; --bg2:#070015; --surface:#0a0020; --surface2:#100030; --surface3:#160040;
+  --border:#2a0060; --border2:#40008a; --accent:#ff2eff; --accent2:#00ffaa; --accent3:#ffe600;
+  --glow:rgba(255,46,255,0.15); --glow-strong:rgba(255,46,255,0.35);
+  --text:#f0e0ff; --text-dim:#8060a0; --text-muted:#3a2060;
+  --green:#00ffaa; --red:#ff3060; --yellow:#ffe600;
+  --bond-color:rgba(180,120,255,0.5); --grid-line:rgba(42,0,96,0.5);
+  --glass-bg:rgba(10,0,32,0.88);
+  --scene-core: rgba(255,46,255,0.12);
+  --scene-edge: rgba(0,255,170,0.10);
+  --scene-vignette: rgba(1,0,8,0.74);
+}
+
+/* ── Forest Theme ───────────────────────────────────── */
+[data-theme="forest"] {
+  --bg:#080f0a; --bg2:#0c130d; --surface:#101810; --surface2:#162016; --surface3:#1c2a1c;
+  --border:#1e3420; --border2:#264430; --accent:#39d353; --accent2:#70c0ff; --accent3:#ffa040;
+  --glow:rgba(57,211,83,0.10); --glow-strong:rgba(57,211,83,0.25);
+  --text:#d4edd8; --text-dim:#567060; --text-muted:#2a3c2c;
+  --green:#39d353; --red:#ff5050; --yellow:#ffc060;
+  --bond-color:rgba(120,180,130,0.5); --grid-line:rgba(30,52,32,0.45);
+  --glass-bg:rgba(16,24,16,0.88);
+  --scene-core: rgba(57,211,83,0.09);
+  --scene-edge: rgba(112,192,255,0.08);
+  --scene-vignette: rgba(4,8,5,0.72);
+}

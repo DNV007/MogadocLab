@@ -1,0 +1,274 @@
+/* ═══════════════════════════════════════════════════════
+   Premium Pro Visual Overrides — MOGADOCLab Quantum Structure Studio
+   ═══════════════════════════════════════════════════════ */
+
+:root{
+  --premium-shadow: 0 18px 36px rgba(0,0,0,.18);
+  --premium-shadow-soft: 0 8px 20px rgba(0,0,0,.12);
+  --premium-ring: 0 0 0 1px rgba(255,255,255,.028) inset;
+  --premium-panel: rgba(16,25,35,.96);
+  --premium-panel-soft: rgba(18,28,39,.90);
+}
+body{
+  background:
+    radial-gradient(920px 520px at 86% -10%, rgba(92,200,255,.05), transparent 58%),
+    linear-gradient(180deg, #08121b 0%, #09141d 100%);
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.01), transparent 14%, transparent 86%, rgba(255,255,255,.008));
+}
+header{
+  position:sticky;
+  top:0;
+  background:rgba(11,18,26,.86);
+  backdrop-filter:blur(14px) saturate(1.02);
+  box-shadow:0 10px 18px rgba(0,0,0,.10);
+}
+header::after{
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:-1px; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(92,200,255,.14), transparent);
+}
+.logo{letter-spacing:.01em;}
+.logo-icon{
+  background:rgba(92,200,255,.08);
+  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;
+}
+.mol-badge, .mol-formula-badge, .theme-switcher, .canvas-info, .hud-chip, .toolbar{
+  backdrop-filter:blur(10px) saturate(1.03);
+}
+.mol-badge{
+  background:rgba(11,18,26,.76);
+  border-color:rgba(122,148,179,.16);
+  box-shadow:var(--premium-ring);
+}
+.header-right{gap:8px;}
+.sidebar,
+.editor-panel{
+  background:rgba(13,21,30,.97);
+}
+.sidebar-scroll{padding:14px 12px 22px;}
+.section{
+  margin:0 0 14px;
+  border:1px solid rgba(116,142,173,.13);
+  border-radius:14px;
+  background:var(--premium-panel);
+  box-shadow:var(--premium-ring), var(--premium-shadow-soft);
+}
+.section:last-child{margin-bottom:0;}
+.section-head{margin-bottom:14px;}
+.section-title{font-size:8.5px; letter-spacing:2.6px;}
+.section-title::before{width:5px;height:5px;}
+.file-drop,
+.stat-box,
+.formula-box,
+.mode-btn,
+.demo-btn,
+.cs-btn,
+.db-card,
+.search-input,
+select.ps-sel,
+select.format-sel,
+.light-btn,
+textarea.raw-editor,
+#atomListPanel,
+#measurePanel,
+#focusBar,
+#notification,
+.bg-swatch,
+.editor-chip,
+.db-results,
+.ps-preview,
+.ps-dialog,
+.ce-dialog,
+.dm-dialog{
+  border-radius:10px;
+}
+.btn{
+  border-radius:10px;
+  padding:7px 12px;
+  background:rgba(25,36,48,.94);
+  border-color:rgba(116,142,173,.16);
+  box-shadow:var(--premium-ring);
+}
+.btn:hover,
+.demo-btn:hover,
+.mode-btn:hover,
+.cs-btn:hover,
+.db-card:hover,
+.light-btn:hover,
+.bg-swatch:hover,
+.theme-dot:hover{
+  transform:translateY(-1px);
+}
+.btn.active{
+  background:rgba(92,200,255,.14);
+  color:#eaf6ff;
+  box-shadow:0 0 0 1px rgba(92,200,255,.22) inset;
+}
+.mode-btn.active,
+.cs-btn.active,
+.light-btn.active{
+  box-shadow:0 0 0 1px rgba(92,200,255,.16) inset;
+}
+.stat-box{
+  background:rgba(15,24,34,.92);
+  border-color:rgba(116,142,173,.12);
+}
+.formula-box,
+.import-box,
+.db-results,
+textarea.raw-editor,
+.search-input,
+select.ps-sel,
+select.format-sel{
+  background:rgba(10,17,25,.88);
+  border-color:rgba(116,142,173,.14);
+  box-shadow:var(--premium-ring);
+}
+.search-input:focus,
+textarea.raw-editor:focus,
+select.ps-sel:focus,
+select.format-sel:focus,
+input.ps-text:focus{
+  border-color:rgba(92,200,255,.7);
+  box-shadow:0 0 0 3px rgba(92,200,255,.10);
+}
+.canvas-wrap::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.012), transparent 24%, transparent 82%, rgba(255,255,255,.012));
+  z-index:0;
+}
+.toolbar{
+  border:1px solid rgba(116,142,173,.14);
+  background:rgba(11,18,26,.86);
+  box-shadow:0 12px 22px rgba(0,0,0,.14);
+}
+.hud-chip,
+.canvas-info,
+#atomListPanel,
+#atomInspectorPanel,
+#focusBar,
+#measurePanel{
+  background:rgba(12,19,27,.90);
+  border-color:rgba(116,142,173,.14);
+  box-shadow:var(--premium-shadow-soft);
+}
+[data-theme="arctic"] .hud-chip,
+[data-theme="arctic"] .canvas-info,
+[data-theme="arctic"] #atomListPanel,
+[data-theme="arctic"] #atomInspectorPanel,
+[data-theme="arctic"] #focusBar,
+[data-theme="arctic"] #measurePanel{
+  background:rgba(255,255,255,.84);
+  border-color:rgba(163,179,201,.42);
+  box-shadow:0 16px 34px rgba(91,113,145,.12);
+}
+[data-theme="arctic"] .toolbar{
+  background:rgba(255,255,255,.80);
+  border-color:rgba(163,179,201,.42);
+  box-shadow:0 18px 40px rgba(91,113,145,.14);
+}
+[data-theme="arctic"] #tooltip{
+  background:rgba(255,255,255,.94);
+  box-shadow:0 18px 44px rgba(91,113,145,.16);
+}
+#notification{
+  background:rgba(12,19,28,.94);
+  box-shadow:0 14px 24px rgba(0,0,0,.14);
+}
+.theme-switcher{background:rgba(11,18,26,.78); border-color:rgba(116,142,173,.14);}
+.editor-panel{border-left:1px solid rgba(116,142,173,.14);}
+.editor-header,
+.editor-tools,
+.editor-meta{background:rgba(15,24,34,.78);}
+.empty-title{font-size:22px; color:#eef4fb;}
+.empty-sub{max-width:480px; color:#aabdcf;}
+.file-drop{padding:20px 18px; background:var(--premium-panel-soft);}
+.db-search-toolbar{margin-bottom:14px;}
+.db-search-kicker{color:#9adbf7;}
+.db-chip{background:rgba(18,27,38,.78); border-color:rgba(116,142,173,.16);}
+.db-chip.active{box-shadow:0 0 0 1px rgba(92,200,255,.16) inset;}
+.quick-load,.view-modes,.color-scheme-opts{gap:8px;}
+.demo-btn,.mode-btn,.cs-btn{padding:11px 13px;}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(92,200,255,.14);
+}
+#premiumStatusRail{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-left:6px;
+  flex-wrap:wrap;
+}
+.premium-chip{
+  padding:4px 9px;
+  border-radius:999px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#a3bbd5;
+  border:1px solid rgba(116,142,173,.16);
+  background:rgba(10,17,25,.56);
+  box-shadow:var(--premium-ring);
+}
+.premium-chip strong{color:var(--accent); font-weight:600;}
+@media (max-width: 1200px){
+  #premiumStatusRail{display:none;}
+  .sidebar-scroll{padding:8px;}
+}
+@media (max-width: 920px){
+  header{padding:0 10px; gap:8px;}
+  .btn{padding:6px 10px;}
+  .section{border-radius:14px;}
+}
+/* ─── RESPONSIVE: TABLET ─────────────────────────────── */
+@media (max-width: 768px){
+  header { height:auto; min-height:var(--header-h); flex-wrap:wrap; padding:8px 10px; gap:6px; }
+  .logo { font-size:14px; }
+  .logo sub { display:none; }
+  .mol-title-wrap { order:2; width:100%; }
+  .mol-badge { max-width:100%; font-size:10px; }
+  .header-right { order:1; margin-left:auto; }
+  .header-right .btn { padding:5px 8px; font-size:9px; }
+  #premiumStatusRail { display:none !important; }
+  .sidebar { position:fixed; left:0; top:0; bottom:0; z-index:50;
+    width:min(280px,85vw) !important; box-shadow:8px 0 30px rgba(0,0,0,0.5); }
+  .sidebar.collapsed { width:0 !important; box-shadow:none; }
+  .sidebar.expanded, .sidebar.super-expanded { width:min(320px,90vw) !important; }
+  .toolbar { flex-wrap:wrap; max-width:calc(100vw - 28px); gap:2px; padding:4px; border-radius:8px; }
+  .toolbar .btn { padding:4px 6px; font-size:9px; }
+  .editor-panel { position:fixed; right:0; top:0; bottom:0; z-index:50; width:min(320px,90vw);
+    box-shadow:-8px 0 30px rgba(0,0,0,0.5); }
+  .editor-panel.hidden { width:0; }
+  .shortcut-dialog { max-width:90vw; padding:16px 18px; }
+  .shortcut-grid { grid-template-columns:1fr; }
+  .ps-body { flex-direction:column; }
+  .ps-controls { width:100%; max-height:40vh; border-right:none; border-bottom:1px solid var(--border); }
+}
+/* ─── RESPONSIVE: PHONE ──────────────────────────────── */
+@media (max-width: 480px){
+  .logo-icon { display:none; }
+  .header-right .btn:not(:first-child):not(:last-child) { display:none; }
+  .toolbar { bottom:8px; left:8px; right:8px; transform:none; }
+  .toolbar .btn span { display:none; }
+  .hud { top:8px; right:8px; }
+  .canvas-info { top:8px; left:8px; font-size:9px; }
+  #atomListPanel { width:calc(100vw - 24px); right:12px; }
+  #measurePanel { min-width:auto; width:calc(100vw - 28px); }
+}

@@ -1,0 +1,174 @@
+/* ═══════════════════════════════════════════════════════
+   Animations, Transitions & Loading States
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Keyframes ─────────────────────────────────────── */
+@keyframes spinnerRotate { to { transform: rotate(360deg); } }
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 8px var(--glow); }
+  50%      { box-shadow: 0 0 20px var(--glow-strong); }
+}
+
+/* ─── Loading Spinner ───────────────────────────────── */
+.loading-spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spinnerRotate 0.7s linear infinite;
+  flex-shrink: 0;
+}
+.loading-shimmer {
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease infinite;
+}
+.btn.loading { pointer-events: none; opacity: 0.6; }
+.btn.loading::after {
+  content: '';
+  display: inline-block;
+  width: 10px; height: 10px;
+  margin-left: 6px;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spinnerRotate 0.6s linear infinite;
+}
+
+/* ─── Panel Transitions ─────────────────────────────── */
+.sidebar { transition: width var(--duration-lg) var(--ease-out); }
+.editor-panel { transition: width var(--duration-lg) var(--ease-out); }
+.section-body {
+  transition: max-height 0.3s var(--ease-out), opacity 0.2s ease;
+  overflow: hidden;
+}
+.section.collapsed .section-body { max-height: 0 !important; opacity: 0; }
+
+/* ─── Keyboard Shortcut Overlay ─────────────────────── */
+#shortcutOverlay {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 500;
+  background: rgba(4,8,14,0.92);
+  backdrop-filter: blur(16px);
+  align-items: center;
+  justify-content: center;
+}
+#shortcutOverlay.visible { display: flex; }
+.shortcut-dialog {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-xl);
+  padding: 28px 36px;
+  max-width: 540px;
+  width: 90vw;
+  box-shadow: var(--shadow-lg);
+  animation: fadeInScale 0.25s var(--ease-out);
+}
+.shortcut-dialog h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  color: var(--accent);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.shortcut-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 28px;
+}
+.shortcut-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.shortcut-row kbd {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  min-width: 42px;
+  text-align: center;
+}
+
+/* ─── Canvas Loading Overlay ────────────────────────── */
+#canvasLoading {
+  position: absolute; inset: 0;
+  display: none;
+  background: rgba(6,10,16,0.7);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 15;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+#canvasLoading.visible { display: flex; }
+#canvasLoading .loading-spinner {
+  width: 32px; height: 32px;
+  border-width: 3px;
+}
+
+/* ─── Draw Modal Responsive ─────────────────────────── */
+@media (max-width: 1180px) {
+  .dm-left { width: 220px; min-width: 220px; max-width: 280px; }
+  .dm-left.expanded { width: 300px; min-width: 300px; max-width: 320px; }
+  .dm-right { width: 200px; min-width: 200px; max-width: 240px; }
+  .dm-header { gap: 10px; }
+}
+@media (max-width: 980px) {
+  .dm-dialog { width: min(98vw, 1340px); height: min(96vh, 860px); }
+  .dm-header { flex-wrap: wrap; height: auto; padding: 10px 14px; }
+  .dm-header-pills { order: 3; width: 100%; }
+  .dm-body { flex-direction: column; }
+  .dm-left, .dm-left.expanded, .dm-left.compact, .dm-left.collapsed, .dm-right {
+    width: 100%; max-width: none; min-width: 0;
+    border-right: none; border-left: none; opacity: 1;
+  }
+  .dm-left { max-height: 46vh; border-bottom: 1px solid var(--border); }
+  .dm-left.collapsed { max-height: 0; border-right: none; border-bottom: none; }
+  .dm-right { max-height: 32vh; border-top: 1px solid var(--border); }
+  .dm-template-grid { max-height: min(28vh, 320px); }
+}
+
+/* ─── Responsive: Tablet ────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar { width: 220px; }
+  .toolbar { gap: 2px; padding: 4px; }
+  .toolbar .btn { padding: 3px 6px; font-size: 9px; }
+  .shortcut-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Responsive: Phone ─────────────────────────────── */
+@media (max-width: 480px) {
+  .sidebar { width: 100vw; position: absolute; z-index: 50; top: 0; bottom: 0; }
+  .sidebar.collapsed { width: 0; }
+  header { padding: 0 10px; gap: 8px; }
+  .logo { font-size: 14px; }
+  .logo sub { display: none; }
+  .toolbar { bottom: 8px; padding: 3px; border-radius: 8px; }
+}

@@ -1,0 +1,412 @@
+/* ═══════════════════════════════════════════════════════
+   Canvas Area, Toolbar & HUD
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Canvas Layout ─────────────────────────────────── */
+.canvas-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+canvas {
+  width: 100%; height: 100%;
+  cursor: grab;
+  display: block;
+}
+canvas:active { cursor: grabbing; }
+
+/* ─── Canvas Backgrounds ────────────────────────────── */
+.canvas-wrap[data-bg="grid"] {
+  background: var(--bg);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255,255,255,0.014), transparent 26%, transparent 82%, rgba(255,255,255,0.012));
+  background-size: 40px 40px, 40px 40px, 100% 100%;
+}
+.canvas-wrap[data-bg="gradient"] {
+  background:
+    radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--surface2) 88%, transparent) 0%, transparent 62%),
+    linear-gradient(180deg, var(--surface2) 0%, var(--bg) 82%);
+}
+.canvas-wrap[data-bg="plain"] {
+  background:
+    linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+}
+.canvas-wrap[data-bg="dark"]  {
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255,255,255,0.03) 0%, transparent 34%),
+    #000;
+}
+.canvas-wrap::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 52%, transparent 42%, var(--scene-vignette) 100%);
+  opacity: 0.88;
+  z-index: 0;
+}
+canvas,
+.empty-state,
+.hud,
+.canvas-info,
+.toolbar,
+#tooltip,
+#measurePanel,
+#atomListPanel,
+#atomInspectorPanel,
+#focusBar,
+#snapshotStrip,
+#trajectoryPlayer{
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Empty State ───────────────────────────────────── */
+.empty-state {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+  pointer-events: none;
+  animation: fadeIn 0.5s var(--ease-out);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.empty-hex {
+  position: relative;
+  width: 90px; height: 90px;
+  display: flex; align-items: center; justify-content: center;
+}
+.empty-hex-ring {
+  position: absolute; inset: 0;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  animation: spin 14s linear infinite;
+  border-top-color: var(--accent);
+  opacity: 0.35;
+}
+.empty-hex-inner { font-size: 40px; opacity: 0.18; }
+.empty-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: -0.3px;
+}
+.empty-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.8;
+  max-width: 380px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── HUD Chips ─────────────────────────────────────── */
+.hud {
+  position: absolute;
+  top: 14px; right: 14px;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+.hud-chip {
+  background: var(--glass-bg);
+  border: 1px solid var(--border2);
+  backdrop-filter: blur(var(--glass-blur));
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  display: flex; align-items: center; gap: 6px;
+  letter-spacing: 0.08em;
+  box-shadow: 0 8px 14px rgba(0,0,0,0.10);
+}
+.hud-chip .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+/* ─── Toolbar ───────────────────────────────────────── */
+.toolbar {
+  position: fixed;
+  bottom: 14px; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  background: var(--glass-bg);
+  border: 1px solid var(--border2);
+  backdrop-filter: blur(var(--glass-blur));
+  padding: 6px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+  max-width: calc(100vw - 28px);
+}
+.toolbar::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), transparent 55%);
+  opacity:0.6;
+}
+.toolbar .btn {
+  transition: all var(--duration) var(--ease-out);
+}
+.toolbar .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+}
+.toolbar .btn:active {
+  transform: translateY(0) scale(0.96);
+}
+.toolbar-chip{
+  display:inline-flex;
+  align-items:center;
+  min-height:26px;
+  padding:4px 9px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:rgba(12,18,28,0.82);
+  color:var(--accent);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:0.04em;
+  white-space:nowrap;
+}
+
+/* ─── Sidebar Toggle ────────────────────────────────── */
+.sidebar-toggle {
+  position: absolute;
+  top: 50%; left: -1px;
+  transform: translateY(-50%);
+  width: 20px; height: 52px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  color: var(--text-dim);
+  transition: all var(--duration) var(--ease-out);
+  z-index: 5;
+}
+.sidebar-toggle:hover {
+  background: var(--surface3);
+  color: var(--accent);
+  width: 24px;
+}
+
+/* ─── Tooltip ───────────────────────────────────────── */
+#tooltip {
+  position: fixed;
+  background: var(--glass-bg);
+  border: 1px solid var(--accent);
+  padding: 13px 16px;
+  border-radius: 12px;
+  font-size: 11px;
+  pointer-events: none;
+  display: none;
+  z-index: 200;
+  box-shadow: var(--shadow-lg);
+  min-width: 170px;
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 12px 24px rgba(0,0,0,0.16), 0 0 0 1px rgba(255,255,255,0.03) inset;
+}
+.tt-sym {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.tt-name {
+  color: var(--text-dim);
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+.tt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+.tt-row span:last-child { color: var(--text); }
+.tt-divider { border-top: 1px solid var(--border); margin: 7px 0; }
+
+/* ─── Canvas Info Overlay ───────────────────────────── */
+.canvas-info {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(var(--glass-blur));
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  display: none;
+  line-height: 1.8;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+  min-width: 270px;
+}
+.canvas-info.visible { display: block; }
+.canvas-info-title{
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.canvas-info-title::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 12px var(--glow-strong);
+}
+.canvas-info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+.canvas-info-chip{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:6px 8px;
+  background:rgba(255,255,255,0.026);
+}
+.canvas-info-chip strong{
+  display:block;
+  color:var(--text-muted);
+  font-size:8px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:3px;
+}
+.canvas-info-chip span{
+  color:var(--text-dim);
+  font-size:10px;
+}
+.canvas-info-foot{
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px solid var(--border);
+  color:var(--text-dim);
+  font-size:9px;
+  line-height:1.6;
+}
+
+/* ─── Raw Editor Panel ──────────────────────────────── */
+.editor-panel {
+  width: 310px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width var(--duration-lg) var(--ease-out);
+}
+.editor-panel.hidden { width: 0; overflow: hidden; }
+.editor-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.editor-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  flex: 1;
+}
+textarea.raw-editor {
+  flex: 1;
+  background: var(--bg2);
+  border: none;
+  color: #7dd3fc;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 16px;
+  resize: none;
+  outline: none;
+  line-height: 1.65;
+}
+.editor-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ─── PI Grade Editor Tools ─────────────────────────── */
+.editor-tools {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  background: var(--surface2);
+  flex-shrink: 0;
+}
+.editor-tools .btn { padding: 5px 8px; }
+.editor-tools .btn.active-soft {
+  border-color: var(--accent2);
+  color: var(--accent2);
+  background: rgba(124,58,237,0.08);
+}
+.editor-meta {
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+.editor-chip {
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+}
+.editor-chip.dirty { border-color: var(--yellow); color: var(--yellow); }
+.editor-chip.good  { border-color: var(--green);  color: var(--green); }
+.editor-chip.bad   { border-color: var(--red);    color: var(--red); }
+
+/* ─── PubChem Bar ───────────────────────────────────── */
+.pubchem-bar { display: flex; gap: 6px; flex-wrap: wrap; }
